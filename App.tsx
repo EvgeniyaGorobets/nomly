@@ -10,6 +10,7 @@ import {
 import { NavigationContainer } from "@react-navigation/native";
 
 import { Home, RecipeBook, RecipeForm, Stack } from "./src";
+import { fetchData, saveData, StorageKeys } from "./src/core/storage";
 
 // Define the config
 const config = {
@@ -25,6 +26,24 @@ declare module "native-base" {
 }
 export default function App() {
   const [recipeBook, setRecipeBook] = useState<RecipeBook>({});
+
+  // Fetch recipe book from storage the first time the app loads
+  useEffect(() => {
+    console.log("Fetching recipe book");
+    (async () => {
+      const recipes: RecipeBook|null = await fetchData(StorageKeys.RECIPES);
+      if (recipes) {
+        setRecipeBook(recipes);
+      }
+    })();
+  }, []);
+
+  // Asynchronously save the recipe book each time it changes
+  useEffect(() => {
+    console.log("Saving recipe book");
+    saveData(StorageKeys.RECIPES, recipeBook);
+  }, [recipeBook]);
+
 
   return (
     <RecipeBook.Provider value={recipeBook}>
