@@ -8,13 +8,16 @@ import {
   Icon,
   Input,
   ScrollView,
+  Box,
+  Heading,
 } from "native-base";
 import { AntDesign } from "@expo/vector-icons";
-import type { NativeStackScreenProps } from '@react-navigation/native-stack';
+import type { NativeStackScreenProps } from "@react-navigation/native-stack";
 
 import { RecipeBook } from "../core/RecipeBook";
-import type { AppStack } from '../Stack';
+import type { AppStack } from "../Stack";
 import { AppContext, AppContextType } from "../AppContext";
+import { Pressable } from "react-native";
 
 const UploadIcon: ReactElement = <Icon as={AntDesign} name="upload" />;
 
@@ -22,7 +25,7 @@ const PlusIcon: ReactElement = <Icon as={AntDesign} name="plus" />;
 
 const searchBar: ReactElement = (
   <Input
-    placeholder="Search People & Places"
+    placeholder="Search recipes by name"
     width="100%"
     borderRadius="4"
     py="3"
@@ -41,29 +44,48 @@ const searchBar: ReactElement = (
   />
 );
 
-export const Home = ({ navigation }: NativeStackScreenProps<AppStack, 'Home'>) => {
+export const Home = ({
+  navigation,
+}: NativeStackScreenProps<AppStack, "Home">) => {
   return (
-      <Center
-        _dark={{ bg: "blueGray.900" }}
-        _light={{ bg: "blueGray.50" }}
-        px={4}
-        flex={1}
-      >
-        <Row>
-          <Text>nomly</Text>
-          <IconButton icon={UploadIcon} />
-        </Row>
-        {searchBar}
-        <ScrollView flex={1}>
-          <AppContext.Consumer>
-            {(context: AppContextType) => 
-              Object.keys(context.recipes).map((recipeName: string, i: number) => (
-                <Text key={i}>{recipeName}</Text>
+    <Center
+      _dark={{ bg: "blueGray.900" }}
+      _light={{ bg: "blueGray.50" }}
+      px={4}
+      flex={1}
+    >
+      <Row w="100%" justifyContent="space-between" my="15px">
+        <Heading>nomly</Heading>
+        <IconButton icon={UploadIcon} />
+      </Row>
+      {searchBar}
+      <ScrollView flex={1} w="100%" my="10px">
+        <AppContext.Consumer>
+          {(context: AppContextType) =>
+            Object.keys(context.recipes)
+              .sort()
+              .map((recipeName: string, i: number) => (
+                <Pressable key={i}>
+                  <Box
+                    w="100%"
+                    padding="10px"
+                    borderBottomWidth={1}
+                    borderColor="gray.300"
+                  >
+                    <Heading size="sm">{recipeName}</Heading>
+                  </Box>
+                </Pressable>
               ))
-            }
-          </AppContext.Consumer>
-        </ScrollView>
-        <Fab renderInPortal={false} shadow={2} size="sm" icon={PlusIcon} onPress={() => navigation.navigate('Form')} />
-      </Center>
+          }
+        </AppContext.Consumer>
+      </ScrollView>
+      <Fab
+        renderInPortal={false}
+        shadow={2}
+        size="sm"
+        icon={PlusIcon}
+        onPress={() => navigation.navigate("Form")}
+      />
+    </Center>
   );
 };
