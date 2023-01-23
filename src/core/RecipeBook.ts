@@ -38,7 +38,7 @@ export const addRecipe = (
       `Failed to add recipe: a recipe with the name '${recipeName}' already exists in the recipe book.`
     );
   }
-  return { ...recipeBook, recipeName: newRecipe };
+  return { ...recipeBook, [recipeName]: newRecipe };
 };
 
 export const deleteRecipe = (
@@ -53,7 +53,3 @@ export const deleteRecipe = (
   delete recipeBook[recipeName];
   return recipeBook;
 };
-
-/* ---- CONTEXT ---- */
-
-export const RecipeBook = React.createContext<RecipeBook>({});

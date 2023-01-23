@@ -9,7 +9,7 @@ import {
 } from "native-base";
 import { NavigationContainer } from "@react-navigation/native";
 
-import { Home, RecipeBook, RecipeForm, Stack } from "./src";
+import { Home, RecipeBook, RecipeForm, Stack, AppContext } from "./src";
 import { fetchData, saveData, StorageKeys } from "./src/core/storage";
 
 // Define the config
@@ -31,7 +31,7 @@ export default function App() {
   useEffect(() => {
     console.log("Fetching recipe book");
     (async () => {
-      const recipes: RecipeBook|null = await fetchData(StorageKeys.RECIPES);
+      const recipes: RecipeBook | null = await fetchData(StorageKeys.RECIPES);
       if (recipes) {
         setRecipeBook(recipes);
       }
@@ -41,12 +41,17 @@ export default function App() {
   // Asynchronously save the recipe book each time it changes
   useEffect(() => {
     console.log("Saving recipe book");
+    console.log(recipeBook)
     saveData(StorageKeys.RECIPES, recipeBook);
   }, [recipeBook]);
 
-
   return (
-    <RecipeBook.Provider value={recipeBook}>
+    <AppContext.Provider
+      value={{
+        recipes: recipeBook,
+        saveRecipes: setRecipeBook,
+      }}
+    >
       <NativeBaseProvider>
         <NavigationContainer>
           <Stack.Navigator screenOptions={{ headerShown: false }}>
@@ -55,7 +60,7 @@ export default function App() {
           </Stack.Navigator>
         </NavigationContainer>
       </NativeBaseProvider>
-    </RecipeBook.Provider>
+    </AppContext.Provider>
   );
 }
 

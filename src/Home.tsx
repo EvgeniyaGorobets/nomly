@@ -14,6 +14,7 @@ import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { RecipeBook } from "./core/RecipeBook";
 import type { AppStack } from './Stack';
+import { AppContext, AppContextType } from "./AppContext";
 
 const UploadIcon: ReactElement = <Icon as={AntDesign} name="upload" />;
 
@@ -54,13 +55,13 @@ export const Home = ({ navigation }: NativeStackScreenProps<AppStack, 'Home'>) =
         </Row>
         {searchBar}
         <ScrollView flex={1}>
-          <RecipeBook.Consumer>
-            {recipes => 
-              Object.keys(recipes).map(recipeName => {
-                <Text>{recipeName}</Text>
-              })
+          <AppContext.Consumer>
+            {(context: AppContextType) => 
+              Object.keys(context.recipes).map((recipeName: string, i: number) => (
+                <Text key={i}>{recipeName}</Text>
+              ))
             }
-          </RecipeBook.Consumer>
+          </AppContext.Consumer>
         </ScrollView>
         <Fab renderInPortal={false} shadow={2} size="sm" icon={PlusIcon} onPress={() => navigation.navigate('Form')} />
       </Center>

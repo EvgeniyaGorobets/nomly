@@ -15,10 +15,8 @@ import {
 import { AntDesign } from "@expo/vector-icons";
 import type { NativeStackScreenProps } from "@react-navigation/native-stack";
 
-import {
-  RecipeBook,
-  addRecipe,
-} from "./core/RecipeBook";
+import { RecipeBook, addRecipe } from "./core/RecipeBook";
+import { AppContext, AppContextType } from "./AppContext";
 import {
   RecipeErrors,
   PotentialRecipe,
@@ -32,7 +30,7 @@ import {
   updateRecipeNotes,
   validateRecipe,
   convertPotentialRecipe,
-} from "./core/form"
+} from "./core/form";
 import type { AppStack } from "./Stack";
 import { IngredientForm } from "./IngredientForm";
 import { RecipeYieldForm } from "./RecipeYieldForm";
@@ -49,12 +47,21 @@ export const RecipeForm = ({
   const [recipe, setRecipe] = useState<PotentialRecipe>(blankRecipe());
   const [errors, setErrors] = useState<RecipeErrors>({});
 
-  const tryToSaveRecipe = (recipeBook: RecipeBook) => {
-    const errors: RecipeErrors | null = validateRecipe(recipeBook, recipe, recipeName);
+  const tryToSaveRecipe = (
+    recipeBook: RecipeBook,
+    saveRecipeBook: (recipes: RecipeBook) => void
+  ) => {
+    const errors: RecipeErrors | null = validateRecipe(
+      recipeBook,
+      recipe,
+      recipeName
+    );
     if (errors) {
       setErrors(errors);
     } else {
-      addRecipe(recipeBook, convertPotentialRecipe(recipe), recipeName);
+      saveRecipeBook(
+        addRecipe(recipeBook, convertPotentialRecipe(recipe), recipeName)
+      );
       navigation.goBack();
     }
   };
@@ -70,8 +77,8 @@ export const RecipeForm = ({
         <Heading>Add Recipe</Heading>
         <IconButton icon={CloseIcon} onPress={() => navigation.goBack()} />
       </Row>
-      <RecipeBook.Consumer>
-        {(recipeBook: RecipeBook) => (
+      <AppContext.Consumer>
+        {(context: AppContextType) => (
           <ScrollView flex={1} _contentContainerStyle={{ flex: 1 }}>
             <Column flex={1}>
               <RecipeNameForm
@@ -88,20 +95,22 @@ export const RecipeForm = ({
               />
               <Column my="10px">
                 <Heading size="md">Ingredients</Heading>
-                {recipe.ingredients.map((ingredient: PotentialIngredient, i: number) => (
-                  <IngredientForm
-                    key={i}
-                    errors={errors}
-                    index={i}
-                    ingredient={ingredient}
-                    deleteIngredient={() =>
-                      setRecipe(deleteIngredient(recipe, i))
-                    }
-                    updateIngredient={(ingredient: PotentialIngredient) => {
-                      setRecipe(updateIngredient(recipe, i, ingredient))
-                    }}
-                  />
-                ))}
+                {recipe.ingredients.map(
+                  (ingredient: PotentialIngredient, i: number) => (
+                    <IngredientForm
+                      key={i}
+                      errors={errors}
+                      index={i}
+                      ingredient={ingredient}
+                      deleteIngredient={() =>
+                        setRecipe(deleteIngredient(recipe, i))
+                      }
+                      updateIngredient={(ingredient: PotentialIngredient) => {
+                        setRecipe(updateIngredient(recipe, i, ingredient));
+                      }}
+                    />
+                  )
+                )}
                 <Column borderBottomWidth={1} borderColor="gray.300">
                   <Pressable onPress={() => setRecipe(addIngredient(recipe))}>
                     <Row alignItems="center">
@@ -126,11 +135,13 @@ export const RecipeForm = ({
               </FormControl>
             </Column>
             <Column my="15px">
-              <Button onPress={() => tryToSaveRecipe(recipeBook)}>SAVE</Button>
+              <Button onPress={() => tryToSaveRecipe(context.recipes, context.saveRecipes)}>
+                SAVE
+              </Button>
             </Column>
           </ScrollView>
         )}
-      </RecipeBook.Consumer>
+      </AppContext.Consumer>
     </Center>
   );
 };
