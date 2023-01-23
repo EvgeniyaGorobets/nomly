@@ -12,9 +12,9 @@ import {
 import { AntDesign } from "@expo/vector-icons";
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 
-import { RecipeBook } from "./core/RecipeBook";
-import type { AppStack } from './Stack';
-import { AppContext, AppContextType } from "./AppContext";
+import { RecipeBook } from "../core/RecipeBook";
+import type { AppStack } from '../Stack';
+import { AppContext, AppContextType } from "../AppContext";
 
 const UploadIcon: ReactElement = <Icon as={AntDesign} name="upload" />;
 

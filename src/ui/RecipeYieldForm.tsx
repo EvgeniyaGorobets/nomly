@@ -1,7 +1,7 @@
 import React from "react";
 import { Input, Column, FormControl, Row, Heading } from "native-base";
 
-import { PotentialYield, RecipeErrors } from "./core/form";
+import { PotentialYield, RecipeErrors } from "../core/form";
 
 type RecipeYieldProps = {
   errors: RecipeErrors;
