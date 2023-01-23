@@ -1,6 +1,5 @@
-import React, { ReactElement } from "react";
+import React, { ReactElement, useState } from "react";
 import {
-  Text,
   Center,
   IconButton,
   Row,
@@ -10,14 +9,14 @@ import {
   ScrollView,
   Box,
   Heading,
+  Pressable
 } from "native-base";
 import { AntDesign } from "@expo/vector-icons";
 import type { NativeStackScreenProps } from "@react-navigation/native-stack";
 
-import { RecipeBook } from "../core/RecipeBook";
 import type { AppStack } from "../Stack";
 import { AppContext, AppContextType } from "../AppContext";
-import { Pressable } from "react-native";
+import { RecipeActionSheet } from "./RecipeActionSheet";
 
 const UploadIcon: ReactElement = <Icon as={AntDesign} name="upload" />;
 
@@ -47,6 +46,8 @@ const searchBar: ReactElement = (
 export const Home = ({
   navigation,
 }: NativeStackScreenProps<AppStack, "Home">) => {
+  const [selectedRecipe, setSelected] = useState<string>("");
+
   return (
     <Center
       _dark={{ bg: "blueGray.900" }}
@@ -65,7 +66,7 @@ export const Home = ({
             Object.keys(context.recipes)
               .sort()
               .map((recipeName: string, i: number) => (
-                <Pressable key={i}>
+                <Pressable key={i} onLongPress={() => setSelected(recipeName)}>
                   <Box
                     w="100%"
                     padding="10px"
@@ -86,6 +87,7 @@ export const Home = ({
         icon={PlusIcon}
         onPress={() => navigation.navigate("Form")}
       />
+      <RecipeActionSheet isOpen={selectedRecipe != ""} recipeName={selectedRecipe} onClose={() => setSelected("")} />
     </Center>
   );
 };

@@ -50,6 +50,21 @@ export const deleteRecipe = (
       `Failed to delete recipe: no recipe with the name ${recipeName} found in the recipe book.`
     );
   }
-  delete recipeBook[recipeName];
-  return recipeBook;
+
+  const clonedRecipeBook = { ...recipeBook };
+  delete clonedRecipeBook[recipeName];
+  return clonedRecipeBook;
+};
+
+
+export const cloneRecipe = (
+  recipeBook: RecipeBook,
+  recipeName: string,
+): RecipeBook => {
+  return {
+    ...recipeBook,
+    [`${recipeName} (Copy)`]: {
+      ...recipeBook[recipeName]
+    },
+  };
 };

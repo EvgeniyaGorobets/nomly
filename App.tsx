@@ -49,7 +49,7 @@ export default function App() {
     <AppContext.Provider
       value={{
         recipes: recipeBook,
-        saveRecipes: setRecipeBook,
+        saveRecipes: (recipes: RecipeBook) => setRecipeBook(recipes),
       }}
     >
       <NativeBaseProvider>
