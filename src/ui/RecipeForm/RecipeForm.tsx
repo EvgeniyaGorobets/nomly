@@ -11,9 +11,9 @@ import {
   Heading,
   FormControl,
   Text,
+  Pressable,
 } from "native-base";
 import { AntDesign } from "@expo/vector-icons";
-import type { NativeStackScreenProps } from "@react-navigation/native-stack";
 
 import { RecipeBook, addRecipe } from "../../core/RecipeBook";
 import { AppContext, AppContextType } from "../../AppContext";
@@ -31,18 +31,15 @@ import {
   validateRecipe,
   convertPotentialRecipe,
 } from "../../core/form";
-import type { AppStack } from "../../Stack";
+import type { RecipeFormProps } from "../../Stack";
 import { IngredientForm } from "./IngredientForm";
 import { RecipeYieldForm } from "./RecipeYieldForm";
 import { RecipeNameForm } from "./RecipeNameForm";
-import { Pressable } from "react-native";
 
 const CloseIcon: ReactElement = <Icon as={AntDesign} name="close" />;
 const PlusIcon: ReactElement = <Icon as={AntDesign} name="plus" />;
 
-export const RecipeForm = ({
-  navigation,
-}: NativeStackScreenProps<AppStack, "Form">) => {
+export const RecipeForm = ({ navigation }: RecipeFormProps) => {
   const [recipeName, setRecipeName] = useState<string>("");
   const [recipe, setRecipe] = useState<PotentialRecipe>(blankRecipe());
   const [errors, setErrors] = useState<RecipeErrors>({});

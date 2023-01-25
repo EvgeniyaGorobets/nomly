@@ -9,7 +9,14 @@ import {
 } from "native-base";
 import { NavigationContainer } from "@react-navigation/native";
 
-import { Home, RecipeBook, RecipeForm, Stack, AppContext } from "./src";
+import {
+  Home,
+  RecipeBook,
+  RecipeForm,
+  RecipeView,
+  Stack,
+  AppContext,
+} from "./src";
 import { fetchData, saveData, StorageKeys } from "./src/core/storage";
 
 // Define the config
@@ -41,7 +48,7 @@ export default function App() {
   // Asynchronously save the recipe book each time it changes
   useEffect(() => {
     console.log("Saving recipe book");
-    console.log(recipeBook)
+    console.log(recipeBook);
     saveData(StorageKeys.RECIPES, recipeBook);
   }, [recipeBook]);
 
@@ -57,6 +64,7 @@ export default function App() {
           <Stack.Navigator screenOptions={{ headerShown: false }}>
             <Stack.Screen name="Home" component={Home} />
             <Stack.Screen name="Form" component={RecipeForm} />
+            <Stack.Screen name="Recipe" component={RecipeView} />
           </Stack.Navigator>
         </NavigationContainer>
       </NativeBaseProvider>

@@ -12,9 +12,8 @@ import {
   Pressable,
 } from "native-base";
 import { AntDesign } from "@expo/vector-icons";
-import type { NativeStackScreenProps } from "@react-navigation/native-stack";
 
-import type { AppStack } from "../../Stack";
+import type { HomeScreenProps } from "../../Stack";
 import { AppContext, AppContextType } from "../../AppContext";
 import { RecipeActionSheet } from "./RecipeActionSheet";
 
@@ -43,9 +42,7 @@ const searchBar: ReactElement = (
   />
 );
 
-export const Home = ({
-  navigation,
-}: NativeStackScreenProps<AppStack, "Home">) => {
+export const Home = ({ navigation }: HomeScreenProps) => {
   const [selectedRecipe, setSelected] = useState<string>("");
 
   return (
@@ -66,7 +63,13 @@ export const Home = ({
             Object.keys(context.recipes)
               .sort()
               .map((recipeName: string, i: number) => (
-                <Pressable key={i} onLongPress={() => setSelected(recipeName)}>
+                <Pressable
+                  key={i}
+                  onLongPress={() => setSelected(recipeName)}
+                  onPress={() => {
+                    navigation.navigate("Recipe", { recipeName: recipeName });
+                  }}
+                >
                   <Box
                     w="100%"
                     padding="10px"
