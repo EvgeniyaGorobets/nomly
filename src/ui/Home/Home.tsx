@@ -5,7 +5,6 @@ import {
   Row,
   Fab,
   Icon,
-  Input,
   ScrollView,
   Box,
   Heading,
@@ -16,34 +15,15 @@ import { AntDesign } from "@expo/vector-icons";
 import type { HomeScreenProps } from "../../Stack";
 import { AppContext, AppContextType } from "../../AppContext";
 import { RecipeActionSheet } from "./RecipeActionSheet";
+import { SearchBar } from "./SearchBar";
 
 const UploadIcon: ReactElement = <Icon as={AntDesign} name="upload" />;
 
 const PlusIcon: ReactElement = <Icon as={AntDesign} name="plus" />;
 
-const searchBar: ReactElement = (
-  <Input
-    placeholder="Search recipes by name"
-    width="100%"
-    borderRadius="4"
-    py="3"
-    px="1"
-    fontSize="14"
-    InputLeftElement={
-      <Icon
-        m="2"
-        ml="3"
-        size="6"
-        color="gray.400"
-        as={AntDesign}
-        name="search1"
-      />
-    }
-  />
-);
-
 export const Home = ({ navigation }: HomeScreenProps) => {
   const [selectedRecipe, setSelected] = useState<string>("");
+  const [searchQuery, setSearchQuery] = useState<string>("");
 
   return (
     <Center
@@ -56,11 +36,12 @@ export const Home = ({ navigation }: HomeScreenProps) => {
         <Heading>nomly</Heading>
         <IconButton icon={UploadIcon} />
       </Row>
-      {searchBar}
+      <SearchBar query={searchQuery} setQuery={setSearchQuery} />
       <ScrollView flex={1} w="100%" my="10px">
         <AppContext.Consumer>
           {(context: AppContextType) =>
             Object.keys(context.recipes)
+              .filter((recipeName: string) => recipeName.includes(searchQuery))
               .sort()
               .map((recipeName: string, i: number) => (
                 <Pressable
