@@ -2,8 +2,8 @@ import React, { useContext } from "react";
 import { Actionsheet, Icon } from "native-base";
 import { AntDesign } from "@expo/vector-icons";
 
-import { AppContext, AppContextType } from "../AppContext";
-import { deleteRecipe, cloneRecipe } from "../core/RecipeBook";
+import { AppContext, AppContextType } from "../../AppContext";
+import { deleteRecipe, cloneRecipe } from "../../core/RecipeBook";
 
 type RecipeActionProps = {
   recipeName: string;

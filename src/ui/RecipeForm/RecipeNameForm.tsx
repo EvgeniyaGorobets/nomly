@@ -1,7 +1,7 @@
 import React from "react";
 import { Input, Column, FormControl } from "native-base";
 
-import type { RecipeErrors } from "../core/form";
+import type { RecipeErrors } from "../../core/form";
 
 type RecipeNameProps = {
   errors: RecipeErrors;

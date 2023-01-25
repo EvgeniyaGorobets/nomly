@@ -9,13 +9,13 @@ import {
   ScrollView,
   Box,
   Heading,
-  Pressable
+  Pressable,
 } from "native-base";
 import { AntDesign } from "@expo/vector-icons";
 import type { NativeStackScreenProps } from "@react-navigation/native-stack";
 
-import type { AppStack } from "../Stack";
-import { AppContext, AppContextType } from "../AppContext";
+import type { AppStack } from "../../Stack";
+import { AppContext, AppContextType } from "../../AppContext";
 import { RecipeActionSheet } from "./RecipeActionSheet";
 
 const UploadIcon: ReactElement = <Icon as={AntDesign} name="upload" />;
@@ -87,7 +87,11 @@ export const Home = ({
         icon={PlusIcon}
         onPress={() => navigation.navigate("Form")}
       />
-      <RecipeActionSheet isOpen={selectedRecipe != ""} recipeName={selectedRecipe} onClose={() => setSelected("")} />
+      <RecipeActionSheet
+        isOpen={selectedRecipe != ""}
+        recipeName={selectedRecipe}
+        onClose={() => setSelected("")}
+      />
     </Center>
   );
 };

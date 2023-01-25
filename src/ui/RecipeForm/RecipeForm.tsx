@@ -15,8 +15,8 @@ import {
 import { AntDesign } from "@expo/vector-icons";
 import type { NativeStackScreenProps } from "@react-navigation/native-stack";
 
-import { RecipeBook, addRecipe } from "../core/RecipeBook";
-import { AppContext, AppContextType } from "../AppContext";
+import { RecipeBook, addRecipe } from "../../core/RecipeBook";
+import { AppContext, AppContextType } from "../../AppContext";
 import {
   RecipeErrors,
   PotentialRecipe,
@@ -30,8 +30,8 @@ import {
   updateRecipeNotes,
   validateRecipe,
   convertPotentialRecipe,
-} from "../core/form";
-import type { AppStack } from "../Stack";
+} from "../../core/form";
+import type { AppStack } from "../../Stack";
 import { IngredientForm } from "./IngredientForm";
 import { RecipeYieldForm } from "./RecipeYieldForm";
 import { RecipeNameForm } from "./RecipeNameForm";
@@ -135,7 +135,11 @@ export const RecipeForm = ({
               </FormControl>
             </Column>
             <Column my="15px">
-              <Button onPress={() => tryToSaveRecipe(context.recipes, context.saveRecipes)}>
+              <Button
+                onPress={() =>
+                  tryToSaveRecipe(context.recipes, context.saveRecipes)
+                }
+              >
                 SAVE
               </Button>
             </Column>

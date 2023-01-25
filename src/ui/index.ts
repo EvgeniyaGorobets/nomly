@@ -1,2 +1,2 @@
-export { Home } from "./Home";
-export { RecipeForm } from "./RecipeForm";
+export { Home } from "./Home/Home";
+export { RecipeForm } from "./RecipeForm/RecipeForm";
