@@ -1,4 +1,4 @@
-import React, { ReactElement, useState } from "react";
+import React, { ReactElement, useContext, useState } from "react";
 import {
   Button,
   Center,
@@ -15,7 +15,12 @@ import {
 } from "native-base";
 import { AntDesign } from "@expo/vector-icons";
 
-import { RecipeBook, addRecipe } from "../../core/RecipeBook";
+import {
+  RecipeBook,
+  addRecipe,
+  updateRecipe,
+  Recipe,
+} from "../../core/RecipeBook";
 import { AppContext, AppContextType } from "../../AppContext";
 import {
   RecipeErrors,
@@ -29,7 +34,8 @@ import {
   updateRecipeYield,
   updateRecipeNotes,
   validateRecipe,
-  convertPotentialRecipe,
+  convertFormToRecipe,
+  convertRecipeToForm,
 } from "../../core/form";
 import type { RecipeFormProps } from "../../Stack";
 import { IngredientForm } from "./IngredientForm";
@@ -39,26 +45,50 @@ import { RecipeNameForm } from "./RecipeNameForm";
 const CloseIcon: ReactElement = <Icon as={AntDesign} name="close" />;
 const PlusIcon: ReactElement = <Icon as={AntDesign} name="plus" />;
 
-export const RecipeForm = ({ navigation }: RecipeFormProps) => {
-  const [recipeName, setRecipeName] = useState<string>("");
-  const [recipe, setRecipe] = useState<PotentialRecipe>(blankRecipe());
+type RouteProp = RecipeFormProps["route"];
+
+const getInitialRecipe = (
+  route: RouteProp,
+  recipes: RecipeBook
+): [string, PotentialRecipe] => {
+  if (route.params?.recipeName) {
+    return [
+      route.params.recipeName,
+      convertRecipeToForm(recipes[route.params.recipeName]),
+    ];
+  } else {
+    return ["", blankRecipe()];
+  }
+};
+
+const isNewRecipe = (route: RouteProp): boolean => {
+  return typeof route.params?.recipeName == undefined;
+};
+
+export const RecipeForm = ({ navigation, route }: RecipeFormProps) => {
+  const context: AppContextType = useContext(AppContext);
+  const [initialRecipeName, initialRecipe]: [string, PotentialRecipe] =
+    getInitialRecipe(route, context.recipes);
+
+  const [recipeName, setRecipeName] = useState<string>(initialRecipeName);
+  const [recipe, setRecipe] = useState<PotentialRecipe>(initialRecipe);
   const [errors, setErrors] = useState<RecipeErrors>({});
 
-  const tryToSaveRecipe = (
-    recipeBook: RecipeBook,
-    saveRecipeBook: (recipes: RecipeBook) => void
-  ) => {
+  const tryToSaveRecipe = () => {
     const errors: RecipeErrors | null = validateRecipe(
-      recipeBook,
+      context.recipes,
       recipe,
-      recipeName
+      recipeName,
+      isNewRecipe(route)
     );
     if (errors) {
       setErrors(errors);
     } else {
-      saveRecipeBook(
-        addRecipe(recipeBook, convertPotentialRecipe(recipe), recipeName)
-      );
+      const validatedRecipe: Recipe = convertFormToRecipe(recipe);
+      const newRecipeBook: RecipeBook = isNewRecipe(route)
+        ? addRecipe(context.recipes, validatedRecipe, recipeName)
+        : updateRecipe(context.recipes, validatedRecipe, recipeName);
+      context.saveRecipes(newRecipeBook);
       navigation.goBack();
     }
   };
@@ -74,75 +104,65 @@ export const RecipeForm = ({ navigation }: RecipeFormProps) => {
         <Heading>Add Recipe</Heading>
         <IconButton icon={CloseIcon} onPress={() => navigation.goBack()} />
       </Row>
-      <AppContext.Consumer>
-        {(context: AppContextType) => (
-          <ScrollView flex={1} _contentContainerStyle={{ flex: 1 }}>
-            <Column flex={1}>
-              <RecipeNameForm
-                errors={errors}
-                recipeName={recipeName}
-                setRecipeName={setRecipeName}
-              />
-              <RecipeYieldForm
-                errors={errors}
-                recipeYield={recipe.yield}
-                setRecipeYield={(newYield: PotentialYield) =>
-                  setRecipe(updateRecipeYield(recipe, newYield))
-                }
-              />
-              <Column my="10px">
-                <Heading size="md">Ingredients</Heading>
-                {recipe.ingredients.map(
-                  (ingredient: PotentialIngredient, i: number) => (
-                    <IngredientForm
-                      key={i}
-                      errors={errors}
-                      index={i}
-                      ingredient={ingredient}
-                      deleteIngredient={() =>
-                        setRecipe(deleteIngredient(recipe, i))
-                      }
-                      updateIngredient={(ingredient: PotentialIngredient) => {
-                        setRecipe(updateIngredient(recipe, i, ingredient));
-                      }}
-                    />
-                  )
-                )}
-                <Column borderBottomWidth={1} borderColor="gray.300">
-                  <Pressable onPress={() => setRecipe(addIngredient(recipe))}>
-                    <Row alignItems="center">
-                      {PlusIcon}
-                      <Text>Add Ingredient</Text>
-                    </Row>
-                  </Pressable>
-                </Column>
-              </Column>
-              <FormControl>
-                <Column>
-                  <FormControl.Label>Notes</FormControl.Label>
-                  <Input
-                    value={recipe.notes}
-                    onChangeText={(text: string) =>
-                      setRecipe(updateRecipeNotes(recipe, text))
-                    }
-                    multiline
-                    numberOfLines={8}
-                  />
-                </Column>
-              </FormControl>
+      <ScrollView flex={1} _contentContainerStyle={{ flex: 1 }}>
+        <Column flex={1}>
+          <RecipeNameForm
+            errors={errors}
+            recipeName={recipeName}
+            setRecipeName={setRecipeName}
+          />
+          <RecipeYieldForm
+            errors={errors}
+            recipeYield={recipe.yield}
+            setRecipeYield={(newYield: PotentialYield) =>
+              setRecipe(updateRecipeYield(recipe, newYield))
+            }
+          />
+          <Column my="10px">
+            <Heading size="md">Ingredients</Heading>
+            {recipe.ingredients.map(
+              (ingredient: PotentialIngredient, i: number) => (
+                <IngredientForm
+                  key={i}
+                  errors={errors}
+                  index={i}
+                  ingredient={ingredient}
+                  deleteIngredient={() =>
+                    setRecipe(deleteIngredient(recipe, i))
+                  }
+                  updateIngredient={(ingredient: PotentialIngredient) => {
+                    setRecipe(updateIngredient(recipe, i, ingredient));
+                  }}
+                />
+              )
+            )}
+            <Column borderBottomWidth={1} borderColor="gray.300">
+              <Pressable onPress={() => setRecipe(addIngredient(recipe))}>
+                <Row alignItems="center">
+                  {PlusIcon}
+                  <Text>Add Ingredient</Text>
+                </Row>
+              </Pressable>
             </Column>
-            <Column my="15px">
-              <Button
-                onPress={() =>
-                  tryToSaveRecipe(context.recipes, context.saveRecipes)
+          </Column>
+          <FormControl>
+            <Column>
+              <FormControl.Label>Notes</FormControl.Label>
+              <Input
+                value={recipe.notes}
+                onChangeText={(text: string) =>
+                  setRecipe(updateRecipeNotes(recipe, text))
                 }
-              >
-                SAVE
-              </Button>
+                multiline
+                numberOfLines={8}
+              />
             </Column>
-          </ScrollView>
-        )}
-      </AppContext.Consumer>
+          </FormControl>
+        </Column>
+        <Column my="15px">
+          <Button onPress={() => tryToSaveRecipe()}>SAVE</Button>
+        </Column>
+      </ScrollView>
     </Center>
   );
 };

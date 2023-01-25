@@ -1,9 +1,13 @@
 import React, { useContext } from "react";
 import { Actionsheet, Icon } from "native-base";
 import { AntDesign } from "@expo/vector-icons";
+import { useNavigation } from "@react-navigation/native";
 
 import { AppContext, AppContextType } from "../../AppContext";
+import type { HomeScreenProps } from "../../Stack";
 import { deleteRecipe, cloneRecipe } from "../../core/RecipeBook";
+
+type NavigationProp = HomeScreenProps["navigation"];
 
 type RecipeActionProps = {
   recipeName: string;
@@ -17,12 +21,17 @@ export const RecipeActionSheet: React.FC<RecipeActionProps> = ({
   onClose,
 }) => {
   const context: AppContextType = useContext(AppContext);
+  const navigation = useNavigation<NavigationProp>();
 
   return (
     <Actionsheet isOpen={isOpen} onClose={onClose}>
       <Actionsheet.Content>
         <Actionsheet.Item
           startIcon={<Icon as={AntDesign} size="6" name="edit" />}
+          onPress={() => {
+            navigation.navigate("Form", { recipeName: recipeName });
+            onClose();
+          }}
         >
           Edit
         </Actionsheet.Item>

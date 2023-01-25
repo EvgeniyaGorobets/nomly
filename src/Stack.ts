@@ -7,7 +7,7 @@ import {
 
 export type AppStack = {
   Home: undefined;
-  Form: undefined;
+  Form: { recipeName: string } | undefined;
   Recipe: { recipeName: string };
 };
 

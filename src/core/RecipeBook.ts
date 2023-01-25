@@ -1,6 +1,5 @@
 import React from "react";
 
-
 /* ---- TYPES ---- */
 
 export type Yield = {
@@ -41,6 +40,21 @@ export const addRecipe = (
   return { ...recipeBook, [recipeName]: newRecipe };
 };
 
+// This is basically the same function as above, but a different validation check
+// Maybe I should turn them into one function
+export const updateRecipe = (
+  recipeBook: RecipeBook,
+  newRecipe: Recipe,
+  recipeName: string
+): RecipeBook => {
+  if (!(recipeName in recipeBook)) {
+    throw Error(
+      `Failed to update recipe: a recipe with the name '${recipeName}' does not exist in the recipe book.`
+    );
+  }
+  return { ...recipeBook, [recipeName]: newRecipe };
+};
+
 export const deleteRecipe = (
   recipeBook: RecipeBook,
   recipeName: string
@@ -56,15 +70,14 @@ export const deleteRecipe = (
   return clonedRecipeBook;
 };
 
-
 export const cloneRecipe = (
   recipeBook: RecipeBook,
-  recipeName: string,
+  recipeName: string
 ): RecipeBook => {
   return {
     ...recipeBook,
     [`${recipeName} (Copy)`]: {
-      ...recipeBook[recipeName]
+      ...recipeBook[recipeName],
     },
   };
 };
