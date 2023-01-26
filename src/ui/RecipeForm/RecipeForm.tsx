@@ -62,7 +62,7 @@ const getInitialRecipe = (
 };
 
 const isNewRecipe = (route: RouteProp): boolean => {
-  return typeof route.params?.recipeName == undefined;
+  return typeof route.params?.recipeName == "undefined";
 };
 
 export const RecipeForm = ({ navigation, route }: RecipeFormProps) => {
