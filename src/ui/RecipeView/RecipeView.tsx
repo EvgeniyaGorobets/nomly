@@ -33,7 +33,7 @@ export const RecipeView = ({ navigation, route }: RecipeScreenProps) => {
       flex={1}
       padding={getSafePadding(insets)}
     >
-      <Row w="100%" justifyContent="start" my="15px">
+      <Row w="100%" justifyContent="flex-start" my="15px">
         <IconButton icon={CloseIcon} onPress={() => navigation.goBack()} />
         <Heading>{route.params.recipeName}</Heading>
       </Row>
