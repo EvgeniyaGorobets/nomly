@@ -14,6 +14,7 @@ import {
   Pressable,
 } from "native-base";
 import { AntDesign } from "@expo/vector-icons";
+import { EdgeInsets, useSafeAreaInsets } from "react-native-safe-area-context";
 
 import {
   RecipeBook,
@@ -41,6 +42,7 @@ import type { RecipeFormProps } from "../../Stack";
 import { IngredientForm } from "./IngredientForm";
 import { RecipeYieldForm } from "./RecipeYieldForm";
 import { RecipeNameForm } from "./RecipeNameForm";
+import { getSafePadding } from "../helpers";
 
 const CloseIcon: ReactElement = <Icon as={AntDesign} name="close" />;
 const PlusIcon: ReactElement = <Icon as={AntDesign} name="plus" />;
@@ -74,6 +76,8 @@ export const RecipeForm = ({ navigation, route }: RecipeFormProps) => {
   const [recipe, setRecipe] = useState<PotentialRecipe>(initialRecipe);
   const [errors, setErrors] = useState<RecipeErrors>({});
 
+  const insets: EdgeInsets = useSafeAreaInsets();
+
   const tryToSaveRecipe = () => {
     const errors: RecipeErrors | null = validateRecipe(
       context.recipes,
@@ -99,6 +103,7 @@ export const RecipeForm = ({ navigation, route }: RecipeFormProps) => {
       _light={{ bg: "blueGray.50" }}
       px={4}
       flex={1}
+      padding={getSafePadding(insets)}
     >
       <Row w="100%" justifyContent="space-between" my="15px">
         <Heading>Add Recipe</Heading>

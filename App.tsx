@@ -8,6 +8,7 @@ import {
   extendTheme,
 } from "native-base";
 import { NavigationContainer } from "@react-navigation/native";
+import { SafeAreaProvider } from "react-native-safe-area-context";
 
 import {
   Home,
@@ -53,22 +54,24 @@ export default function App() {
   }, [recipeBook]);
 
   return (
-    <AppContext.Provider
-      value={{
-        recipes: recipeBook,
-        saveRecipes: (recipes: RecipeBook) => setRecipeBook(recipes),
-      }}
-    >
-      <NativeBaseProvider>
-        <NavigationContainer>
-          <Stack.Navigator screenOptions={{ headerShown: false }}>
-            <Stack.Screen name="Home" component={Home} />
-            <Stack.Screen name="Form" component={RecipeForm} />
-            <Stack.Screen name="Recipe" component={RecipeView} />
-          </Stack.Navigator>
-        </NavigationContainer>
-      </NativeBaseProvider>
-    </AppContext.Provider>
+    <SafeAreaProvider>
+      <AppContext.Provider
+        value={{
+          recipes: recipeBook,
+          saveRecipes: (recipes: RecipeBook) => setRecipeBook(recipes),
+        }}
+      >
+        <NativeBaseProvider>
+          <NavigationContainer>
+            <Stack.Navigator screenOptions={{ headerShown: false }}>
+              <Stack.Screen name="Home" component={Home} />
+              <Stack.Screen name="Form" component={RecipeForm} />
+              <Stack.Screen name="Recipe" component={RecipeView} />
+            </Stack.Navigator>
+          </NavigationContainer>
+        </NativeBaseProvider>
+      </AppContext.Provider>
+    </SafeAreaProvider>
   );
 }
 

@@ -11,6 +11,7 @@ import {
   Pressable,
 } from "native-base";
 import { AntDesign } from "@expo/vector-icons";
+import { EdgeInsets, useSafeAreaInsets } from "react-native-safe-area-context";
 
 import type { HomeScreenProps } from "../../Stack";
 import { AppContext, AppContextType } from "../../AppContext";
@@ -18,6 +19,7 @@ import { RecipeActionSheet } from "./RecipeActionSheet";
 import { SearchBar } from "./SearchBar";
 import { exportRecipeBook, importRecipeBook } from "../../core/backup";
 import { RecipeBook } from "../../core/RecipeBook";
+import { getSafePadding } from "../helpers";
 
 const UploadIcon: ReactElement = <Icon as={AntDesign} name="upload" />;
 const DownloadIcon: ReactElement = <Icon as={AntDesign} name="download" />;
@@ -28,6 +30,7 @@ export const Home = ({ navigation }: HomeScreenProps) => {
   const context: AppContextType = useContext(AppContext);
   const [selectedRecipe, setSelected] = useState<string>("");
   const [searchQuery, setSearchQuery] = useState<string>("");
+  const insets: EdgeInsets = useSafeAreaInsets();
 
   return (
     <Center
@@ -35,6 +38,7 @@ export const Home = ({ navigation }: HomeScreenProps) => {
       _light={{ bg: "blueGray.50" }}
       px={4}
       flex={1}
+      padding={getSafePadding(insets)}
     >
       <Row w="100%" justifyContent="space-between" my="15px">
         <Heading>nomly</Heading>
