@@ -101,7 +101,7 @@ export const updateIngredient = (
   };
 };
 
-const isNumeric = (amount: string): boolean => {
+export const isNumeric = (amount: string): boolean => {
   return !isNaN(Number(amount));
 };
 
