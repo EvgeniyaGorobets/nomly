@@ -4,7 +4,7 @@ import { AntDesign } from "@expo/vector-icons";
 
 import { AppContext, AppContextType } from "../../AppContext";
 import { exportRecipeBook, importRecipeBook } from "../../core/backup";
-import { RecipeBook } from "../../core/RecipeBook";
+import { RecipeBook } from "../../core/recipe";
 
 export const RecipesMenu = () => {
   const context: AppContextType = useContext(AppContext);

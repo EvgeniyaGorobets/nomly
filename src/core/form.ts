@@ -1,4 +1,4 @@
-import type { Unit, RecipeBook, Recipe, Ingredient } from "./RecipeBook";
+import type { Unit, RecipeBook, Recipe, Ingredient } from "./recipe";
 
 // these are the types we use when building out the form;
 // the only difference is that numeric fields are strings because we cannot force users to enter numbers into input boxes

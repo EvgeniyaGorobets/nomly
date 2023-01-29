@@ -14,7 +14,7 @@ import { EdgeInsets, useSafeAreaInsets } from "react-native-safe-area-context";
 
 import type { RecipeScreenProps } from "../../Stack";
 import { AppContext, AppContextType } from "../../AppContext";
-import { Ingredient, Recipe } from "../../core/RecipeBook";
+import { Ingredient, Recipe } from "../../core/recipe";
 import { getSafePadding } from "../helpers";
 
 const CloseIcon: ReactElement = <Icon as={AntDesign} name="close" size="md" />;

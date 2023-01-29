@@ -19,7 +19,7 @@ import { RecipeActionSheet } from "./RecipeActionSheet";
 import { RecipesMenu } from "./RecipesMenu";
 import { SearchBar } from "./SearchBar";
 import { exportRecipeBook, importRecipeBook } from "../../core/backup";
-import { RecipeBook } from "../../core/RecipeBook";
+import { RecipeBook } from "../../core/recipe";
 import { getSafePadding } from "../helpers";
 
 const UploadIcon: ReactElement = <Icon as={AntDesign} name="upload" />;

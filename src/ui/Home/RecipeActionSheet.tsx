@@ -5,7 +5,7 @@ import { useNavigation } from "@react-navigation/native";
 
 import { AppContext, AppContextType } from "../../AppContext";
 import type { HomeScreenProps } from "../../Stack";
-import { deleteRecipe, cloneRecipe } from "../../core/RecipeBook";
+import { deleteRecipe, cloneRecipe } from "../../core/recipe";
 
 type NavigationProp = HomeScreenProps["navigation"];
 

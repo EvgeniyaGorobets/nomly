@@ -1,10 +1,10 @@
 import React from "react";
 
-import { RecipeBook } from "./core/RecipeBook";
+import { RecipeBook } from "./core/recipe";
 
 export type AppContextType = {
-  recipes: RecipeBook,
-  saveRecipes: (recipes: RecipeBook) => void,
+  recipes: RecipeBook;
+  saveRecipes: (recipes: RecipeBook) => void;
 };
 
 export const AppContext = React.createContext<AppContextType>({

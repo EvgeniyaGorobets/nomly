@@ -15,12 +15,7 @@ import {
 import { AntDesign } from "@expo/vector-icons";
 import { EdgeInsets, useSafeAreaInsets } from "react-native-safe-area-context";
 
-import {
-  RecipeBook,
-  addRecipe,
-  updateRecipe,
-  Recipe,
-} from "../../core/RecipeBook";
+import { RecipeBook, addRecipe, updateRecipe, Recipe } from "../../core/recipe";
 import { AppContext, AppContextType } from "../../AppContext";
 import {
   RecipeErrors,

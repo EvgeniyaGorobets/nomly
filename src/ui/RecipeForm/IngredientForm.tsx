@@ -10,7 +10,7 @@ import {
 } from "native-base";
 import { AntDesign } from "@expo/vector-icons";
 
-import { UNITS, Unit } from "../../core/RecipeBook";
+import { UNITS, Unit } from "../../core/recipe";
 import { RecipeErrors, PotentialIngredient } from "../../core/form";
 
 type IngredientFormProps = {
