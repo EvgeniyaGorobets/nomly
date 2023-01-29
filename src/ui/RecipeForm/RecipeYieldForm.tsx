@@ -37,7 +37,7 @@ export const RecipeYieldForm: React.FC<RecipeYieldProps> = ({
 
   return (
     <Column>
-      <Row alignItems="center" w="100%">
+      <Row alignItems="center" w="100%" paddingY="5px">
         <Heading size="md" w="55%">
           Recipe Yield
         </Heading>

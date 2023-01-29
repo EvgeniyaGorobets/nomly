@@ -9,7 +9,6 @@ import {
   ScrollView,
   Column,
   Heading,
-  FormControl,
   Text,
   Pressable,
 } from "native-base";
@@ -44,8 +43,10 @@ import { RecipeYieldForm } from "./RecipeYieldForm";
 import { RecipeNameForm } from "./RecipeNameForm";
 import { getSafePadding } from "../helpers";
 
-const CloseIcon: ReactElement = <Icon as={AntDesign} name="close" />;
-const PlusIcon: ReactElement = <Icon as={AntDesign} name="plus" />;
+const CloseIcon: ReactElement = <Icon as={AntDesign} name="close" size="lg" />;
+const PlusIcon: ReactElement = (
+  <Icon as={AntDesign} name="plus" size="md" m="5px" />
+);
 
 type RouteProp = RecipeFormProps["route"];
 
@@ -104,12 +105,20 @@ export const RecipeForm = ({ navigation, route }: RecipeFormProps) => {
       px={4}
       flex={1}
       padding={getSafePadding(insets)}
+      paddingBottom="0px"
+      height="100%"
     >
-      <Row w="100%" justifyContent="space-between" my="15px">
-        <Heading>Add Recipe</Heading>
+      <Row
+        w="100%"
+        justifyContent="space-between"
+        alignItems="center"
+        flexGrow={0}
+        marginTop="5px"
+      >
+        <Heading size="lg">Add Recipe</Heading>
         <IconButton icon={CloseIcon} onPress={() => navigation.goBack()} />
       </Row>
-      <ScrollView flex={1} _contentContainerStyle={{ flex: 1 }}>
+      <ScrollView flexGrow={1} _contentContainerStyle={{ flexGrow: 1 }}>
         <Column flex={1}>
           <RecipeNameForm
             errors={errors}
@@ -123,7 +132,7 @@ export const RecipeForm = ({ navigation, route }: RecipeFormProps) => {
               setRecipe(updateRecipeYield(recipe, newYield))
             }
           />
-          <Column my="10px">
+          <Column my="5px" flex={1}>
             <Heading size="md">Ingredients</Heading>
             {recipe.ingredients.map(
               (ingredient: PotentialIngredient, i: number) => (
@@ -143,29 +152,32 @@ export const RecipeForm = ({ navigation, route }: RecipeFormProps) => {
             )}
             <Column borderBottomWidth={1} borderColor="gray.300">
               <Pressable onPress={() => setRecipe(addIngredient(recipe))}>
-                <Row alignItems="center">
+                <Row alignItems="center" paddingY="8px">
                   {PlusIcon}
                   <Text>Add Ingredient</Text>
                 </Row>
               </Pressable>
             </Column>
           </Column>
-          <FormControl>
-            <Column>
-              <FormControl.Label>Notes</FormControl.Label>
-              <Input
-                value={recipe.notes}
-                onChangeText={(text: string) =>
-                  setRecipe(updateRecipeNotes(recipe, text))
-                }
-                multiline
-                numberOfLines={8}
-              />
-            </Column>
-          </FormControl>
+          <Column>
+            <Heading size="md">Notes</Heading>
+            <Input
+              value={recipe.notes}
+              onChangeText={(text: string) =>
+                setRecipe(updateRecipeNotes(recipe, text))
+              }
+              multiline
+              numberOfLines={12}
+              textAlignVertical="top"
+            />
+          </Column>
         </Column>
-        <Column my="15px">
-          <Button onPress={() => tryToSaveRecipe()}>SAVE</Button>
+        <Column my="15px" w="100%">
+          <Button onPress={() => tryToSaveRecipe()}>
+            <Text fontSize="lg" fontWeight="semibold">
+              SAVE
+            </Text>
+          </Button>
         </Column>
       </ScrollView>
     </Center>

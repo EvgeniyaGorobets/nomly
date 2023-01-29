@@ -74,20 +74,21 @@ export const IngredientForm: React.FC<IngredientFormProps> = ({
         <FormControl
           isRequired
           isInvalid={`ingredientName-${index}` in errors}
-          w="55%"
+          w="52%"
         >
           <Column>
             <Input
               value={ingredient.name}
               onChangeText={(text: string) => updateName(text)}
               variant="underlined"
+              placeholder="Ingredient name"
             />
           </Column>
         </FormControl>
         <FormControl
           isRequired
           isInvalid={`ingredientAmount-${index}` in errors}
-          w="12%"
+          w="10%"
         >
           <Column>
             <Input
@@ -99,7 +100,7 @@ export const IngredientForm: React.FC<IngredientFormProps> = ({
             />
           </Column>
         </FormControl>
-        <FormControl isRequired w="25%">
+        <FormControl isRequired w="30%">
           <Select
             selectedValue={ingredient.units}
             accessibilityLabel="Choose Ingredient Units"

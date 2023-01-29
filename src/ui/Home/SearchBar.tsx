@@ -18,7 +18,6 @@ export const SearchBar = ({ query, setQuery }: SearchBarProps) => {
         borderRadius="4"
         py="3"
         px="1"
-        fontSize="14"
         InputLeftElement={
           <Icon
             m="2"

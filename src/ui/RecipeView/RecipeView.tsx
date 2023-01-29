@@ -17,8 +17,7 @@ import { AppContext, AppContextType } from "../../AppContext";
 import { Ingredient, Recipe } from "../../core/RecipeBook";
 import { getSafePadding } from "../helpers";
 
-const CloseIcon: ReactElement = <Icon as={AntDesign} name="close" />;
-const PlusIcon: ReactElement = <Icon as={AntDesign} name="plus" />;
+const CloseIcon: ReactElement = <Icon as={AntDesign} name="close" size="md" />;
 
 export const RecipeView = ({ navigation, route }: RecipeScreenProps) => {
   const context: AppContextType = useContext(AppContext);
@@ -33,9 +32,14 @@ export const RecipeView = ({ navigation, route }: RecipeScreenProps) => {
       flex={1}
       padding={getSafePadding(insets)}
     >
-      <Row w="100%" justifyContent="flex-start" my="15px">
+      <Row
+        w="100%"
+        justifyContent="space-between"
+        my="15px"
+        alignItems="center"
+      >
+        <Heading size="lg">{route.params.recipeName}</Heading>
         <IconButton icon={CloseIcon} onPress={() => navigation.goBack()} />
-        <Heading>{route.params.recipeName}</Heading>
       </Row>
       <ScrollView w="100%">
         <Row>
