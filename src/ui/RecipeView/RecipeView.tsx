@@ -57,6 +57,10 @@ export const RecipeView = ({ navigation, route }: RecipeScreenProps) => {
             </Row>
           ))}
         </Column>
+        <Column>
+          <Heading size="md">Notes</Heading>
+          <Text>{recipe.notes}</Text>
+        </Column>
       </ScrollView>
     </Center>
   );
