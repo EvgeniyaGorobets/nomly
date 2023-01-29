@@ -16,6 +16,7 @@ import { EdgeInsets, useSafeAreaInsets } from "react-native-safe-area-context";
 import type { HomeScreenProps } from "../../Stack";
 import { AppContext, AppContextType } from "../../AppContext";
 import { RecipeActionSheet } from "./RecipeActionSheet";
+import { RecipesMenu } from "./RecipesMenu";
 import { SearchBar } from "./SearchBar";
 import { exportRecipeBook, importRecipeBook } from "../../core/backup";
 import { RecipeBook } from "../../core/RecipeBook";
@@ -42,26 +43,14 @@ export const Home = ({ navigation }: HomeScreenProps) => {
     >
       <Row w="100%" justifyContent="space-between" my="15px">
         <Heading>nomly</Heading>
-        <Box flexDirection="row">
-          <IconButton
-            icon={UploadIcon}
-            onPress={async () => {
-              const recipeBook: RecipeBook | null = await importRecipeBook();
-              if (recipeBook != null) {
-                context.saveRecipes(recipeBook as RecipeBook);
-              }
-            }}
-          />
-          <IconButton
-            icon={DownloadIcon}
-            onPress={() => exportRecipeBook(context.recipes)}
-          />
-        </Box>
+        <RecipesMenu />
       </Row>
       <SearchBar query={searchQuery} setQuery={setSearchQuery} />
       <ScrollView flex={1} w="100%" my="10px">
         {Object.keys(context.recipes)
-          .filter((recipeName: string) => recipeName.includes(searchQuery))
+          .filter((recipeName: string) =>
+            recipeName.toLowerCase().includes(searchQuery.toLowerCase())
+          )
           .sort()
           .map((recipeName: string, i: number) => (
             <Pressable
