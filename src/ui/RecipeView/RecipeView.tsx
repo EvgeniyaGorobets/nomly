@@ -19,6 +19,7 @@ import { AppContext, AppContextType } from "../../AppContext";
 import { Ingredient, Recipe } from "../../core/recipe";
 import { getSafePadding } from "../helpers";
 import { adjustIngredientAmounts } from "../../core/yield";
+import { AdjustableYield } from "./AdjustableYield";
 
 const CloseIcon: ReactElement = <Icon as={AntDesign} name="close" size="md" />;
 
@@ -27,13 +28,11 @@ export const RecipeView = ({ navigation, route }: RecipeScreenProps) => {
   const recipe: Recipe = context.recipes[route.params.recipeName];
   const insets: EdgeInsets = useSafeAreaInsets();
 
-  const [yieldAmount, setYieldAmount] = useState<number>(recipe.yield.amount);
   const [ingredients, setIngredients] = useState<Ingredient[]>(
     recipe.ingredients
   );
 
-  const adjustRecipe = (newYield: number) => {
-    setYieldAmount(newYield);
+  const updateIngredients = (newYield: number) => {
     setIngredients(
       adjustIngredientAmounts(recipe.ingredients, recipe.yield.amount, newYield)
     );
@@ -57,48 +56,10 @@ export const RecipeView = ({ navigation, route }: RecipeScreenProps) => {
         <IconButton icon={CloseIcon} onPress={() => navigation.goBack()} />
       </Row>
       <ScrollView w="100%">
-        <Row>
-          <Text>
-            Recipe Yield: {yieldAmount} {recipe.yield.units}
-          </Text>
-          <Box flexGrow={1}></Box>
-          <Pressable onPress={() => adjustRecipe(recipe.yield.amount)}>
-            <Box
-              backgroundColor="blueGray.900"
-              borderRadius={100}
-              width="30px"
-              height="30px"
-              alignItems="center"
-              mx="3px"
-            >
-              <Text color="white">x1</Text>
-            </Box>
-          </Pressable>
-          <Pressable onPress={() => adjustRecipe(recipe.yield.amount * 2)}>
-            <Box
-              backgroundColor="blueGray.900"
-              borderRadius={100}
-              width="30px"
-              height="30px"
-              alignItems="center"
-              mx="3px"
-            >
-              <Text color="white">x2</Text>
-            </Box>
-          </Pressable>
-          <Pressable onPress={() => adjustRecipe(recipe.yield.amount * 3)}>
-            <Box
-              backgroundColor="blueGray.900"
-              borderRadius={100}
-              width="30px"
-              height="30px"
-              alignItems="center"
-              mx="3px"
-            >
-              <Text color="white">x3</Text>
-            </Box>
-          </Pressable>
-        </Row>
+        <AdjustableYield
+          originalYield={recipe.yield}
+          updateIngredients={updateIngredients}
+        />
         <Column>
           <Heading size="md">Ingredients</Heading>
           {ingredients.map((ingredient: Ingredient, i: number) => (
