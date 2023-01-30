@@ -19,7 +19,7 @@ import { RecipesMenu } from "./RecipesMenu";
 import { SearchBar } from "./SearchBar";
 import { getSafePadding } from "../theme";
 
-const PlusIcon: ReactElement = <Icon as={AntDesign} name="plus" />;
+const PlusIcon: ReactElement = <Icon as={AntDesign} name="plus" size="md" />;
 
 export const Home = ({ navigation }: HomeScreenProps) => {
   const context: AppContextType = useContext(AppContext);
@@ -50,7 +50,8 @@ export const Home = ({ navigation }: HomeScreenProps) => {
             >
               <Box
                 w="100%"
-                padding="10px"
+                paddingX="10px"
+                paddingY="15px"
                 borderBottomWidth={1}
                 borderColor="gray.300"
               >
@@ -62,8 +63,8 @@ export const Home = ({ navigation }: HomeScreenProps) => {
       <Fab
         renderInPortal={false}
         shadow={2}
-        size="sm"
         icon={PlusIcon}
+        padding="10px"
         onPress={() => navigation.navigate("Form")}
       />
       <RecipeActionSheet

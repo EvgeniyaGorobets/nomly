@@ -97,7 +97,7 @@ export const RecipeForm = ({ navigation, route }: RecipeFormProps) => {
   };
 
   return (
-    <Center padding={getSafePadding(insets)} paddingBottom="0px">
+    <Center padding={getSafePadding(insets)}>
       <Row
         w="100%"
         justifyContent="space-between"

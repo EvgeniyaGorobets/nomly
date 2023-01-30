@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import { Actionsheet, Icon } from "native-base";
+import { Actionsheet, Icon, Text } from "native-base";
 import { AntDesign } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 
@@ -33,7 +33,7 @@ export const RecipeActionSheet: React.FC<RecipeActionProps> = ({
             onClose();
           }}
         >
-          Edit
+          Edit recipe
         </Actionsheet.Item>
         <Actionsheet.Item
           startIcon={<Icon as={AntDesign} size="6" name="copy1" />}
@@ -42,16 +42,18 @@ export const RecipeActionSheet: React.FC<RecipeActionProps> = ({
             onClose();
           }}
         >
-          Clone
+          Clone recipe
         </Actionsheet.Item>
         <Actionsheet.Item
-          startIcon={<Icon as={AntDesign} size="6" name="delete" />}
+          startIcon={
+            <Icon as={AntDesign} size="6" name="delete" color="red.500" />
+          }
           onPress={() => {
             context.saveRecipes(deleteRecipe(context.recipes, recipeName));
             onClose();
           }}
         >
-          Delete
+          <Text color="red.500">Delete recipe</Text>
         </Actionsheet.Item>
       </Actionsheet.Content>
     </Actionsheet>

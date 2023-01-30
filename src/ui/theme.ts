@@ -58,6 +58,7 @@ export const THEME = extendTheme({
         px: 4,
         flex: 1,
         height: "100%",
+        paddingBottom: "0px",
         // figure out how to set proper safe area padding here as well
       },
     },
