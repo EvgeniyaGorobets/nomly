@@ -1,6 +1,6 @@
 /*--- business logic for manipulating the yield of a recipe ---*/
 
-import { Ingredient, Yield } from "./recipe";
+import type { Ingredient } from "./recipe";
 
 export const adjustIngredientAmounts = (
   ingredients: Ingredient[],

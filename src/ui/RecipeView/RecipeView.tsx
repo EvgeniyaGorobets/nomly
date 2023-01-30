@@ -8,18 +8,16 @@ import {
   Column,
   Heading,
   Text,
-  Pressable,
-  Box,
 } from "native-base";
 import { AntDesign } from "@expo/vector-icons";
 import { EdgeInsets, useSafeAreaInsets } from "react-native-safe-area-context";
 
 import type { RecipeScreenProps } from "../../Stack";
+import type { Ingredient, Recipe } from "../../core/recipe";
 import { AppContext, AppContextType } from "../../AppContext";
-import { Ingredient, Recipe } from "../../core/recipe";
 import { getSafePadding } from "../helpers";
-import { adjustIngredientAmounts } from "../../core/yield";
 import { AdjustableYield } from "./AdjustableYield";
+import { adjustIngredientAmounts } from "../../core/yield";
 
 const CloseIcon: ReactElement = <Icon as={AntDesign} name="close" size="md" />;
 
