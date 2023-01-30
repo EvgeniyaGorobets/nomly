@@ -49,7 +49,7 @@ export const AdjustableYield = ({
   };
 
   return (
-    <Column>
+    <Column paddingY="15px" borderBottomWidth={1} borderColor="gray.300">
       <Heading size="md">Recipe Yield:</Heading>
       <FormControl isInvalid={isInvalid && isBlurred}>
         <Column>

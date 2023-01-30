@@ -52,7 +52,7 @@ export const RecipeView = ({ navigation, route }: RecipeScreenProps) => {
           originalYield={recipe.yield}
           updateIngredients={updateIngredients}
         />
-        <Column>
+        <Column paddingY="15px" borderBottomWidth={1} borderColor="gray.300">
           <Heading size="md">Ingredients</Heading>
           {ingredients.map((ingredient: Ingredient, i: number) => (
             <Row key={i}>
@@ -62,7 +62,7 @@ export const RecipeView = ({ navigation, route }: RecipeScreenProps) => {
             </Row>
           ))}
         </Column>
-        <Column>
+        <Column paddingY="15px">
           <Heading size="md">Notes</Heading>
           <Text>{recipe.notes}</Text>
         </Column>
