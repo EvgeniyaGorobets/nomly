@@ -7,6 +7,7 @@ import {
   Column,
   Input,
   FormControl,
+  Heading,
 } from "native-base";
 
 import { Yield } from "../../core/recipe";
@@ -49,109 +50,113 @@ export const AdjustableYield = ({
 
   return (
     <Column>
+      <Heading size="md">Recipe Yield:</Heading>
       <FormControl isInvalid={isInvalid && isBlurred}>
         <Column>
-          <Row>
-            <Text>Recipe Yield: {yieldAmount}</Text>
+          <Row width="100%" alignItems="center">
             <Input
               value={yieldAmount.toString()}
               isDisabled={!isCustomizable}
               onChangeText={(text: string) => tryToUpdateYield(text)}
               onFocus={() => setBlurred(false)}
               onBlur={() => setBlurred(true)}
+              width="20%"
+              textAlign="center"
+              variant="underlined"
             />
-            <Text>{originalYield.units}</Text>
+            <Text width="30%" px="5px">
+              {originalYield.units}
+            </Text>
+
+            <Pressable onPress={() => updateYield(0, originalYield.amount)}>
+              <Box
+                backgroundColor={selected == 0 ? "blueGray.900" : "white"}
+                borderWidth={1}
+                borderColor="blueGray.900"
+                borderRadius={100}
+                width="30px"
+                height="30px"
+                alignItems="center"
+                mx="3px"
+              >
+                <Text
+                  fontSize="sm"
+                  color={selected == 0 ? "white" : "blueGray.900"}
+                >
+                  x1
+                </Text>
+              </Box>
+            </Pressable>
+            <Pressable onPress={() => updateYield(1, originalYield.amount * 2)}>
+              <Box
+                backgroundColor={selected == 1 ? "blueGray.900" : "white"}
+                borderWidth={1}
+                borderColor="blueGray.900"
+                borderRadius={100}
+                width="30px"
+                height="30px"
+                alignItems="center"
+                mx="3px"
+              >
+                <Text
+                  fontSize="sm"
+                  color={selected == 1 ? "white" : "blueGray.900"}
+                >
+                  x2
+                </Text>
+              </Box>
+            </Pressable>
+            <Pressable onPress={() => updateYield(2, originalYield.amount * 3)}>
+              <Box
+                backgroundColor={selected == 2 ? "blueGray.900" : "white"}
+                borderWidth={1}
+                borderColor="blueGray.900"
+                borderRadius={100}
+                width="30px"
+                height="30px"
+                alignItems="center"
+                mx="3px"
+              >
+                <Text
+                  fontSize="sm"
+                  color={selected == 2 ? "white" : "blueGray.900"}
+                >
+                  x3
+                </Text>
+              </Box>
+            </Pressable>
+            <Pressable
+              onPress={() => {
+                setSelected(3);
+                setCustomizable(true);
+              }}
+            >
+              <Box
+                backgroundColor={selected == 3 ? "blueGray.900" : "white"}
+                borderWidth={1}
+                borderColor="blueGray.900"
+                borderRadius={100}
+                height="30px"
+                alignItems="center"
+                mx="3px"
+              >
+                <Text
+                  px="3px"
+                  fontSize="sm"
+                  color={selected == 3 ? "white" : "blueGray.900"}
+                >
+                  Custom
+                </Text>
+              </Box>
+            </Pressable>
           </Row>
-          <Row>
+          <Row width="100%">
             <FormControl.ErrorMessage>
               Recipe yield must be a number
             </FormControl.ErrorMessage>
           </Row>
         </Column>
       </FormControl>
-      <Row>
-        <Pressable onPress={() => updateYield(0, originalYield.amount)}>
-          <Box
-            backgroundColor={selected == 0 ? "blueGray.900" : "white"}
-            borderWidth={1}
-            borderColor="blueGray.900"
-            borderRadius={100}
-            width="30px"
-            height="30px"
-            alignItems="center"
-            mx="3px"
-          >
-            <Text
-              fontSize="sm"
-              color={selected == 0 ? "white" : "blueGray.900"}
-            >
-              x1
-            </Text>
-          </Box>
-        </Pressable>
-        <Pressable onPress={() => updateYield(1, originalYield.amount * 2)}>
-          <Box
-            backgroundColor={selected == 1 ? "blueGray.900" : "white"}
-            borderWidth={1}
-            borderColor="blueGray.900"
-            borderRadius={100}
-            width="30px"
-            height="30px"
-            alignItems="center"
-            mx="3px"
-          >
-            <Text
-              fontSize="sm"
-              color={selected == 1 ? "white" : "blueGray.900"}
-            >
-              x2
-            </Text>
-          </Box>
-        </Pressable>
-        <Pressable onPress={() => updateYield(2, 0)}>
-          <Box
-            backgroundColor={selected == 2 ? "blueGray.900" : "white"}
-            borderWidth={1}
-            borderColor="blueGray.900"
-            borderRadius={100}
-            width="30px"
-            height="30px"
-            alignItems="center"
-            mx="3px"
-          >
-            <Text
-              fontSize="sm"
-              color={selected == 2 ? "white" : "blueGray.900"}
-            >
-              x3
-            </Text>
-          </Box>
-        </Pressable>
-        <Pressable
-          onPress={() => {
-            setSelected(3);
-            setCustomizable(true);
-          }}
-        >
-          <Box
-            backgroundColor={selected == 3 ? "blueGray.900" : "white"}
-            borderWidth={1}
-            borderColor="blueGray.900"
-            borderRadius={100}
-            height="30px"
-            alignItems="center"
-            mx="3px"
-          >
-            <Text
-              px="3px"
-              fontSize="sm"
-              color={selected == 3 ? "white" : "blueGray.900"}
-            >
-              Custom
-            </Text>
-          </Box>
-        </Pressable>
-      </Row>
     </Column>
   );
 };
