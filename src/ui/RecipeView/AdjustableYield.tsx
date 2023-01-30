@@ -106,7 +106,7 @@ export const AdjustableYield = ({
                 </Text>
               </Box>
             </Pressable>
-            <Pressable onPress={() => updateYield(2, originalYield.amount * 3)}>
+            <Pressable onPress={() => updateYield(2, originalYield.amount * 4)}>
               <Box
                 backgroundColor={selected == 2 ? "blueGray.900" : "white"}
                 borderWidth={1}
@@ -121,7 +121,7 @@ export const AdjustableYield = ({
                   fontSize="sm"
                   color={selected == 2 ? "white" : "blueGray.900"}
                 >
-                  x3
+                  x4
                 </Text>
               </Box>
             </Pressable>
