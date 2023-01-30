@@ -1,7 +1,6 @@
 import React, { ReactElement, useContext, useState } from "react";
 import {
   Center,
-  IconButton,
   Row,
   Fab,
   Icon,
@@ -18,12 +17,7 @@ import { AppContext, AppContextType } from "../../AppContext";
 import { RecipeActionSheet } from "./RecipeActionSheet";
 import { RecipesMenu } from "./RecipesMenu";
 import { SearchBar } from "./SearchBar";
-import { exportRecipeBook, importRecipeBook } from "../../core/backup";
-import { RecipeBook } from "../../core/recipe";
 import { getSafePadding } from "../helpers";
-
-const UploadIcon: ReactElement = <Icon as={AntDesign} name="upload" />;
-const DownloadIcon: ReactElement = <Icon as={AntDesign} name="download" />;
 
 const PlusIcon: ReactElement = <Icon as={AntDesign} name="plus" />;
 
