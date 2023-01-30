@@ -5,7 +5,6 @@ import {
   Switch,
   useColorMode,
   NativeBaseProvider,
-  extendTheme,
 } from "native-base";
 import { NavigationContainer } from "@react-navigation/native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
@@ -17,64 +16,10 @@ import {
   RecipeView,
   Stack,
   AppContext,
+  THEME,
 } from "./src";
 import { fetchData, saveData, StorageKeys } from "./src/core/storage";
 
-// extend the theme
-export const theme = extendTheme({
-  fontSizes: {
-    "2xs": "10px",
-    xs: "12px",
-    sm: "16px",
-    md: "18px",
-    lg: "24px",
-    xl: "28px",
-    "2xl": "32px",
-    "3xl": "36px",
-  },
-  components: {
-    Input: {
-      defaultProps: {
-        fontSize: "md",
-      },
-    },
-    Text: {
-      defaultProps: {
-        fontSize: "md",
-      },
-    },
-    Heading: {
-      sizes: {
-        sm: {
-          fontSize: "18px",
-        },
-        md: {
-          fontSize: "22px",
-        },
-        lg: {
-          fontSize: "28px",
-        },
-      },
-      defaultProps: {
-        fontWeight: "medium",
-      },
-    },
-    Icon: {
-      defaultProps: {
-        mx: "5px",
-        my: "5px",
-      },
-    },
-  },
-  config: {
-    useSystemColorMode: false,
-    initialColorMode: "light",
-  },
-});
-type MyThemeType = typeof theme;
-declare module "native-base" {
-  interface ICustomTheme extends MyThemeType {}
-}
 export default function App() {
   const [recipeBook, setRecipeBook] = useState<RecipeBook>({});
 
@@ -104,7 +49,7 @@ export default function App() {
           saveRecipes: (recipes: RecipeBook) => setRecipeBook(recipes),
         }}
       >
-        <NativeBaseProvider theme={theme}>
+        <NativeBaseProvider theme={THEME}>
           <NavigationContainer>
             <Stack.Navigator screenOptions={{ headerShown: false }}>
               <Stack.Screen name="Home" component={Home} />

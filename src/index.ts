@@ -1,4 +1,4 @@
-export { Home, RecipeForm, RecipeView } from "./ui";
+export { Home, RecipeForm, RecipeView, THEME } from "./ui";
 export { Stack } from "./Stack";
 export { AppContext } from "./AppContext";
 

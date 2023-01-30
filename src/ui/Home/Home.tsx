@@ -17,7 +17,7 @@ import { AppContext, AppContextType } from "../../AppContext";
 import { RecipeActionSheet } from "./RecipeActionSheet";
 import { RecipesMenu } from "./RecipesMenu";
 import { SearchBar } from "./SearchBar";
-import { getSafePadding } from "../helpers";
+import { getSafePadding } from "../theme";
 
 const PlusIcon: ReactElement = <Icon as={AntDesign} name="plus" />;
 
@@ -28,13 +28,7 @@ export const Home = ({ navigation }: HomeScreenProps) => {
   const insets: EdgeInsets = useSafeAreaInsets();
 
   return (
-    <Center
-      _dark={{ bg: "blueGray.900" }}
-      _light={{ bg: "blueGray.50" }}
-      px={4}
-      flex={1}
-      padding={getSafePadding(insets)}
-    >
+    <Center padding={getSafePadding(insets)}>
       <Row w="100%" justifyContent="space-between" my="15px">
         <Heading>nomly</Heading>
         <RecipesMenu />

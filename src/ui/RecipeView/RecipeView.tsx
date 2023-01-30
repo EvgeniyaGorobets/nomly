@@ -15,7 +15,7 @@ import { EdgeInsets, useSafeAreaInsets } from "react-native-safe-area-context";
 import type { RecipeScreenProps } from "../../Stack";
 import type { Ingredient, Recipe } from "../../core/recipe";
 import { AppContext, AppContextType } from "../../AppContext";
-import { getSafePadding } from "../helpers";
+import { getSafePadding } from "../theme";
 import { AdjustableYield } from "./AdjustableYield";
 import { adjustIngredientAmounts } from "../../core/yield";
 
@@ -37,13 +37,7 @@ export const RecipeView = ({ navigation, route }: RecipeScreenProps) => {
   };
 
   return (
-    <Center
-      _dark={{ bg: "blueGray.900" }}
-      _light={{ bg: "blueGray.50" }}
-      px={4}
-      flex={1}
-      padding={getSafePadding(insets)}
-    >
+    <Center padding={getSafePadding(insets)}>
       <Row
         w="100%"
         justifyContent="space-between"

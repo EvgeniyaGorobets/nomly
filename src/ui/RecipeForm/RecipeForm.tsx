@@ -39,7 +39,7 @@ import { AppContext, AppContextType } from "../../AppContext";
 import { IngredientForm } from "./IngredientForm";
 import { RecipeYieldForm } from "./RecipeYieldForm";
 import { RecipeNameForm } from "./RecipeNameForm";
-import { getSafePadding } from "../helpers";
+import { getSafePadding } from "../theme";
 
 const CloseIcon: ReactElement = <Icon as={AntDesign} name="close" size="lg" />;
 const PlusIcon: ReactElement = (
@@ -97,15 +97,7 @@ export const RecipeForm = ({ navigation, route }: RecipeFormProps) => {
   };
 
   return (
-    <Center
-      _dark={{ bg: "blueGray.900" }}
-      _light={{ bg: "blueGray.50" }}
-      px={4}
-      flex={1}
-      padding={getSafePadding(insets)}
-      paddingBottom="0px"
-      height="100%"
-    >
+    <Center padding={getSafePadding(insets)} paddingBottom="0px">
       <Row
         w="100%"
         justifyContent="space-between"
