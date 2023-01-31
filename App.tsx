@@ -17,6 +17,7 @@ import { fetchData, saveData, StorageKeys } from "./src/core/storage";
 
 export default function App() {
   const [recipeBook, setRecipeBook] = useState<RecipeBook>({});
+  const [fractionMode, setFractionMode] = useState<boolean>(false);
 
   // Fetch recipe book from storage the first time the app loads
   useEffect(() => {
@@ -42,6 +43,8 @@ export default function App() {
         value={{
           recipes: recipeBook,
           saveRecipes: (recipes: RecipeBook) => setRecipeBook(recipes),
+          fractionMode: fractionMode,
+          toggleFractionMode: (mode: boolean) => setFractionMode(mode),
         }}
       >
         <NativeBaseProvider theme={theme} colorModeManager={colorModeManager}>

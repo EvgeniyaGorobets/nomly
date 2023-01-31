@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext } from "react";
 import {
   IconButton,
   Icon,
@@ -17,7 +17,6 @@ import type { RecipeBook } from "../../core/recipe";
 export const RecipesMenu = () => {
   const context: AppContextType = useContext(AppContext);
   const { colorMode, toggleColorMode } = useColorMode();
-  const [fractionMode, setFractionMode] = useState<boolean>(false);
 
   return (
     <Menu
@@ -83,10 +82,10 @@ export const RecipesMenu = () => {
             </Text>
             <Switch
               size="md"
-              isChecked={fractionMode}
-              onToggle={() => setFractionMode(!fractionMode)}
+              isChecked={context.fractionMode}
+              onToggle={() => context.toggleFractionMode(!context.fractionMode)}
               aria-label={
-                fractionMode
+                context.fractionMode
                   ? "switch to decimal mode"
                   : "switch to fraction mode"
               }
