@@ -19,13 +19,18 @@ export default function App() {
   const [recipeBook, setRecipeBook] = useState<RecipeBook>({});
   const [fractionMode, setFractionMode] = useState<boolean>(false);
 
-  // Fetch recipe book from storage the first time the app loads
+  // Fetch recipe book and fraction mode preferencefrom storage the first time the app loads
   useEffect(() => {
-    console.log("Fetching recipe book");
+    console.log("Fetching recipe book and fraction mode preference");
     (async () => {
       const recipes: RecipeBook | null = await fetchData(storage.RECIPES);
       if (recipes) {
         setRecipeBook(recipes);
+      }
+
+      const fractionMode: string | null = await fetchData(storage.FRACTION);
+      if (fractionMode) {
+        setFractionMode(fractionMode === "true");
       }
     })();
   }, []);
@@ -36,6 +41,12 @@ export default function App() {
     console.log(recipeBook);
     saveData(storage.RECIPES, recipeBook);
   }, [recipeBook]);
+
+  // Asynchronously save the fraction mode each time it changes
+  useEffect(() => {
+    console.log("Saving fraction mode preference");
+    saveData(storage.FRACTION, fractionMode.toString());
+  }, [fractionMode]);
 
   return (
     <SafeAreaProvider>
