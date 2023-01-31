@@ -10,7 +10,8 @@ import {
   RecipeView,
   Stack,
   AppContext,
-  THEME,
+  theme,
+  colorModeManager,
 } from "./src";
 import { fetchData, saveData, StorageKeys } from "./src/core/storage";
 
@@ -43,7 +44,7 @@ export default function App() {
           saveRecipes: (recipes: RecipeBook) => setRecipeBook(recipes),
         }}
       >
-        <NativeBaseProvider theme={THEME}>
+        <NativeBaseProvider theme={theme} colorModeManager={colorModeManager}>
           <NavigationContainer>
             <Stack.Navigator screenOptions={{ headerShown: false }}>
               <Stack.Screen name="Home" component={Home} />

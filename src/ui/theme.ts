@@ -1,12 +1,33 @@
-import { extendTheme } from "native-base";
+import { extendTheme, StorageManager, ColorMode } from "native-base";
 import { EdgeInsets } from "react-native-safe-area-context";
+
+import { saveData, fetchData, StorageKeys } from "../core/storage";
 
 export const getSafePadding = (insets: EdgeInsets): string => {
   return `${insets.top}px ${insets.right}px ${insets.bottom}px ${insets.left}px`;
 };
 
+export const colorModeManager: StorageManager = {
+  get: async (): Promise<ColorMode> => {
+    try {
+      const colorMode = await fetchData(StorageKeys.COLOR);
+      return colorMode === "dark" ? "dark" : "light";
+    } catch (err) {
+      console.log(`Error fetching color mode: ${err}`);
+      return "light";
+    }
+  },
+  set: async (value: ColorMode) => {
+    try {
+      await saveData(StorageKeys.COLOR, value as string);
+    } catch (err) {
+      console.log(`Error saving color mode: ${err}`);
+    }
+  },
+};
+
 // extend the theme
-export const THEME = extendTheme({
+export const theme = extendTheme({
   fontSizes: {
     "2xs": "10px",
     xs: "12px",
@@ -70,7 +91,7 @@ export const THEME = extendTheme({
 });
 
 // not sure what the stuff below is for
-type MyThemeType = typeof THEME;
+type MyThemeType = typeof theme;
 declare module "native-base" {
   interface ICustomTheme extends MyThemeType {}
 }
