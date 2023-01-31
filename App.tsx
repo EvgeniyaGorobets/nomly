@@ -13,7 +13,7 @@ import {
   theme,
   colorModeManager,
 } from "./src";
-import { fetchData, saveData, StorageKeys } from "./src/core/storage";
+import { fetchData, saveData, storage } from "./src/core/storage";
 
 export default function App() {
   const [recipeBook, setRecipeBook] = useState<RecipeBook>({});
@@ -23,7 +23,7 @@ export default function App() {
   useEffect(() => {
     console.log("Fetching recipe book");
     (async () => {
-      const recipes: RecipeBook | null = await fetchData(StorageKeys.RECIPES);
+      const recipes: RecipeBook | null = await fetchData(storage.RECIPES);
       if (recipes) {
         setRecipeBook(recipes);
       }
@@ -34,7 +34,7 @@ export default function App() {
   useEffect(() => {
     console.log("Saving recipe book");
     console.log(recipeBook);
-    saveData(StorageKeys.RECIPES, recipeBook);
+    saveData(storage.RECIPES, recipeBook);
   }, [recipeBook]);
 
   return (
