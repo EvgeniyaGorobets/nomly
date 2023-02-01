@@ -1,7 +1,7 @@
 import { extendTheme, StorageManager, ColorMode } from "native-base";
 import { EdgeInsets } from "react-native-safe-area-context";
 
-import { saveData, fetchData, StorageKeys } from "../core/storage";
+import { saveData, fetchData, storage } from "../core/storage";
 
 export const getSafePadding = (insets: EdgeInsets): string => {
   return `${insets.top}px ${insets.right}px ${insets.bottom}px ${insets.left}px`;
@@ -10,7 +10,7 @@ export const getSafePadding = (insets: EdgeInsets): string => {
 export const colorModeManager: StorageManager = {
   get: async (): Promise<ColorMode> => {
     try {
-      const colorMode = await fetchData(StorageKeys.COLOR);
+      const colorMode = await fetchData(storage.COLOR);
       return colorMode === "dark" ? "dark" : "light";
     } catch (err) {
       console.log(`Error fetching color mode: ${err}`);
@@ -19,7 +19,7 @@ export const colorModeManager: StorageManager = {
   },
   set: async (value: ColorMode) => {
     try {
-      await saveData(StorageKeys.COLOR, value as string);
+      await saveData(storage.COLOR, value as string);
     } catch (err) {
       console.log(`Error saving color mode: ${err}`);
     }
