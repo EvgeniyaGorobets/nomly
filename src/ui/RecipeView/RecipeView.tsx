@@ -17,7 +17,10 @@ import type { Ingredient, Recipe } from "../../core/recipe";
 import { AppContext, AppContextType } from "../../AppContext";
 import { getSafePadding } from "../theme";
 import { AdjustableYield } from "./AdjustableYield";
-import { adjustIngredientAmounts } from "../../core/yield";
+import {
+  adjustIngredientAmounts,
+  formatIngredientAmount,
+} from "../../core/ingredient-amounts";
 
 const CloseIcon: ReactElement = <Icon as={AntDesign} name="close" size="md" />;
 
@@ -54,13 +57,24 @@ export const RecipeView = ({ navigation, route }: RecipeScreenProps) => {
         />
         <Column paddingY="15px" borderBottomWidth={1} borderColor="gray.300">
           <Heading size="md">Ingredients</Heading>
-          {ingredients.map((ingredient: Ingredient, i: number) => (
-            <Row key={i}>
-              <Text>
-                {ingredient.amount} {ingredient.units} {ingredient.name}
-              </Text>
-            </Row>
-          ))}
+          <Row>
+            <Column paddingRight="15px">
+              {ingredients.map((ingredient: Ingredient, i: number) => (
+                <Row key={i}>
+                  <Text>
+                    {formatIngredientAmount(ingredient, context.fractionMode)}
+                  </Text>
+                </Row>
+              ))}
+            </Column>
+            <Column>
+              {ingredients.map((ingredient: Ingredient, i: number) => (
+                <Row key={i}>
+                  <Text>{ingredient.name}</Text>
+                </Row>
+              ))}
+            </Column>
+          </Row>
         </Column>
         <Column paddingY="15px">
           <Heading size="md">Notes</Heading>
