@@ -8,7 +8,7 @@ import {
   Switch,
   useColorMode,
 } from "native-base";
-import { AntDesign, Feather } from "@expo/vector-icons";
+import { AntDesign, Feather, Ionicons } from "@expo/vector-icons";
 
 import { AppContext, AppContextType } from "../../AppContext";
 import { exportRecipeBook, importRecipeBook } from "../../core/backup";
@@ -25,7 +25,7 @@ export const RecipesMenu = () => {
       trigger={(triggerProps) => (
         <IconButton
           {...triggerProps}
-          icon={<Icon as={AntDesign} name="ellipsis1" size="md" />}
+          icon={<Icon as={Ionicons} name="ellipsis-vertical" size="md" />}
         />
       )}
     >
