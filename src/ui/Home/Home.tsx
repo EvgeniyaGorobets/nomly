@@ -1,4 +1,4 @@
-import React, { ReactElement, useContext, useState } from "react";
+import React, { useContext, useState } from "react";
 import {
   Center,
   Row,
@@ -18,8 +18,6 @@ import { RecipeActionSheet } from "./RecipeActionSheet";
 import { RecipesMenu } from "./RecipesMenu";
 import { SearchBar } from "./SearchBar";
 import { getSafePadding } from "../theme";
-
-const PlusIcon: ReactElement = <Icon as={AntDesign} name="plus" size="md" />;
 
 export const Home = ({ navigation }: HomeScreenProps) => {
   const context: AppContextType = useContext(AppContext);
@@ -63,7 +61,7 @@ export const Home = ({ navigation }: HomeScreenProps) => {
       <Fab
         renderInPortal={false}
         shadow={2}
-        icon={PlusIcon}
+        icon={<Icon as={AntDesign} name="plus" size="lg" />}
         padding="10px"
         onPress={() => navigation.navigate("Form")}
       />
