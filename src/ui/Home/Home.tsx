@@ -5,7 +5,6 @@ import {
   Fab,
   Icon,
   ScrollView,
-  Box,
   Heading,
   Pressable,
   useColorModeValue,
@@ -50,15 +49,14 @@ export const Home = ({ navigation }: HomeScreenProps) => {
                 navigation.navigate("Recipe", { recipeName: recipeName });
               }}
             >
-              <Box
+              <Row
                 w="100%"
                 paddingX="10px"
                 paddingY="15px"
                 borderBottomWidth={1}
-                borderColor="gray.300"
               >
                 <Heading size="sm">{recipeName}</Heading>
-              </Box>
+              </Row>
             </Pressable>
           ))}
       </ScrollView>

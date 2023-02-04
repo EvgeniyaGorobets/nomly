@@ -47,6 +47,7 @@ export const RecipeYieldForm: React.FC<RecipeYieldProps> = ({
             keyboardType="numeric"
             onChangeText={(text: string) => setYieldAmount(text)}
             variant="underlined"
+            textAlign="center"
           />
         </FormControl>
         <FormControl isRequired isInvalid={"yieldUnits" in errors} w="30%">
@@ -54,6 +55,8 @@ export const RecipeYieldForm: React.FC<RecipeYieldProps> = ({
             value={recipeYield.units}
             onChangeText={(text: string) => setYieldUnits(text)}
             variant="underlined"
+            textAlign="center"
+            marginLeft="5px"
           />
         </FormControl>
       </Row>

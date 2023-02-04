@@ -1,4 +1,4 @@
-import React, { ReactElement, useContext, useState } from "react";
+import React, { useContext, useState } from "react";
 import {
   Button,
   Center,
@@ -40,11 +40,6 @@ import { IngredientForm } from "./IngredientForm";
 import { RecipeYieldForm } from "./RecipeYieldForm";
 import { RecipeNameForm } from "./RecipeNameForm";
 import { getSafePadding } from "../theme";
-
-const CloseIcon: ReactElement = <Icon as={AntDesign} name="close" size="lg" />;
-const PlusIcon: ReactElement = (
-  <Icon as={AntDesign} name="plus" size="md" m="5px" />
-);
 
 type RouteProp = RecipeFormProps["route"];
 
@@ -106,7 +101,18 @@ export const RecipeForm = ({ navigation, route }: RecipeFormProps) => {
         marginTop="5px"
       >
         <Heading size="lg">Add Recipe</Heading>
-        <IconButton icon={CloseIcon} onPress={() => navigation.goBack()} />
+        <IconButton
+          icon={
+            <Icon
+              as={AntDesign}
+              name="close"
+              size="lg"
+              _light={{ color: "dark.300" }}
+              _dark={{ color: "light.500" }}
+            />
+          }
+          onPress={() => navigation.goBack()}
+        />
       </Row>
       <ScrollView flexGrow={1} _contentContainerStyle={{ flexGrow: 1 }}>
         <Column flex={1}>
@@ -140,17 +146,26 @@ export const RecipeForm = ({ navigation, route }: RecipeFormProps) => {
                 />
               )
             )}
-            <Column borderBottomWidth={1} borderColor="gray.300">
+            <Column borderBottomWidth={1}>
               <Pressable onPress={() => setRecipe(addIngredient(recipe))}>
                 <Row alignItems="center" paddingY="8px">
-                  {PlusIcon}
-                  <Text>Add Ingredient</Text>
+                  <Icon
+                    as={AntDesign}
+                    name="plus"
+                    size="md"
+                    m="5px"
+                    _light={{ color: "primary.500" }}
+                    _dark={{ color: "primary.300" }}
+                  />
+                  <Text marginLeft="5px">Add Ingredient</Text>
                 </Row>
               </Pressable>
             </Column>
           </Column>
           <Column>
-            <Heading size="md">Notes</Heading>
+            <Heading size="md" marginBottom="5px">
+              Notes
+            </Heading>
             <Input
               value={recipe.notes}
               onChangeText={(text: string) =>
@@ -159,12 +174,18 @@ export const RecipeForm = ({ navigation, route }: RecipeFormProps) => {
               multiline
               numberOfLines={12}
               textAlignVertical="top"
+              variant="outline"
             />
           </Column>
         </Column>
         <Column my="15px" w="100%">
           <Button onPress={() => tryToSaveRecipe()}>
-            <Text fontSize="lg" fontWeight="semibold">
+            <Text
+              fontSize="lg"
+              fontWeight="semibold"
+              _dark={{ color: "light.100" }}
+              _light={{ color: "light.50" }}
+            >
               SAVE
             </Text>
           </Button>

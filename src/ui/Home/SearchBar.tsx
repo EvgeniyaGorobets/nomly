@@ -11,6 +11,7 @@ export const SearchBar = ({ query, setQuery }: SearchBarProps) => {
   return (
     <Row w="100%">
       <Input
+        variant="outline"
         w="100%"
         placeholder="Search recipes by name"
         value={query}
@@ -23,9 +24,14 @@ export const SearchBar = ({ query, setQuery }: SearchBarProps) => {
             m="2"
             ml="3"
             size="6"
-            color="gray.400"
             as={AntDesign}
             name="search1"
+            _dark={{
+              color: "light.500",
+            }}
+            _light={{
+              color: "light.300",
+            }}
           />
         }
       />

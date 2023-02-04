@@ -67,7 +67,14 @@ export const IngredientForm: React.FC<IngredientFormProps> = ({
     <Column>
       <Row w="100%" alignItems="center">
         <IconButton
-          icon={<Icon as={AntDesign} name="close" />}
+          icon={
+            <Icon
+              as={AntDesign}
+              name="close"
+              _light={{ color: "error.400" }}
+              _dark={{ color: "error.400" }}
+            />
+          }
           onPress={deleteIngredient}
           w="8%"
         />

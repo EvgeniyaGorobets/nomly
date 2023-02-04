@@ -22,17 +22,33 @@ export const RecipesMenu = () => {
     <Menu
       w="100%"
       placement="bottom right"
+      _dark={{ backgroundColor: "dark.500" }}
+      _light={{ backgroundColor: "light.50" }}
       trigger={(triggerProps) => (
         <IconButton
           {...triggerProps}
-          icon={<Icon as={Ionicons} name="ellipsis-vertical" size="md" />}
+          icon={
+            <Icon
+              as={Ionicons}
+              name="ellipsis-vertical"
+              size="md"
+              _dark={{ color: "light.400" }}
+              _light={{ color: "dark.600" }}
+            />
+          }
         />
       )}
     >
       <Menu.Group title="Recipes">
         <Menu.Item onPress={() => exportRecipeBook(context.recipes)}>
           <Row alignItems="center">
-            <Icon as={AntDesign} name="download" size="md" />
+            <Icon
+              as={AntDesign}
+              name="download"
+              size="md"
+              _dark={{ color: "light.400" }}
+              _light={{ color: "dark.600" }}
+            />
             <Text paddingX="5px">Download recipes</Text>
           </Row>
         </Menu.Item>
@@ -45,14 +61,30 @@ export const RecipesMenu = () => {
           }}
         >
           <Row alignItems="center">
-            <Icon as={AntDesign} name="upload" size="md" />
+            <Icon
+              as={AntDesign}
+              name="upload"
+              size="md"
+              _dark={{ color: "light.400" }}
+              _light={{ color: "dark.600" }}
+            />
             <Text paddingX="5px">Import recipes</Text>
           </Row>
         </Menu.Item>
         <Menu.Item onPress={() => context.saveRecipes({})}>
           <Row alignItems="center">
-            <Icon as={AntDesign} name="delete" size="md" color="red.500" />
-            <Text paddingX="5px" color="red.500">
+            <Icon
+              as={AntDesign}
+              name="delete"
+              size="md"
+              _dark={{ color: "error.400" }}
+              _light={{ color: "error.500" }}
+            />
+            <Text
+              paddingX="5px"
+              _dark={{ color: "error.400" }}
+              _light={{ color: "error.500" }}
+            >
               Delete all recipes
             </Text>
           </Row>
@@ -61,7 +93,13 @@ export const RecipesMenu = () => {
       <Menu.Group title="Settings">
         <Menu.Item>
           <Row alignItems="center">
-            <Icon as={Feather} name="sun" size="md" />
+            <Icon
+              as={Feather}
+              name="sun"
+              size="md"
+              _dark={{ color: "light.400" }}
+              _light={{ color: "dark.600" }}
+            />
             <Switch
               size="md"
               isChecked={colorMode === "dark"}
@@ -72,7 +110,13 @@ export const RecipesMenu = () => {
                   : "switch to light mode"
               }
             />
-            <Icon as={Feather} name="moon" size="md" />
+            <Icon
+              as={Feather}
+              name="moon"
+              size="md"
+              _dark={{ color: "light.400" }}
+              _light={{ color: "dark.600" }}
+            />
           </Row>
         </Menu.Item>
         <Menu.Item>

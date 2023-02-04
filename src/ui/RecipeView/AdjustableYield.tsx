@@ -13,6 +13,34 @@ import {
 import { Yield } from "../../core/recipe";
 import { isNumeric } from "../../core/form";
 
+const getButtonStyle = (selected: number, current: number) => ({
+  text: {
+    fontSize: "sm",
+    fontWeight: selected == current ? "medium" : "normal",
+    paddingX: "5px",
+    paddingBottom: "2px",
+    _light: { color: selected === current ? "light.50" : "light.500" },
+    _dark: { color: selected === current ? "light.50" : "light.400" },
+  },
+  button: {
+    _light: {
+      backgroundColor: selected == current ? "primary.300" : "light.50",
+      borderColor: selected == current ? "primary.400" : "light.500",
+    },
+    _dark: {
+      backgroundColor: selected == current ? "primary.400" : "dark.600",
+      borderColor: selected == current ? "primary.300" : "light.400",
+    },
+    borderWidth: 1,
+    borderRadius: 100,
+    height: "35px",
+    alignItems: "center",
+    justifyContent: "center",
+    flexDirection: "row" as const, // need to cast as const because of weird type error
+    mx: "3px",
+  },
+});
+
 type AdjustableYieldProps = {
   originalYield: Yield;
   updateIngredients: (yieldAmount: number) => void;
@@ -49,7 +77,7 @@ export const AdjustableYield = ({
   };
 
   return (
-    <Column paddingY="15px" borderBottomWidth={1} borderColor="gray.300">
+    <Column paddingY="15px" borderBottomWidth={1}>
       <Heading size="md">Recipe Yield:</Heading>
       <FormControl isInvalid={isInvalid && isBlurred}>
         <Column>
@@ -60,69 +88,25 @@ export const AdjustableYield = ({
               onChangeText={(text: string) => tryToUpdateYield(text)}
               onFocus={() => setBlurred(false)}
               onBlur={() => setBlurred(true)}
-              width="20%"
+              width="15%"
               textAlign="center"
-              variant="underlined"
             />
             <Text width="30%" px="5px">
               {originalYield.units}
             </Text>
-
             <Pressable onPress={() => updateYield(0, originalYield.amount)}>
-              <Box
-                backgroundColor={selected == 0 ? "blueGray.900" : "white"}
-                borderWidth={1}
-                borderColor="blueGray.900"
-                borderRadius={100}
-                width="30px"
-                height="30px"
-                alignItems="center"
-                mx="3px"
-              >
-                <Text
-                  fontSize="sm"
-                  color={selected == 0 ? "white" : "blueGray.900"}
-                >
-                  x1
-                </Text>
+              <Box {...getButtonStyle(selected, 0).button} width="35px">
+                <Text {...getButtonStyle(selected, 0).text}>x1</Text>
               </Box>
             </Pressable>
             <Pressable onPress={() => updateYield(1, originalYield.amount * 2)}>
-              <Box
-                backgroundColor={selected == 1 ? "blueGray.900" : "white"}
-                borderWidth={1}
-                borderColor="blueGray.900"
-                borderRadius={100}
-                width="30px"
-                height="30px"
-                alignItems="center"
-                mx="3px"
-              >
-                <Text
-                  fontSize="sm"
-                  color={selected == 1 ? "white" : "blueGray.900"}
-                >
-                  x2
-                </Text>
+              <Box {...getButtonStyle(selected, 1).button} width="35px">
+                <Text {...getButtonStyle(selected, 1).text}>x2</Text>
               </Box>
             </Pressable>
             <Pressable onPress={() => updateYield(2, originalYield.amount * 4)}>
-              <Box
-                backgroundColor={selected == 2 ? "blueGray.900" : "white"}
-                borderWidth={1}
-                borderColor="blueGray.900"
-                borderRadius={100}
-                width="30px"
-                height="30px"
-                alignItems="center"
-                mx="3px"
-              >
-                <Text
-                  fontSize="sm"
-                  color={selected == 2 ? "white" : "blueGray.900"}
-                >
-                  x4
-                </Text>
+              <Box {...getButtonStyle(selected, 2).button} width="35px">
+                <Text {...getButtonStyle(selected, 2).text}>x4</Text>
               </Box>
             </Pressable>
             <Pressable
@@ -131,22 +115,8 @@ export const AdjustableYield = ({
                 setCustomizable(true);
               }}
             >
-              <Box
-                backgroundColor={selected == 3 ? "blueGray.900" : "white"}
-                borderWidth={1}
-                borderColor="blueGray.900"
-                borderRadius={100}
-                height="30px"
-                alignItems="center"
-                mx="3px"
-              >
-                <Text
-                  px="3px"
-                  fontSize="sm"
-                  color={selected == 3 ? "white" : "blueGray.900"}
-                >
-                  Custom
-                </Text>
+              <Box {...getButtonStyle(selected, 3).button}>
+                <Text {...getButtonStyle(selected, 3).text}>Custom</Text>
               </Box>
             </Pressable>
           </Row>

@@ -1,4 +1,4 @@
-import React, { ReactElement, useContext, useState } from "react";
+import React, { useContext, useState } from "react";
 import {
   Center,
   IconButton,
@@ -21,8 +21,6 @@ import {
   adjustIngredientAmounts,
   formatIngredientAmount,
 } from "../../core/ingredient-amounts";
-
-const CloseIcon: ReactElement = <Icon as={AntDesign} name="close" size="md" />;
 
 export const RecipeView = ({ navigation, route }: RecipeScreenProps) => {
   const context: AppContextType = useContext(AppContext);
@@ -48,14 +46,25 @@ export const RecipeView = ({ navigation, route }: RecipeScreenProps) => {
         alignItems="center"
       >
         <Heading size="lg">{route.params.recipeName}</Heading>
-        <IconButton icon={CloseIcon} onPress={() => navigation.goBack()} />
+        <IconButton
+          icon={
+            <Icon
+              as={AntDesign}
+              name="close"
+              size="lg"
+              _light={{ color: "dark.300" }}
+              _dark={{ color: "light.500" }}
+            />
+          }
+          onPress={() => navigation.goBack()}
+        />
       </Row>
       <ScrollView w="100%">
         <AdjustableYield
           originalYield={recipe.yield}
           updateIngredients={updateIngredients}
         />
-        <Column paddingY="15px" borderBottomWidth={1} borderColor="gray.300">
+        <Column paddingY="15px" borderBottomWidth={1}>
           <Heading size="md">Ingredients</Heading>
           <Row>
             <Column paddingRight="15px">
@@ -77,7 +86,9 @@ export const RecipeView = ({ navigation, route }: RecipeScreenProps) => {
           </Row>
         </Column>
         <Column paddingY="15px">
-          <Heading size="md">Notes</Heading>
+          <Heading marginBottom="5px" size="md">
+            Notes
+          </Heading>
           <Text>{recipe.notes}</Text>
         </Column>
       </ScrollView>
