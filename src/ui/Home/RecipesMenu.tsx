@@ -22,6 +22,7 @@ export const RecipesMenu = () => {
     <Menu
       w="100%"
       placement="bottom right"
+      defaultIsOpen={false}
       _dark={{ backgroundColor: "dark.500" }}
       _light={{ backgroundColor: "light.50" }}
       trigger={(triggerProps) => (
