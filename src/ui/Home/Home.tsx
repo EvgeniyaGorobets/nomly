@@ -8,6 +8,7 @@ import {
   Box,
   Heading,
   Pressable,
+  useColorModeValue,
 } from "native-base";
 import { AntDesign } from "@expo/vector-icons";
 import { EdgeInsets, useSafeAreaInsets } from "react-native-safe-area-context";
@@ -17,18 +18,21 @@ import { AppContext, AppContextType } from "../../AppContext";
 import { RecipeActionSheet } from "./RecipeActionSheet";
 import { RecipesMenu } from "./RecipesMenu";
 import { SearchBar } from "./SearchBar";
+import { Logo } from "./Logo";
 import { getSafePadding } from "../theme";
 
 export const Home = ({ navigation }: HomeScreenProps) => {
   const context: AppContextType = useContext(AppContext);
   const [selectedRecipe, setSelected] = useState<string>("");
   const [searchQuery, setSearchQuery] = useState<string>("");
+
+  const colorMode: "light" | "dark" = useColorModeValue("light", "dark");
   const insets: EdgeInsets = useSafeAreaInsets();
 
   return (
     <Center padding={getSafePadding(insets)}>
       <Row w="100%" justifyContent="space-between" my="15px">
-        <Heading>nomly</Heading>
+        <Logo colorMode={colorMode} />
         <RecipesMenu />
       </Row>
       <SearchBar query={searchQuery} setQuery={setSearchQuery} />
