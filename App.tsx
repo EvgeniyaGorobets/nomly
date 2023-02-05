@@ -19,6 +19,33 @@ export default function App() {
   const [recipeBook, setRecipeBook] = useState<RecipeBook>({});
   const [fractionMode, setFractionMode] = useState<boolean>(false);
 
+  // two functions that simultaneously take care of:
+  // 1. updating the AppContext
+  // 2. persisting it to strage
+  const saveRecipes = (recipes: RecipeBook): void => {
+    setRecipeBook(recipes);
+    try {
+      console.log("Saving recipe book", Object.keys(recipes).length);
+      saveData(storage.RECIPES, recipes);
+    } catch (err) {
+      console.log(
+        `Failed to save recipe changes to storage with error:\n ${err}`
+      );
+    }
+  };
+
+  const toggleFractionMode = (mode: boolean): void => {
+    setFractionMode(mode);
+    try {
+      console.log("Saving fraction mode preference", mode.toString());
+      saveData(storage.FRACTION, mode.toString());
+    } catch (err) {
+      console.log(
+        `Failed to save fraction-mode preference to storage with error:\n ${err}`
+      );
+    }
+  };
+
   // Fetch recipe book and fraction mode preferencefrom storage the first time the app loads
   useEffect(() => {
     console.log("Fetching recipe book and fraction mode preference");
@@ -47,38 +74,14 @@ export default function App() {
     })();
   }, []);
 
-  // Asynchronously save the recipe book each time it changes
-  useEffect(() => {
-    try {
-      console.log("Saving recipe book", Object.keys(recipeBook).length);
-      saveData(storage.RECIPES, recipeBook);
-    } catch (err) {
-      console.log(
-        `Failed to save recipe changes to storage with error:\n ${err}`
-      );
-    }
-  }, [recipeBook]);
-
-  // Asynchronously save the fraction mode each time it changes
-  useEffect(() => {
-    try {
-      console.log("Saving fraction mode preference", fractionMode.toString());
-      saveData(storage.FRACTION, fractionMode.toString());
-    } catch (err) {
-      console.log(
-        `Failed to save fraction-mode preference to storage with error:\n ${err}`
-      );
-    }
-  }, [fractionMode]);
-
   return (
     <SafeAreaProvider>
       <AppContext.Provider
         value={{
           recipes: recipeBook,
-          saveRecipes: (recipes: RecipeBook) => setRecipeBook(recipes),
+          saveRecipes: saveRecipes,
           fractionMode: fractionMode,
-          toggleFractionMode: (mode: boolean) => setFractionMode(mode),
+          toggleFractionMode: toggleFractionMode,
         }}
       >
         <NativeBaseProvider theme={theme} colorModeManager={colorModeManager}>
