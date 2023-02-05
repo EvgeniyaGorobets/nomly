@@ -7,7 +7,6 @@ import {
   ScrollView,
   Heading,
   Pressable,
-  useColorModeValue,
 } from "native-base";
 import { AntDesign } from "@expo/vector-icons";
 import { EdgeInsets, useSafeAreaInsets } from "react-native-safe-area-context";
@@ -23,7 +22,6 @@ import { DeleteRecipesModal } from "./DeleteRecipesModal";
 
 export const Home = ({ navigation }: HomeScreenProps) => {
   const context: AppContextType = useContext(AppContext);
-  const colorMode: "light" | "dark" = useColorModeValue("light", "dark");
   const insets: EdgeInsets = useSafeAreaInsets();
 
   const [selectedRecipe, setSelected] = useState<string>("");
@@ -33,7 +31,7 @@ export const Home = ({ navigation }: HomeScreenProps) => {
   return (
     <Center padding={getSafePadding(insets)}>
       <Row w="100%" justifyContent="space-between" my="15px">
-        <Logo colorMode={colorMode} />
+        <Logo />
         <RecipesMenu openModal={() => setModalOpen(true)} />
       </Row>
       <DeleteRecipesModal
