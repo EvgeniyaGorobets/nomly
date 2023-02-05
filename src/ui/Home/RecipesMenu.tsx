@@ -14,7 +14,7 @@ import { AppContext, AppContextType } from "../../AppContext";
 import { exportRecipeBook, importRecipeBook } from "../../core/backup";
 import type { RecipeBook } from "../../core/recipe";
 
-export const RecipesMenu = () => {
+export const RecipesMenu = ({ openModal }: { openModal: () => void }) => {
   const context: AppContextType = useContext(AppContext);
   const { colorMode, toggleColorMode } = useColorMode();
 
@@ -76,7 +76,7 @@ export const RecipesMenu = () => {
             <Text paddingX="5px">Import recipes</Text>
           </Row>
         </Menu.Item>
-        <Menu.Item onPress={() => context.saveRecipes({})}>
+        <Menu.Item onPress={() => openModal()}>
           <Row alignItems="center">
             <Icon
               as={AntDesign}

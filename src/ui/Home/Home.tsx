@@ -19,21 +19,27 @@ import { RecipesMenu } from "./RecipesMenu";
 import { SearchBar } from "./SearchBar";
 import { Logo } from "./Logo";
 import { getSafePadding } from "../theme";
+import { DeleteRecipesModal } from "./DeleteRecipesModal";
 
 export const Home = ({ navigation }: HomeScreenProps) => {
   const context: AppContextType = useContext(AppContext);
-  const [selectedRecipe, setSelected] = useState<string>("");
-  const [searchQuery, setSearchQuery] = useState<string>("");
-
   const colorMode: "light" | "dark" = useColorModeValue("light", "dark");
   const insets: EdgeInsets = useSafeAreaInsets();
+
+  const [selectedRecipe, setSelected] = useState<string>("");
+  const [searchQuery, setSearchQuery] = useState<string>("");
+  const [isModalOpen, setModalOpen] = useState<boolean>(false);
 
   return (
     <Center padding={getSafePadding(insets)}>
       <Row w="100%" justifyContent="space-between" my="15px">
         <Logo colorMode={colorMode} />
-        <RecipesMenu />
+        <RecipesMenu openModal={() => setModalOpen(true)} />
       </Row>
+      <DeleteRecipesModal
+        isOpen={isModalOpen}
+        closeModal={() => setModalOpen(false)}
+      />
       <SearchBar query={searchQuery} setQuery={setSearchQuery} />
       <ScrollView flex={1} w="100%" my="10px">
         {Object.keys(context.recipes)
