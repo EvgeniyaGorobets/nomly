@@ -19,6 +19,7 @@ import { SearchBar } from "./SearchBar";
 import { Logo } from "./Logo";
 import { getSafePadding } from "../theme";
 import { DeleteRecipesModal } from "./DeleteRecipesModal";
+import { AlertList } from "./AlertList";
 
 export const Home = ({ navigation }: HomeScreenProps) => {
   const context: AppContextType = useContext(AppContext);
@@ -71,6 +72,7 @@ export const Home = ({ navigation }: HomeScreenProps) => {
         padding="10px"
         onPress={() => navigation.navigate("Form")}
       />
+      <AlertList />
       <RecipeActionSheet
         isOpen={selectedRecipe != ""}
         recipeName={selectedRecipe}

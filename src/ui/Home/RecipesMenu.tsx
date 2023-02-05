@@ -13,10 +13,54 @@ import { AntDesign, Feather, Ionicons } from "@expo/vector-icons";
 import { AppContext, AppContextType } from "../../AppContext";
 import { exportRecipeBook, importRecipeBook } from "../../core/backup";
 import type { RecipeBook } from "../../core/recipe";
+import type { AppAlert } from "../../core/alert";
 
 export const RecipesMenu = ({ openModal }: { openModal: () => void }) => {
   const context: AppContextType = useContext(AppContext);
   const { colorMode, toggleColorMode } = useColorMode();
+
+  const tryToImportRecipes = async (): Promise<void> => {
+    let recipeBook: RecipeBook | null | undefined;
+
+    try {
+      recipeBook = await importRecipeBook();
+    } catch (err) {
+      const alert: AppAlert = {
+        status: "error",
+        title: "Recipe import failed",
+        description: `${err}`,
+      };
+      context.setAlerts([...context.alerts, alert]);
+      console.log(`Failed to import recipes with error:\n ${err}`);
+    }
+
+    if (recipeBook === null) {
+      const alert: AppAlert = {
+        status: "warning",
+        title: "Recipe import cancelled",
+        description: "No file was selected by the user.",
+      };
+      context.setAlerts([...context.alerts, alert]);
+    } else if (recipeBook !== undefined) {
+      // if recipe book isn't null or undefined, then save it
+      // context.saveRecipes is wrapped in its own try/catch block, so we don't need to check for promise rejections again
+      context.saveRecipes(recipeBook as RecipeBook);
+    }
+  };
+
+  const tryToExportRecipes = async (): Promise<void> => {
+    try {
+      await exportRecipeBook(context.recipes);
+    } catch (err) {
+      const alert: AppAlert = {
+        status: "error",
+        title: "Recipe book download failed",
+        description: `${err}`,
+      };
+      context.setAlerts([...context.alerts, alert]);
+      console.log(`Failed to download recipes with error:\n ${err}`);
+    }
+  };
 
   return (
     <Menu
@@ -41,7 +85,7 @@ export const RecipesMenu = ({ openModal }: { openModal: () => void }) => {
       )}
     >
       <Menu.Group title="Recipes">
-        <Menu.Item onPress={() => exportRecipeBook(context.recipes)}>
+        <Menu.Item onPress={tryToExportRecipes}>
           <Row alignItems="center">
             <Icon
               as={AntDesign}
@@ -53,18 +97,7 @@ export const RecipesMenu = ({ openModal }: { openModal: () => void }) => {
             <Text paddingX="5px">Download recipes</Text>
           </Row>
         </Menu.Item>
-        <Menu.Item
-          onPress={async () => {
-            try {
-              const recipeBook: RecipeBook | null = await importRecipeBook();
-              if (recipeBook != null) {
-                context.saveRecipes(recipeBook as RecipeBook);
-              }
-            } catch (err) {
-              console.log(`Failed to import recipes with error:\n ${err}`);
-            }
-          }}
-        >
+        <Menu.Item onPress={tryToImportRecipes}>
           <Row alignItems="center">
             <Icon
               as={AntDesign}

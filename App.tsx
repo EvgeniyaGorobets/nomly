@@ -12,37 +12,54 @@ import {
   AppContext,
   theme,
   colorModeManager,
+  AppAlert,
 } from "./src";
 import { fetchData, saveData, storage } from "./src/core/storage";
 
 export default function App() {
   const [recipeBook, setRecipeBook] = useState<RecipeBook>({});
   const [fractionMode, setFractionMode] = useState<boolean>(false);
+  const [alerts, setAlerts] = useState<AppAlert[]>([]);
 
   // two functions that simultaneously take care of:
   // 1. updating the AppContext
-  // 2. persisting it to strage
-  const saveRecipes = (recipes: RecipeBook): void => {
+  // 2. persisting it to storage
+  // 3. posting an alert if something goes wrong
+  const saveRecipes = async (recipes: RecipeBook): Promise<void> => {
     setRecipeBook(recipes);
     try {
       console.log("Saving recipe book", Object.keys(recipes).length);
-      saveData(storage.RECIPES, recipes);
+      await saveData(storage.RECIPES, recipes);
     } catch (err) {
       console.log(
         `Failed to save recipe changes to storage with error:\n ${err}`
       );
+
+      const alert: AppAlert = {
+        status: "error",
+        title: "Failed to save recipe changes to storage",
+        description: `${err}`,
+      };
+      setAlerts([...alerts, alert]);
     }
   };
 
-  const toggleFractionMode = (mode: boolean): void => {
+  const toggleFractionMode = async (mode: boolean): Promise<void> => {
     setFractionMode(mode);
     try {
       console.log("Saving fraction mode preference", mode.toString());
-      saveData(storage.FRACTION, mode.toString());
+      await saveData(storage.FRACTION, mode.toString());
     } catch (err) {
       console.log(
         `Failed to save fraction-mode preference to storage with error:\n ${err}`
       );
+
+      const alert: AppAlert = {
+        status: "error",
+        title: "Failed to save fraction-mode preference to storage",
+        description: `${err}`,
+      };
+      setAlerts([...alerts, alert]);
     }
   };
 
@@ -59,6 +76,12 @@ export default function App() {
         console.log(
           `Failed to fetch recipes from storage with error:\n ${err}`
         );
+        const alert: AppAlert = {
+          status: "error",
+          title: "Failed to fetch recipes from storage",
+          description: `${err}`,
+        };
+        setAlerts([...alerts, alert]);
       }
 
       try {
@@ -70,6 +93,12 @@ export default function App() {
         console.log(
           `Failed to fetch fraction-mode preference from storage with error:\n ${err}`
         );
+        const alert: AppAlert = {
+          status: "error",
+          title: "Failed to fetch fraction-mode preference from storage",
+          description: `${err}`,
+        };
+        setAlerts([...alerts, alert]);
       }
     })();
   }, []);
@@ -82,6 +111,8 @@ export default function App() {
           saveRecipes: saveRecipes,
           fractionMode: fractionMode,
           toggleFractionMode: toggleFractionMode,
+          alerts: alerts,
+          setAlerts: setAlerts,
         }}
       >
         <NativeBaseProvider theme={theme} colorModeManager={colorModeManager}>
