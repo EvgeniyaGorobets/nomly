@@ -23,29 +23,52 @@ export default function App() {
   useEffect(() => {
     console.log("Fetching recipe book and fraction mode preference");
     (async () => {
-      const recipes: RecipeBook | null = await fetchData(storage.RECIPES);
-      if (recipes) {
-        setRecipeBook(recipes);
+      try {
+        const recipes: RecipeBook | null = await fetchData(storage.RECIPES);
+        if (recipes) {
+          setRecipeBook(recipes);
+        }
+      } catch (err) {
+        console.log(
+          `Failed to fetch recipes from storage with error:\n ${err}`
+        );
       }
 
-      const fractionMode: string | null = await fetchData(storage.FRACTION);
-      if (fractionMode) {
-        setFractionMode(fractionMode === "true");
+      try {
+        const fractionMode: string | null = await fetchData(storage.FRACTION);
+        if (fractionMode) {
+          setFractionMode(fractionMode === "true");
+        }
+      } catch (err) {
+        console.log(
+          `Failed to fetch fraction-mode preference from storage with error:\n ${err}`
+        );
       }
     })();
   }, []);
 
   // Asynchronously save the recipe book each time it changes
   useEffect(() => {
-    console.log("Saving recipe book");
-    console.log(recipeBook);
-    saveData(storage.RECIPES, recipeBook);
+    try {
+      console.log("Saving recipe book", Object.keys(recipeBook).length);
+      saveData(storage.RECIPES, recipeBook);
+    } catch (err) {
+      console.log(
+        `Failed to save recipe changes to storage with error:\n ${err}`
+      );
+    }
   }, [recipeBook]);
 
   // Asynchronously save the fraction mode each time it changes
   useEffect(() => {
-    console.log("Saving fraction mode preference");
-    saveData(storage.FRACTION, fractionMode.toString());
+    try {
+      console.log("Saving fraction mode preference", fractionMode.toString());
+      saveData(storage.FRACTION, fractionMode.toString());
+    } catch (err) {
+      console.log(
+        `Failed to save fraction-mode preference to storage with error:\n ${err}`
+      );
+    }
   }, [fractionMode]);
 
   return (

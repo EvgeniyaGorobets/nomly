@@ -55,9 +55,13 @@ export const RecipesMenu = () => {
         </Menu.Item>
         <Menu.Item
           onPress={async () => {
-            const recipeBook: RecipeBook | null = await importRecipeBook();
-            if (recipeBook != null) {
-              context.saveRecipes(recipeBook as RecipeBook);
+            try {
+              const recipeBook: RecipeBook | null = await importRecipeBook();
+              if (recipeBook != null) {
+                context.saveRecipes(recipeBook as RecipeBook);
+              }
+            } catch (err) {
+              console.log(`Failed to import recipes with error:\n ${err}`);
             }
           }}
         >

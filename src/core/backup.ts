@@ -9,26 +9,26 @@ const MIME_TYPE: string = "application/json";
 export const exportRecipeBook = async (
   recipeBook: RecipeBook
 ): Promise<void> => {
-  // request permissions to use Android file system
-  const permissions = await SAF.requestDirectoryPermissionsAsync();
+  try {
+    // request permissions to use Android file system
+    const permissions = await SAF.requestDirectoryPermissionsAsync();
 
-  if (permissions.granted) {
-    // Get SAF URI from response
-    const safUri: string = permissions.directoryUri;
+    if (permissions.granted) {
+      // Get SAF URI from response
+      const safUri: string = permissions.directoryUri;
 
-    // Make a new file within SAF
-    const fileUri: string = await SAF.createFileAsync(
-      safUri,
-      FILE_NAME,
-      MIME_TYPE
-    );
+      // Make a new file within SAF
+      const fileUri: string = await SAF.createFileAsync(
+        safUri,
+        FILE_NAME,
+        MIME_TYPE
+      );
 
-    // write to Expo File system
-    SAF.writeAsStringAsync(fileUri, JSON.stringify(recipeBook)).catch(
-      (error: any) => {
-        console.log(`Failed to export recipe book: ${error}`);
-      }
-    );
+      // write to Expo File system
+      SAF.writeAsStringAsync(fileUri, JSON.stringify(recipeBook));
+    }
+  } catch (err) {
+    console.log(`Failed to export recipe book with error:\n ${err}`);
   }
 };
 
@@ -124,31 +124,36 @@ const isValidRecipeBook = (recipeBook: any): boolean => {
 };
 
 export const importRecipeBook = async (): Promise<RecipeBook | null> => {
-  // request permissions to use Android file system
-  const permissions = await SAF.requestDirectoryPermissionsAsync();
+  try {
+    // request permissions to use Android file system
+    const permissions = await SAF.requestDirectoryPermissionsAsync();
 
-  if (permissions.granted) {
-    const document: DocumentPicker.DocumentResult =
-      await DocumentPicker.getDocumentAsync({
-        copyToCacheDirectory: true, // need to cache it to be able to read it
-        multiple: false,
-        type: MIME_TYPE,
-      });
+    if (permissions.granted) {
+      const document: DocumentPicker.DocumentResult =
+        await DocumentPicker.getDocumentAsync({
+          copyToCacheDirectory: true, // need to cache it to be able to read it
+          multiple: false,
+          type: MIME_TYPE,
+        });
 
-    // user cancelled during document picking
-    if (document.type == "cancel") {
-      return null;
+      // user cancelled during document picking
+      if (document.type == "cancel") {
+        return null;
+      }
+
+      // read file selected by user and parse it into a JSON
+      const recipesText: string = await SAF.readAsStringAsync(document.uri);
+      const recipeBook: any = JSON.parse(recipesText);
+
+      if (isValidRecipeBook(recipeBook)) {
+        console.log("Recipe book is valid; importing.");
+        return recipeBook as RecipeBook;
+      }
     }
-
-    // read file selected by user and parse it into a JSON
-    const recipesText: string = await SAF.readAsStringAsync(document.uri);
-    const recipeBook: any = JSON.parse(recipesText);
-
-    if (isValidRecipeBook(recipeBook)) {
-      console.log("Recipe book is valid; importing.");
-      return recipeBook as RecipeBook;
-    }
+  } catch (err) {
+    console.log(`Failed to import recipes with error:\n ${err}`);
   }
-
   return null;
 };
+
+// TODO: abstract permissions into its own function with its own error handling
