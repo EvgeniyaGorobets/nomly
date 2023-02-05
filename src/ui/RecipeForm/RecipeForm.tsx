@@ -100,7 +100,9 @@ export const RecipeForm = ({ navigation, route }: RecipeFormProps) => {
         flexGrow={0}
         marginTop="5px"
       >
-        <Heading size="lg">Add Recipe</Heading>
+        <Heading size="lg">
+          {isNewRecipe(route) ? "Add Recipe" : "Edit Recipe"}
+        </Heading>
         <IconButton
           icon={
             <Icon
