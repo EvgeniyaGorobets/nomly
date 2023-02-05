@@ -5,12 +5,10 @@ import {
   IconButton,
   Row,
   Icon,
-  Input,
   ScrollView,
   Column,
   Heading,
   Text,
-  Pressable,
 } from "native-base";
 import { AntDesign } from "@expo/vector-icons";
 import { EdgeInsets, useSafeAreaInsets } from "react-native-safe-area-context";
@@ -19,27 +17,23 @@ import type { RecipeBook, Recipe } from "../../core/recipe";
 import type {
   RecipeErrors,
   PotentialRecipe,
-  PotentialIngredient,
   PotentialYield,
 } from "../../core/form";
 import type { RecipeFormProps } from "../../Stack";
 import { addRecipe, updateRecipe } from "../../core/recipe";
 import {
   blankRecipe,
-  addIngredient,
-  deleteIngredient,
-  updateIngredient,
   updateRecipeYield,
-  updateRecipeNotes,
   validateRecipe,
   convertFormToRecipe,
   convertRecipeToForm,
 } from "../../core/form";
 import { AppContext, AppContextType } from "../../AppContext";
-import { IngredientForm } from "./IngredientForm";
-import { RecipeYieldForm } from "./RecipeYieldForm";
-import { RecipeNameForm } from "./RecipeNameForm";
+import { RecipeYieldInput } from "./RecipeYieldInput";
+import { RecipeNameInput } from "./RecipeNameInput";
 import { getSafePadding } from "../theme";
+import { RecipeNotesInput } from "./RecipeNotesInput";
+import { IngredientFormSection } from "./IngredientFormSection";
 
 type RouteProp = RecipeFormProps["route"];
 
@@ -118,67 +112,24 @@ export const RecipeForm = ({ navigation, route }: RecipeFormProps) => {
       </Row>
       <ScrollView flexGrow={1} _contentContainerStyle={{ flexGrow: 1 }}>
         <Column flex={1}>
-          <RecipeNameForm
+          <RecipeNameInput
             errors={errors}
             recipeName={recipeName}
             setRecipeName={setRecipeName}
           />
-          <RecipeYieldForm
+          <RecipeYieldInput
             errors={errors}
             recipeYield={recipe.yield}
             setRecipeYield={(newYield: PotentialYield) =>
               setRecipe(updateRecipeYield(recipe, newYield))
             }
           />
-          <Column my="5px" flex={1}>
-            <Heading size="md">Ingredients</Heading>
-            {recipe.ingredients.map(
-              (ingredient: PotentialIngredient, i: number) => (
-                <IngredientForm
-                  key={i}
-                  errors={errors}
-                  index={i}
-                  ingredient={ingredient}
-                  deleteIngredient={() =>
-                    setRecipe(deleteIngredient(recipe, i))
-                  }
-                  updateIngredient={(ingredient: PotentialIngredient) => {
-                    setRecipe(updateIngredient(recipe, i, ingredient));
-                  }}
-                />
-              )
-            )}
-            <Column borderBottomWidth={1}>
-              <Pressable onPress={() => setRecipe(addIngredient(recipe))}>
-                <Row alignItems="center" paddingY="8px">
-                  <Icon
-                    as={AntDesign}
-                    name="plus"
-                    size="md"
-                    m="5px"
-                    _light={{ color: "primary.500" }}
-                    _dark={{ color: "primary.300" }}
-                  />
-                  <Text marginLeft="5px">Add Ingredient</Text>
-                </Row>
-              </Pressable>
-            </Column>
-          </Column>
-          <Column>
-            <Heading size="md" marginBottom="5px">
-              Notes
-            </Heading>
-            <Input
-              value={recipe.notes}
-              onChangeText={(text: string) =>
-                setRecipe(updateRecipeNotes(recipe, text))
-              }
-              multiline
-              numberOfLines={12}
-              textAlignVertical="top"
-              variant="outline"
-            />
-          </Column>
+          <IngredientFormSection
+            recipe={recipe}
+            setRecipe={setRecipe}
+            errors={errors}
+          />
+          <RecipeNotesInput recipe={recipe} setRecipe={setRecipe} />
         </Column>
         <Column my="15px" w="100%">
           <Button onPress={() => tryToSaveRecipe()}>

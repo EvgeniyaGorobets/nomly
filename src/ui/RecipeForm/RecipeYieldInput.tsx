@@ -9,7 +9,7 @@ type RecipeYieldProps = {
   setRecipeYield: (newYield: PotentialYield) => void;
 };
 
-export const RecipeYieldForm: React.FC<RecipeYieldProps> = ({
+export const RecipeYieldInput: React.FC<RecipeYieldProps> = ({
   errors,
   recipeYield,
   setRecipeYield,

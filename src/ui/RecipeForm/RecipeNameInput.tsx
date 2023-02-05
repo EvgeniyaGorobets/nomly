@@ -9,7 +9,7 @@ type RecipeNameProps = {
   setRecipeName: (newName: string) => void;
 };
 
-export const RecipeNameForm: React.FC<RecipeNameProps> = ({
+export const RecipeNameInput: React.FC<RecipeNameProps> = ({
   errors,
   recipeName,
   setRecipeName,

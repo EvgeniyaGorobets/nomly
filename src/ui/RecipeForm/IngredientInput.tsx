@@ -13,7 +13,7 @@ import { AntDesign } from "@expo/vector-icons";
 import { UNITS, Unit } from "../../core/recipe";
 import { RecipeErrors, PotentialIngredient } from "../../core/form";
 
-type IngredientFormProps = {
+type IngredientInputProps = {
   errors: RecipeErrors;
   index: number;
   ingredient: PotentialIngredient;
@@ -21,7 +21,7 @@ type IngredientFormProps = {
   updateIngredient: (ingredient: PotentialIngredient) => void;
 };
 
-export const IngredientForm: React.FC<IngredientFormProps> = ({
+export const IngredientInput: React.FC<IngredientInputProps> = ({
   errors,
   index,
   ingredient,
