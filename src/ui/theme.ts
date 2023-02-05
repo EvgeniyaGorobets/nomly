@@ -154,6 +154,14 @@ export const theme = extendTheme({
         _dark: { borderColor: "light.500" },
       },
     },
+    Button: {
+      defaultProps: {
+        _text: {
+          _dark: { color: "light.100" },
+          _light: { color: "light.50" },
+        },
+      },
+    },
   },
   config: {
     useSystemColorMode: false,

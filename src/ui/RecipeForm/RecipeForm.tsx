@@ -132,15 +132,14 @@ export const RecipeForm = ({ navigation, route }: RecipeFormProps) => {
           <RecipeNotesInput recipe={recipe} setRecipe={setRecipe} />
         </Column>
         <Column my="15px" w="100%">
-          <Button onPress={() => tryToSaveRecipe()}>
-            <Text
-              fontSize="lg"
-              fontWeight="semibold"
-              _dark={{ color: "light.100" }}
-              _light={{ color: "light.50" }}
-            >
-              SAVE
-            </Text>
+          <Button
+            onPress={() => tryToSaveRecipe()}
+            _text={{
+              fontWeight: "semibold",
+              fontSize: "lg",
+            }}
+          >
+            SAVE
           </Button>
         </Column>
       </ScrollView>
