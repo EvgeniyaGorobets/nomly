@@ -26,35 +26,42 @@ export const AlertList = ({}) => {
           maxHeight="80px"
           width="100%"
           marginBottom="5px"
+          _dark={{ backgroundColor: "dark.400" }}
         >
           <Row w="100%">
-            <Column flexGrow={1}>
+            <Column>
+              <Alert.Icon />
+            </Column>
+            <Column
+              flexGrow={1}
+              flexShrink={1}
+              marginLeft="10px"
+              marginRight="-5px"
+            >
               <Row>
-                <Alert.Icon />
-                <Heading size="xs">{alert.title}</Heading>
+                <Heading size="xs" flexShrink={1} flexGrow={1}>
+                  {alert.title}
+                </Heading>
+                <IconButton
+                  height="25px"
+                  width="25px"
+                  icon={
+                    <Icon
+                      as={AntDesign}
+                      name="close"
+                      size="sm"
+                      _light={{ color: "dark.300" }}
+                      _dark={{ color: "light.500" }}
+                    />
+                  }
+                  onPress={() =>
+                    context.setAlerts(deleteAlert(i, context.alerts))
+                  }
+                />
               </Row>
               <Row>
                 <Text fontSize="xs">{alert.description}</Text>
               </Row>
-            </Column>
-            <Column justifyContent="flex-start" alignItems="center">
-              <IconButton
-                marginTop="-10px"
-                height="25px"
-                width="25px"
-                icon={
-                  <Icon
-                    as={AntDesign}
-                    name="close"
-                    size="sm"
-                    _light={{ color: "dark.300" }}
-                    _dark={{ color: "light.500" }}
-                  />
-                }
-                onPress={() =>
-                  context.setAlerts(deleteAlert(i, context.alerts))
-                }
-              />
             </Column>
           </Row>
         </Alert>
