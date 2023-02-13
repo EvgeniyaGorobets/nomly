@@ -26,7 +26,7 @@ export const IngredientFormSection = ({
   errors,
 }: IngredientSectionProps) => {
   return (
-    <Column my="5px" flex={1}>
+    <Column flex={1} my="10px" paddingBottom="10px">
       <Heading size="md">Ingredients</Heading>
       {recipe.ingredients.map((ingredient: PotentialIngredient, i: number) => (
         <IngredientInput
@@ -41,7 +41,7 @@ export const IngredientFormSection = ({
         />
       ))}
       <Pressable onPress={() => setRecipe(addIngredient(recipe))}>
-        <Row alignItems="center" paddingY="8px" borderBottomWidth={1}>
+        <Row alignItems="center">
           <Icon
             as={AntDesign}
             name="plus"
@@ -50,7 +50,9 @@ export const IngredientFormSection = ({
             _light={{ color: "primary.500" }}
             _dark={{ color: "primary.300" }}
           />
-          <Text marginLeft="5px">Add Ingredient</Text>
+          <Column borderBottomWidth={1} flexGrow={1} paddingY="8px">
+            <Text>Add Ingredient</Text>
+          </Column>
         </Row>
       </Pressable>
     </Column>
