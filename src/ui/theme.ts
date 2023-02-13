@@ -3,10 +3,6 @@ import { EdgeInsets } from "react-native-safe-area-context";
 
 import { saveData, fetchData, storage } from "../core/storage";
 
-export const getSafePadding = (insets: EdgeInsets): string => {
-  return `${insets.top}px ${insets.right}px ${insets.bottom}px ${insets.left}px`;
-};
-
 export const colorModeManager: StorageManager = {
   get: async (): Promise<ColorMode> => {
     try {
@@ -71,7 +67,7 @@ export const theme = extendTheme({
     xs: "12px",
     sm: "16px",
     md: "18px",
-    lg: "24px",
+    lg: "22px",
     xl: "28px",
     "2xl": "32px",
     "3xl": "36px",
@@ -120,7 +116,7 @@ export const theme = extendTheme({
       },
       defaultProps: {
         fontWeight: "medium",
-        _light: { color: "dark.500" },
+        _light: { color: "red.600" },
         _dark: { color: "light.400" },
       },
     },
@@ -135,11 +131,10 @@ export const theme = extendTheme({
       defaultProps: {
         _dark: { bg: "dark.600" },
         _light: { bg: "light.50" },
-        px: 4,
         flex: 1,
+        px: 0,
         height: "100%",
         paddingBottom: "0px",
-        // figure out how to set proper safe area padding here as well
       },
     },
     HStack: {

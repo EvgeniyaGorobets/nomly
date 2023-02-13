@@ -1,21 +1,10 @@
 import React, { useContext, useState } from "react";
-import {
-  Center,
-  IconButton,
-  Row,
-  Icon,
-  ScrollView,
-  Column,
-  Heading,
-  Text,
-} from "native-base";
-import { AntDesign } from "@expo/vector-icons";
-import { EdgeInsets, useSafeAreaInsets } from "react-native-safe-area-context";
+import { Center, Row, ScrollView, Column, Heading, Text } from "native-base";
 
 import type { RecipeScreenProps } from "../../Stack";
 import type { Ingredient, Recipe } from "../../core/recipe";
 import { AppContext, AppContextType } from "../../AppContext";
-import { getSafePadding } from "../theme";
+import { Header } from "../generic/Header";
 import { AdjustableYield } from "./AdjustableYield";
 import {
   adjustIngredientAmounts,
@@ -25,7 +14,6 @@ import {
 export const RecipeView = ({ navigation, route }: RecipeScreenProps) => {
   const context: AppContextType = useContext(AppContext);
   const recipe: Recipe = context.recipes[route.params.recipeName];
-  const insets: EdgeInsets = useSafeAreaInsets();
 
   const [ingredients, setIngredients] = useState<Ingredient[]>(
     recipe.ingredients
@@ -38,28 +26,9 @@ export const RecipeView = ({ navigation, route }: RecipeScreenProps) => {
   };
 
   return (
-    <Center padding={getSafePadding(insets)}>
-      <Row
-        w="100%"
-        justifyContent="space-between"
-        my="15px"
-        alignItems="center"
-      >
-        <Heading size="lg">{route.params.recipeName}</Heading>
-        <IconButton
-          icon={
-            <Icon
-              as={AntDesign}
-              name="close"
-              size="lg"
-              _light={{ color: "dark.300" }}
-              _dark={{ color: "light.500" }}
-            />
-          }
-          onPress={() => navigation.goBack()}
-        />
-      </Row>
-      <ScrollView w="100%">
+    <Center>
+      <Header navigation={navigation} title={route.params.recipeName} />
+      <ScrollView w="100%" px={4}>
         <AdjustableYield
           originalYield={recipe.yield}
           updateIngredients={updateIngredients}

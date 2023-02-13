@@ -17,7 +17,6 @@ import { RecipeActionSheet } from "./RecipeActionSheet";
 import { RecipesMenu } from "./RecipesMenu";
 import { SearchBar } from "./SearchBar";
 import { Logo } from "./Logo";
-import { getSafePadding } from "../theme";
 import { DeleteRecipesModal } from "./DeleteRecipesModal";
 import { AlertList } from "./AlertList";
 
@@ -30,8 +29,13 @@ export const Home = ({ navigation }: HomeScreenProps) => {
   const [isModalOpen, setModalOpen] = useState<boolean>(false);
 
   return (
-    <Center padding={getSafePadding(insets)}>
-      <Row w="100%" justifyContent="space-between" my="15px">
+    <Center px={4}>
+      <Row
+        w="100%"
+        justifyContent="space-between"
+        my="15px"
+        paddingTop={`${insets.top}px`}
+      >
         <Logo />
         <RecipesMenu openModal={() => setModalOpen(true)} />
       </Row>

@@ -29,9 +29,9 @@ import {
   convertRecipeToForm,
 } from "../../core/form";
 import { AppContext, AppContextType } from "../../AppContext";
+import { Header } from "../generic/Header";
 import { RecipeYieldInput } from "./RecipeYieldInput";
 import { RecipeNameInput } from "./RecipeNameInput";
-import { getSafePadding } from "../theme";
 import { RecipeNotesInput } from "./RecipeNotesInput";
 import { IngredientFormSection } from "./IngredientFormSection";
 
@@ -86,31 +86,12 @@ export const RecipeForm = ({ navigation, route }: RecipeFormProps) => {
   };
 
   return (
-    <Center padding={getSafePadding(insets)}>
-      <Row
-        w="100%"
-        justifyContent="space-between"
-        alignItems="center"
-        flexGrow={0}
-        marginTop="5px"
-      >
-        <Heading size="lg">
-          {isNewRecipe(route) ? "Add Recipe" : "Edit Recipe"}
-        </Heading>
-        <IconButton
-          icon={
-            <Icon
-              as={AntDesign}
-              name="close"
-              size="lg"
-              _light={{ color: "dark.300" }}
-              _dark={{ color: "light.500" }}
-            />
-          }
-          onPress={() => navigation.goBack()}
-        />
-      </Row>
-      <ScrollView flexGrow={1} _contentContainerStyle={{ flexGrow: 1 }}>
+    <Center>
+      <Header
+        navigation={navigation}
+        title={isNewRecipe(route) ? "Add Recipe" : "Edit Recipe"}
+      />
+      <ScrollView px={4} flexGrow={1} _contentContainerStyle={{ flexGrow: 1 }}>
         <Column flex={1}>
           <RecipeNameInput
             errors={errors}
