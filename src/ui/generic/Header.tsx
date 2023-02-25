@@ -19,11 +19,13 @@ export const Header = ({ navigation, title, rightComponent }: HeaderProps) => {
       w="100%"
       alignItems="center"
       _dark={{ backgroundColor: "dark.500" }}
-      _light={{ backgroundColor: "primary.400" }}
+      _light={{ backgroundColor: "primary.500" }}
       paddingTop={`${insets.top}px`}
       paddingBottom="5px"
     >
       <IconButton
+        flexGrow={0}
+        flexShrink={0}
         marginRight="5px"
         icon={
           <Icon
@@ -37,9 +39,10 @@ export const Header = ({ navigation, title, rightComponent }: HeaderProps) => {
         onPress={() => navigation.goBack()}
       />
       <Text
-        fontSize="xl"
+        fontSize="lg"
         fontWeight="medium"
         flexGrow={1}
+        flexShrink={1}
         _light={{ color: "light.50" }}
       >
         {title}

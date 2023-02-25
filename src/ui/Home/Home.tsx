@@ -14,7 +14,7 @@ import { EdgeInsets, useSafeAreaInsets } from "react-native-safe-area-context";
 import type { HomeScreenProps } from "../../Stack";
 import { AppContext, AppContextType } from "../../AppContext";
 import { RecipeActionSheet } from "./RecipeActionSheet";
-import { RecipesMenu } from "./RecipesMenu";
+import { MainMenu } from "./MainMenu";
 import { SearchBar } from "./SearchBar";
 import { Logo } from "./Logo";
 import { DeleteRecipesModal } from "./DeleteRecipesModal";
@@ -37,7 +37,7 @@ export const Home = ({ navigation }: HomeScreenProps) => {
         paddingTop={`${insets.top}px`}
       >
         <Logo />
-        <RecipesMenu openModal={() => setModalOpen(true)} />
+        <MainMenu openModal={() => setModalOpen(true)} />
       </Row>
       <DeleteRecipesModal
         isOpen={isModalOpen}

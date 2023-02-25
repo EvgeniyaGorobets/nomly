@@ -1,5 +1,15 @@
 import React, { useContext, useState } from "react";
-import { Center, Row, ScrollView, Column, Heading, Text } from "native-base";
+import {
+  Center,
+  Row,
+  ScrollView,
+  Column,
+  Heading,
+  Text,
+  Icon,
+  IconButton,
+} from "native-base";
+import { AntDesign } from "@expo/vector-icons";
 
 import type { RecipeScreenProps } from "../../Stack";
 import type { Ingredient, Recipe } from "../../core/recipe";
@@ -10,6 +20,7 @@ import {
   adjustIngredientAmounts,
   formatIngredientAmount,
 } from "../../core/ingredient-amounts";
+import { RecipeMenu } from "./RecipeMenu";
 
 export const RecipeView = ({ navigation, route }: RecipeScreenProps) => {
   const context: AppContextType = useContext(AppContext);
@@ -27,7 +38,31 @@ export const RecipeView = ({ navigation, route }: RecipeScreenProps) => {
 
   return (
     <Center>
-      <Header navigation={navigation} title={route.params.recipeName} />
+      <Header
+        navigation={navigation}
+        title={route.params.recipeName}
+        rightComponent={
+          <Row flexGrow={0} flexShrink={0} justifyContent="flex-end" margin={0}>
+            <IconButton
+              onPress={() => {
+                navigation.navigate("Form", {
+                  recipeName: route.params.recipeName,
+                });
+              }}
+              padding="5px"
+              icon={
+                <Icon
+                  as={AntDesign}
+                  name="edit"
+                  size="lg"
+                  _light={{ color: "light.50" }}
+                />
+              }
+            />
+            <RecipeMenu recipeName={route.params.recipeName} />
+          </Row>
+        }
+      />
       <ScrollView w="100%" px={4}>
         <AdjustableYield
           originalYield={recipe.yield}

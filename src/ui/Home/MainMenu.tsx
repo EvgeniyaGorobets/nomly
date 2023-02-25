@@ -15,7 +15,7 @@ import { exportRecipeBook, importRecipeBook } from "../../core/backup";
 import type { RecipeBook } from "../../core/recipe";
 import type { AppAlert } from "../../core/alert";
 
-export const RecipesMenu = ({ openModal }: { openModal: () => void }) => {
+export const MainMenu = ({ openModal }: { openModal: () => void }) => {
   const context: AppContextType = useContext(AppContext);
   const { colorMode, toggleColorMode } = useColorMode();
 
