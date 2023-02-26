@@ -5,7 +5,7 @@ export type Yield = {
   units: string;
 };
 
-export const UNITS = ["cups", "tbsp", "tsp", "mL", "g", "oz"] as const;
+export const UNITS = ["cups", "tbsp", "tsp", "mL", "g", "oz", "N/A"] as const;
 export type Unit = typeof UNITS[number];
 // other less common units of measurement: cloves, slices, sprigs
 
