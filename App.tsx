@@ -28,13 +28,8 @@ export default function App() {
   const saveRecipes = async (recipes: RecipeBook): Promise<void> => {
     setRecipeBook(recipes);
     try {
-      console.log("Saving recipe book", Object.keys(recipes).length);
       await saveData(storage.RECIPES, recipes);
     } catch (err) {
-      console.log(
-        `Failed to save recipe changes to storage with error:\n ${err}`
-      );
-
       const alert: AppAlert = {
         status: "error",
         title: "Failed to save recipe changes to storage",
@@ -47,13 +42,8 @@ export default function App() {
   const toggleFractionMode = async (mode: boolean): Promise<void> => {
     setFractionMode(mode);
     try {
-      console.log("Saving fraction mode preference", mode.toString());
       await saveData(storage.FRACTION, mode.toString());
     } catch (err) {
-      console.log(
-        `Failed to save fraction-mode preference to storage with error:\n ${err}`
-      );
-
       const alert: AppAlert = {
         status: "error",
         title: "Failed to save fraction-mode preference to storage",
@@ -65,7 +55,6 @@ export default function App() {
 
   // Fetch recipe book and fraction mode preferencefrom storage the first time the app loads
   useEffect(() => {
-    console.log("Fetching recipe book and fraction mode preference");
     (async () => {
       try {
         const recipes: RecipeBook | null = await fetchData(storage.RECIPES);
@@ -73,9 +62,6 @@ export default function App() {
           setRecipeBook(recipes);
         }
       } catch (err) {
-        console.log(
-          `Failed to fetch recipes from storage with error:\n ${err}`
-        );
         const alert: AppAlert = {
           status: "error",
           title: "Failed to fetch recipes from storage",
@@ -90,9 +76,6 @@ export default function App() {
           setFractionMode(fractionMode === "true");
         }
       } catch (err) {
-        console.log(
-          `Failed to fetch fraction-mode preference from storage with error:\n ${err}`
-        );
         const alert: AppAlert = {
           status: "error",
           title: "Failed to fetch fraction-mode preference from storage",

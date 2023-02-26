@@ -31,7 +31,6 @@ export const MainMenu = ({ openModal }: { openModal: () => void }) => {
         description: `${err}`,
       };
       context.setAlerts([...context.alerts, alert]);
-      console.log(`Failed to import recipes with error:\n ${err}`);
     }
 
     if (recipeBook === null) {
@@ -58,7 +57,6 @@ export const MainMenu = ({ openModal }: { openModal: () => void }) => {
         description: `${err}`,
       };
       context.setAlerts([...context.alerts, alert]);
-      console.log(`Failed to download recipes with error:\n ${err}`);
     }
   };
 
