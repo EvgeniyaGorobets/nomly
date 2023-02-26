@@ -23,10 +23,16 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/nomly_logo_textless.png",
         "backgroundColor": "#FFFFFF"
-      }
+      },
+      "package": "com.evgeniyagorobets.nomly"
     },
     "web": {
       "favicon": "./assets/nomly_logo_textless.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "2d92d7a8-87b8-452f-8ce9-fc8a0f59ea4a"
+      }
     }
   }
 }
