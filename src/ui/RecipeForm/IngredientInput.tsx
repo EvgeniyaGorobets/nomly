@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Row,
   Input,
@@ -10,24 +10,37 @@ import {
 } from "native-base";
 import { AntDesign } from "@expo/vector-icons";
 
-import { UNITS, Unit } from "../../core/recipe";
-import { RecipeErrors, PotentialIngredient } from "../../core/form";
+import { UNITS, Unit, Ingredient } from "../../core/recipe";
+import {
+  onInputChange,
+  validateIngredientName,
+  validateIngredientAmount,
+} from "../../core/form";
 
 type IngredientInputProps = {
-  errors: RecipeErrors;
-  index: number;
-  ingredient: PotentialIngredient;
+  ingredient: Ingredient;
   deleteIngredient: () => void;
-  updateIngredient: (ingredient: PotentialIngredient) => void;
+  updateIngredient: (ingredient: Ingredient) => void;
+  setIngredientNameError: (hasErr: boolean) => void;
+  setIngredientAmountError: (hasErr: boolean) => void;
 };
 
 export const IngredientInput: React.FC<IngredientInputProps> = ({
-  errors,
-  index,
   ingredient,
   deleteIngredient,
   updateIngredient,
+  setIngredientNameError,
+  setIngredientAmountError,
 }) => {
+  // Variables and functions to keep track of ingredient name
+  const [ingredientName, setIngredientName] = useState<string>(ingredient.name);
+  const [isNameDirty, setNameDirty] = useState<boolean>(false);
+  const [isNameBlurred, setNameBlurred] = useState<boolean>(true);
+  const [nameErrorMsg, setNameErrorMsg] = useState<string>("");
+
+  const isNameInvalid = () =>
+    isNameDirty && isNameBlurred && nameErrorMsg !== "";
+
   const updateName = (newName: string) => {
     updateIngredient({
       ...ingredient,
@@ -35,32 +48,46 @@ export const IngredientInput: React.FC<IngredientInputProps> = ({
     });
   };
 
+  const onChangeName = (newName: string) =>
+    onInputChange(
+      newName,
+      validateIngredientName,
+      { setInput: setIngredientName, setErrorMsg: setNameErrorMsg },
+      { updateValue: updateName, updateErrors: setIngredientNameError }
+    );
+
+  // variables and functions to keep track of ingredient amount
+  const [ingredientAmount, setIngredientAmount] = useState<string>(
+    ingredient.amount.toString()
+  );
+  const [isAmountDirty, setAmountDirty] = useState<boolean>(false);
+  const [isAmountBlurred, setAmountBlurred] = useState<boolean>(true);
+  const [amountErrorMsg, setAmountErrorMsg] = useState<string>("");
+
+  const isAmountInvalid = () =>
+    isAmountDirty && isAmountBlurred && amountErrorMsg !== "";
+
   const updateAmount = (newAmount: string) => {
     updateIngredient({
       ...ingredient,
-      amount: newAmount,
+      amount: Number(newAmount),
     });
   };
 
+  const onChangeAmount = (newAmount: string) =>
+    onInputChange(
+      newAmount,
+      validateIngredientAmount,
+      { setInput: setIngredientAmount, setErrorMsg: setAmountErrorMsg },
+      { updateValue: updateAmount, updateErrors: setIngredientAmountError }
+    );
+
+  // Function to keep track of ingredient units
   const updateUnits = (newUnits: Unit) => {
     updateIngredient({
       ...ingredient,
       units: newUnits,
     });
-  };
-
-  const summarizeErrors = (): { hasError: boolean; errorMessage: string } => {
-    return {
-      hasError:
-        `ingredientAmount-${index}` in errors ||
-        `ingredientName-${index}` in errors,
-      errorMessage: [
-        errors[`ingredientName-${index}`],
-        errors[`ingredientAmount-${index}`],
-      ]
-        .join("\n")
-        .trim(),
-    };
   };
 
   return (
@@ -78,32 +105,38 @@ export const IngredientInput: React.FC<IngredientInputProps> = ({
           onPress={deleteIngredient}
           w="8%"
         />
-        <FormControl
-          isRequired
-          isInvalid={`ingredientName-${index}` in errors}
-          w="52%"
-        >
+        <FormControl isRequired isInvalid={isNameInvalid()} w="52%">
           <Column>
             <Input
-              value={ingredient.name}
-              onChangeText={(text: string) => updateName(text)}
+              value={ingredientName}
+              onChangeText={onChangeName}
               variant="underlined"
               placeholder="Ingredient name"
+              onFocus={() => {
+                if (!isNameDirty) {
+                  setNameDirty(true);
+                }
+                setNameBlurred(false);
+              }}
+              onBlur={() => setNameBlurred(true)}
             />
           </Column>
         </FormControl>
-        <FormControl
-          isRequired
-          isInvalid={`ingredientAmount-${index}` in errors}
-          w="10%"
-        >
+        <FormControl isRequired isInvalid={isAmountInvalid()} w="10%">
           <Column>
             <Input
-              value={ingredient.amount}
-              onChangeText={(newAmount: string) => updateAmount(newAmount)}
+              value={ingredientAmount}
+              onChangeText={onChangeAmount}
               keyboardType="numeric"
               variant="underlined"
               textAlign="right"
+              onFocus={() => {
+                if (!isAmountDirty) {
+                  setAmountDirty(true);
+                }
+                setAmountBlurred(false);
+              }}
+              onBlur={() => setAmountBlurred(true)}
             />
           </Column>
         </FormControl>
@@ -125,9 +158,9 @@ export const IngredientInput: React.FC<IngredientInputProps> = ({
         </FormControl>
       </Row>
       <Row w="100%">
-        <FormControl isInvalid={summarizeErrors().hasError}>
+        <FormControl isInvalid={isNameInvalid() || isAmountInvalid()}>
           <FormControl.ErrorMessage>
-            {summarizeErrors().errorMessage}
+            {[nameErrorMsg, amountErrorMsg].join("\n").trim()}
           </FormControl.ErrorMessage>
         </FormControl>
       </Row>

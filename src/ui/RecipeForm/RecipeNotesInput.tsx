@@ -1,12 +1,11 @@
 import React from "react";
 import { Input, Column, Heading } from "native-base";
 
-import type { PotentialRecipe } from "../../core/form";
-import { updateRecipeNotes } from "../../core/form";
+import type { Recipe } from "../../core/recipe";
 
 type RecipeNotesProps = {
-  recipe: PotentialRecipe;
-  setRecipe: (recipe: PotentialRecipe) => void;
+  recipe: Recipe;
+  setRecipe: (recipe: Recipe) => void;
 };
 
 export const RecipeNotesInput = ({ recipe, setRecipe }: RecipeNotesProps) => {
@@ -17,9 +16,7 @@ export const RecipeNotesInput = ({ recipe, setRecipe }: RecipeNotesProps) => {
       </Heading>
       <Input
         value={recipe.notes}
-        onChangeText={(text: string) =>
-          setRecipe(updateRecipeNotes(recipe, text))
-        }
+        onChangeText={(text: string) => setRecipe({ ...recipe, notes: text })}
         multiline
         numberOfLines={12}
         textAlignVertical="top"

@@ -1,38 +1,19 @@
-import type { Unit, RecipeBook, Recipe, Ingredient } from "./recipe";
-
-// these are the types we use when building out the form;
-// the only difference is that numeric fields are strings because we cannot force users to enter numbers into input boxes
-export type PotentialYield = {
-  amount: string;
-  units: string;
-};
-
-export type PotentialIngredient = {
-  name: string;
-  amount: string;
-  units: Unit;
-};
-
-export type PotentialRecipe = {
-  yield: PotentialYield;
-  ingredients: Array<PotentialIngredient>;
-  notes: string;
-};
+import type { Unit, RecipeBook, Recipe, Ingredient, Yield } from "./recipe";
 
 export type RecipeErrors = {
-  name?: string;
-  yieldAmount?: string;
-  yieldUnits?: string;
-  [key: `ingredientName-${number}`]: string;
-  [key: `ingredientAmount-${number}`]: string;
+  name: boolean;
+  yieldAmount: boolean;
+  yieldUnits: boolean;
+  [key: `ingredientName-${number}`]: boolean;
+  [key: `ingredientAmount-${number}`]: boolean;
 };
 
 // functions to help with updating the form
 
-export const blankRecipe = (): PotentialRecipe => {
+export const blankRecipe = (): Recipe => {
   return {
     yield: {
-      amount: "1",
+      amount: 1,
       units: "servings",
     },
     ingredients: [],
@@ -40,30 +21,10 @@ export const blankRecipe = (): PotentialRecipe => {
   };
 };
 
-export const updateRecipeYield = (
-  recipe: PotentialRecipe,
-  newYield: PotentialYield
-): PotentialRecipe => {
-  return {
-    ...recipe,
-    yield: newYield,
-  };
-};
-
-export const updateRecipeNotes = (
-  recipe: PotentialRecipe,
-  newNotes: string
-): PotentialRecipe => {
-  return {
-    ...recipe,
-    notes: newNotes,
-  };
-};
-
-export const addIngredient = (recipe: PotentialRecipe): PotentialRecipe => {
-  const blankIngredient: PotentialIngredient = {
+export const addIngredient = (recipe: Recipe): Recipe => {
+  const blankIngredient: Ingredient = {
     name: "",
-    amount: "0",
+    amount: 0,
     units: "cups",
   };
 
@@ -73,10 +34,7 @@ export const addIngredient = (recipe: PotentialRecipe): PotentialRecipe => {
   };
 };
 
-export const deleteIngredient = (
-  recipe: PotentialRecipe,
-  index: number
-): PotentialRecipe => {
+export const deleteIngredient = (recipe: Recipe, index: number): Recipe => {
   return {
     ...recipe,
     ingredients: [
@@ -87,10 +45,10 @@ export const deleteIngredient = (
 };
 
 export const updateIngredient = (
-  recipe: PotentialRecipe,
+  recipe: Recipe,
   index: number,
-  ingredient: PotentialIngredient
-): PotentialRecipe => {
+  ingredient: Ingredient
+): Recipe => {
   return {
     ...recipe,
     ingredients: [
@@ -105,81 +63,104 @@ export const isNumeric = (amount: string): boolean => {
   return !isNaN(Number(amount));
 };
 
-// function to evaluate whether a PotentialRecipe can be saved as a Recipe
-export const validateRecipe = (
-  recipeBook: RecipeBook,
-  recipe: PotentialRecipe,
-  recipeName: string,
-  isNewRecipe: boolean
-): RecipeErrors | null => {
-  const errors: RecipeErrors = {};
-  // Validate recipe name
-  if (recipeName.length == 0) {
-    errors.name = "Recipe name cannot be empty";
-  } else if (recipeName in recipeBook && isNewRecipe) {
-    errors.name = "Recipe name cannot be the same as an existing recipe";
-  }
+export type InputStateFunctions = {
+  setInput: (value: string) => void;
+  setErrorMsg: (errMsg: string) => void;
+};
 
-  // Validate the recipe yield
-  if (!isNumeric(recipe.yield.amount)) {
-    errors.yieldAmount = "Yield must be an integer";
-  } else if (Number(recipe.yield.amount) <= 0) {
-    errors.yieldAmount = "Recipe yield must be greater than zero";
-  } else if (!Number.isInteger(Number(recipe.yield.amount))) {
-    errors.yieldAmount = "Recipe yield cannot be a decimal";
-  }
-  if (recipe.yield.units.length == 0) {
-    errors.yieldUnits = "Recipe yield units shouldn't be empty";
-  }
+export type ParentStateFunctions = {
+  updateValue: (value: string) => void;
+  updateErrors: (hasError: boolean) => void;
+};
 
-  // Validate each ingredient
-  recipe.ingredients.forEach(
-    (ingredient: PotentialIngredient, index: number) => {
-      if (ingredient.name.length == 0) {
-        errors[`ingredientName-${index}`] = "Ingredient name cannot be empty";
-      }
+// Generic function for updating inputs
+export const onInputChange = (
+  inputText: string,
+  validateInput: (value: string) => [boolean, string],
+  input: InputStateFunctions,
+  parent: ParentStateFunctions
+) => {
+  const [isValidInput, errMsg]: [boolean, string] = validateInput(inputText);
 
-      if (!isNumeric(ingredient.amount)) {
-        errors[`ingredientAmount-${index}`] =
-          "Ingredient amount must be a number";
-      } else if (Number(ingredient.amount) <= 0) {
-        errors[`ingredientAmount-${index}`] =
-          "Ingredient amount must be greater than zero";
-      }
-    }
-  );
+  // Make changes within the component
+  input.setInput(inputText);
+  input.setErrorMsg(errMsg);
 
-  if (Object.keys(errors).length > 0) {
-    return errors;
+  // Propagate changes to parent
+  if (isValidInput) {
+    parent.updateValue(inputText);
+    parent.updateErrors(false);
   } else {
-    return null;
+    parent.updateErrors(true);
   }
 };
 
-export const convertFormToRecipe = (recipe: PotentialRecipe): Recipe => {
-  return {
-    notes: recipe.notes,
-    yield: {
-      ...recipe.yield,
-      amount: Number(recipe.yield.amount),
-    },
-    ingredients: recipe.ingredients.map((ingredient: PotentialIngredient) => ({
-      ...ingredient,
-      amount: Number(ingredient.amount),
-    })),
-  };
+export const validateRecipeName = (
+  initialName: string,
+  newName: string,
+  recipeBook: RecipeBook
+): [boolean, string] => {
+  if (newName.length == 0) {
+    return [false, "Recipe name cannot be empty"];
+  } else if (newName !== initialName && newName in recipeBook) {
+    return [false, "A recipe with this name already exists"];
+  } else {
+    return [true, ""];
+  }
 };
 
-export const convertRecipeToForm = (recipe: Recipe): PotentialRecipe => {
-  return {
-    notes: recipe.notes,
-    yield: {
-      ...recipe.yield,
-      amount: recipe.yield.amount.toString(),
-    },
-    ingredients: recipe.ingredients.map((ingredient: Ingredient) => ({
-      ...ingredient,
-      amount: ingredient.amount.toString(),
-    })),
+export const validateRecipeYieldAmount = (
+  amount: string
+): [boolean, string] => {
+  if (!isNumeric(amount)) {
+    return [false, "Yield must be an integer"];
+  } else if (Number(amount) <= 0) {
+    return [false, "Recipe yield must be greater than zero"];
+  } else if (!Number.isInteger(Number(amount))) {
+    return [false, "Recipe yield cannot be a decimal"];
+  } else {
+    return [true, ""];
+  }
+};
+
+export const validateRecipeYieldUnits = (units: string): [boolean, string] => {
+  if (units.length === 0) {
+    return [false, "Recipe yield units cannot be empty"];
+  } else {
+    return [true, ""];
+  }
+};
+
+export const validateIngredientName = (name: string): [boolean, string] => {
+  if (name.length === 0) {
+    return [false, "Ingredient name cannot be empty"];
+  } else {
+    return [true, ""];
+  }
+};
+
+export const validateIngredientAmount = (amount: string): [boolean, string] => {
+  if (!isNumeric(amount)) {
+    return [false, "Ingredient amount must be a number"];
+  } else if (Number(amount) <= 0) {
+    return [false, "Ingredient amount must be greater than zero"];
+  } else {
+    return [true, ""];
+  }
+};
+
+// return a RecipeErrors object that shows no errors
+export const noRecipeErrors = (recipe: Recipe): RecipeErrors => {
+  const errors: RecipeErrors = {
+    name: false,
+    yieldAmount: false,
+    yieldUnits: false,
   };
+
+  recipe.ingredients.forEach((ingredient: Ingredient, i: number) => {
+    errors[`ingredientName-${i}`] = false;
+    errors[`ingredientAmount-${i}`] = false;
+  });
+
+  return errors;
 };
