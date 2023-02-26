@@ -55,6 +55,7 @@ export const RecipeView = ({ navigation, route }: RecipeScreenProps) => {
                   as={AntDesign}
                   name="edit"
                   size="lg"
+                  _dark={{ color: "light.400" }}
                   _light={{ color: "light.50" }}
                 />
               }
