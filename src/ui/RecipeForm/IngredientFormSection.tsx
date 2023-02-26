@@ -24,6 +24,15 @@ export const IngredientFormSection = ({
   errors,
   setErrors,
 }: IngredientSectionProps) => {
+  const addNewIngredient = () => {
+    // new ingredient by default has an error so we must disable the SAVE button
+    setErrors({
+      ...errors,
+      [`ingredientAmount-${recipe.ingredients.length}`]: true,
+    });
+    setRecipe(addIngredient(recipe));
+  };
+
   return (
     <Column flex={1} my="10px" paddingBottom="10px">
       <Heading size="md">Ingredients</Heading>
@@ -43,16 +52,7 @@ export const IngredientFormSection = ({
           }
         />
       ))}
-      <Pressable
-        onPress={() => {
-          // new ingredient by default has an error so we must disable the SAVE button
-          setErrors({
-            ...errors,
-            [`ingredientAmount-${recipe.ingredients.length}`]: true,
-          });
-          setRecipe(addIngredient(recipe));
-        }}
-      >
+      <Pressable onPress={addNewIngredient}>
         <Row alignItems="center">
           <Icon
             as={AntDesign}

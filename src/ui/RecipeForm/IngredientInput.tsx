@@ -48,6 +48,13 @@ export const IngredientInput: React.FC<IngredientInputProps> = ({
     });
   };
 
+  const onNameFocus = () => {
+    if (!isNameDirty) {
+      setNameDirty(true);
+    }
+    setNameBlurred(false);
+  };
+
   const onChangeName = (newName: string) =>
     onInputChange(
       newName,
@@ -72,6 +79,13 @@ export const IngredientInput: React.FC<IngredientInputProps> = ({
       ...ingredient,
       amount: Number(newAmount),
     });
+  };
+
+  const onAmountFocus = () => {
+    if (!isAmountDirty) {
+      setAmountDirty(true);
+    }
+    setAmountBlurred(false);
   };
 
   const onChangeAmount = (newAmount: string) =>
@@ -112,12 +126,7 @@ export const IngredientInput: React.FC<IngredientInputProps> = ({
               onChangeText={onChangeName}
               variant="underlined"
               placeholder="Ingredient name"
-              onFocus={() => {
-                if (!isNameDirty) {
-                  setNameDirty(true);
-                }
-                setNameBlurred(false);
-              }}
+              onFocus={onNameFocus}
               onBlur={() => setNameBlurred(true)}
             />
           </Column>
@@ -130,12 +139,7 @@ export const IngredientInput: React.FC<IngredientInputProps> = ({
               keyboardType="numeric"
               variant="underlined"
               textAlign="right"
-              onFocus={() => {
-                if (!isAmountDirty) {
-                  setAmountDirty(true);
-                }
-                setAmountBlurred(false);
-              }}
+              onFocus={onAmountFocus}
               onBlur={() => setAmountBlurred(true)}
             />
           </Column>

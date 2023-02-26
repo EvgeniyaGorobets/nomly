@@ -28,6 +28,13 @@ export const RecipeYieldInput = ({
   const isAmountInvalid = () =>
     isAmountDirty && isAmountBlurred && amountErrorMsg !== "";
 
+  const onAmountFocus = () => {
+    if (!isAmountDirty) {
+      setAmountDirty(true);
+    }
+    setAmountBlurred(false);
+  };
+
   const onChangeAmount = (newAmount: string) =>
     onInputChange(
       newAmount,
@@ -43,6 +50,13 @@ export const RecipeYieldInput = ({
 
   const isUnitsInvalid = () =>
     isUnitsDirty && isUnitsBlurred && unitsErrorMsg !== "";
+
+  const onUnitsFocus = () => {
+    if (!isUnitsDirty) {
+      setUnitsDirty(true);
+    }
+    setUnitsBlurred(false);
+  };
 
   const onChangeUnits = (newUnits: string) =>
     onInputChange(
@@ -65,12 +79,7 @@ export const RecipeYieldInput = ({
             keyboardType="numeric"
             variant="underlined"
             textAlign="center"
-            onFocus={() => {
-              if (!isAmountDirty) {
-                setAmountDirty(true);
-              }
-              setAmountBlurred(false);
-            }}
+            onFocus={onAmountFocus}
             onBlur={() => setAmountBlurred(true)}
           />
         </FormControl>
@@ -81,12 +90,7 @@ export const RecipeYieldInput = ({
             variant="underlined"
             textAlign="center"
             marginLeft="5px"
-            onFocus={() => {
-              if (!isUnitsDirty) {
-                setUnitsDirty(true);
-              }
-              setUnitsBlurred(false);
-            }}
+            onFocus={onUnitsFocus}
             onBlur={() => setUnitsBlurred(true)}
           />
         </FormControl>

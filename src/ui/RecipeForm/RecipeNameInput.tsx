@@ -24,6 +24,15 @@ export const RecipeNameInput = ({
   const [errorMsg, setErrorMsg] = useState<string>("");
   const [isBlurred, setBlurred] = useState<boolean>(true);
 
+  const onFocus = () => {
+    if (!isDirty) {
+      setDirty(true);
+    }
+    setBlurred(false);
+  };
+
+  const onBlur = () => setBlurred(true);
+
   const onChangeText = (newName: string) =>
     onInputChange(
       newName,
@@ -41,13 +50,8 @@ export const RecipeNameInput = ({
           onChangeText={onChangeText}
           variant="underlined"
           fontSize="lg"
-          onFocus={() => {
-            if (!isDirty) {
-              setDirty(true);
-            }
-            setBlurred(false);
-          }}
-          onBlur={() => setBlurred(true)}
+          onFocus={onFocus}
+          onBlur={onBlur}
         />
         <FormControl.ErrorMessage>{errorMsg}</FormControl.ErrorMessage>
       </Column>
