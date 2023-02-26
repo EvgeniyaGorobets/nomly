@@ -1,29 +1,7 @@
-import { extendTheme, StorageManager, ColorMode } from "native-base";
-import { EdgeInsets } from "react-native-safe-area-context";
-
-import { saveData, fetchData, storage } from "../core/storage";
-
-export const colorModeManager: StorageManager = {
-  get: async (): Promise<ColorMode> => {
-    try {
-      const colorMode = await fetchData(storage.COLOR);
-      return colorMode === "dark" ? "dark" : "light";
-    } catch (err) {
-      console.log(`Error fetching color mode: ${err}`);
-      return "light";
-    }
-  },
-  set: async (value: ColorMode) => {
-    try {
-      await saveData(storage.COLOR, value as string);
-    } catch (err) {
-      console.log(`Error saving color mode: ${err}`);
-    }
-  },
-};
+import { extendTheme } from "native-base";
 
 // extend the theme
-export const theme = extendTheme({
+export const Theme = extendTheme({
   colors: {
     primary: {
       50: "#c2f5e4",
@@ -173,7 +151,7 @@ export const theme = extendTheme({
 });
 
 // not sure what the stuff below is for
-type MyThemeType = typeof theme;
+type MyThemeType = typeof Theme;
 declare module "native-base" {
   interface ICustomTheme extends MyThemeType {}
 }
