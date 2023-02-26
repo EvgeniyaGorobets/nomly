@@ -117,7 +117,9 @@ export default function App() {
       >
         <NativeBaseProvider theme={Theme} colorModeManager={ColorModeManager}>
           <NavigationContainer>
-            <Stack.Navigator screenOptions={{ headerShown: false }}>
+            <Stack.Navigator
+              screenOptions={{ headerShown: false, animation: "none" }}
+            >
               <Stack.Screen name="Home" component={Home} />
               <Stack.Screen name="Form" component={RecipeForm} />
               <Stack.Screen name="Recipe" component={RecipeView} />
