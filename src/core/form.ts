@@ -1,4 +1,7 @@
-import type { Unit, RecipeBook, Recipe, Ingredient, Yield } from "./recipe";
+import type { RecipeBook, Recipe, Ingredient } from "./recipe";
+
+// * ------ FORM VALIDATION ------ *
+// * Functions to help validate the form/recipe
 
 export type RecipeErrors = {
   name: boolean;
@@ -8,91 +11,24 @@ export type RecipeErrors = {
   [key: `ingredientAmount-${number}`]: boolean;
 };
 
-// functions to help with updating the form
-
-export const blankRecipe = (): Recipe => {
-  return {
-    yield: {
-      amount: 1,
-      units: "servings",
-    },
-    ingredients: [],
-    notes: "",
-  };
-};
-
-export const addIngredient = (recipe: Recipe): Recipe => {
-  const blankIngredient: Ingredient = {
-    name: "",
-    amount: 0,
-    units: "cups",
+// return a RecipeErrors object that shows no errors
+export const noRecipeErrors = (recipe: Recipe): RecipeErrors => {
+  const errors: RecipeErrors = {
+    name: false,
+    yieldAmount: false,
+    yieldUnits: false,
   };
 
-  return {
-    ...recipe,
-    ingredients: [...recipe.ingredients, blankIngredient],
-  };
-};
+  recipe.ingredients.forEach((ingredient: Ingredient, i: number) => {
+    errors[`ingredientName-${i}`] = false;
+    errors[`ingredientAmount-${i}`] = false;
+  });
 
-export const deleteIngredient = (recipe: Recipe, index: number): Recipe => {
-  return {
-    ...recipe,
-    ingredients: [
-      ...recipe.ingredients.slice(0, index),
-      ...recipe.ingredients.slice(index + 1),
-    ],
-  };
-};
-
-export const updateIngredient = (
-  recipe: Recipe,
-  index: number,
-  ingredient: Ingredient
-): Recipe => {
-  return {
-    ...recipe,
-    ingredients: [
-      ...recipe.ingredients.slice(0, index),
-      ingredient,
-      ...recipe.ingredients.slice(index + 1),
-    ],
-  };
+  return errors;
 };
 
 export const isNumeric = (amount: string): boolean => {
   return !isNaN(Number(amount));
-};
-
-export type InputStateFunctions = {
-  setInput: (value: string) => void;
-  setErrorMsg: (errMsg: string) => void;
-};
-
-export type ParentStateFunctions = {
-  updateValue: (value: string) => void;
-  updateErrors: (hasError: boolean) => void;
-};
-
-// Generic function for updating inputs
-export const onInputChange = (
-  inputText: string,
-  validateInput: (value: string) => [boolean, string],
-  input: InputStateFunctions,
-  parent: ParentStateFunctions
-) => {
-  const [isValidInput, errMsg]: [boolean, string] = validateInput(inputText);
-
-  // Make changes within the component
-  input.setInput(inputText);
-  input.setErrorMsg(errMsg);
-
-  // Propagate changes to parent
-  if (isValidInput) {
-    parent.updateValue(inputText);
-    parent.updateErrors(false);
-  } else {
-    parent.updateErrors(true);
-  }
 };
 
 export const validateRecipeName = (
@@ -149,18 +85,89 @@ export const validateIngredientAmount = (amount: string): [boolean, string] => {
   }
 };
 
-// return a RecipeErrors object that shows no errors
-export const noRecipeErrors = (recipe: Recipe): RecipeErrors => {
-  const errors: RecipeErrors = {
-    name: false,
-    yieldAmount: false,
-    yieldUnits: false,
+// * ------ FORM EDITING ------ *
+// * Functions to help with editing the form and updating the recipe
+
+export const blankRecipe = (): Recipe => {
+  return {
+    yield: {
+      amount: 1,
+      units: "servings",
+    },
+    ingredients: [],
+    notes: "",
+  };
+};
+
+export const addIngredient = (recipe: Recipe): Recipe => {
+  const blankIngredient: Ingredient = {
+    name: "",
+    amount: 0,
+    units: "cups",
   };
 
-  recipe.ingredients.forEach((ingredient: Ingredient, i: number) => {
-    errors[`ingredientName-${i}`] = false;
-    errors[`ingredientAmount-${i}`] = false;
-  });
+  return {
+    ...recipe,
+    ingredients: [...recipe.ingredients, blankIngredient],
+  };
+};
 
-  return errors;
+export const deleteIngredient = (recipe: Recipe, index: number): Recipe => {
+  return {
+    ...recipe,
+    ingredients: [
+      ...recipe.ingredients.slice(0, index),
+      ...recipe.ingredients.slice(index + 1),
+    ],
+  };
+};
+
+export const updateIngredient = (
+  recipe: Recipe,
+  index: number,
+  ingredient: Ingredient
+): Recipe => {
+  return {
+    ...recipe,
+    ingredients: [
+      ...recipe.ingredients.slice(0, index),
+      ingredient,
+      ...recipe.ingredients.slice(index + 1),
+    ],
+  };
+};
+
+// * ------ INPUT STATE MANAGEMENT ------ *
+// * Functions to help with managing the local and parent state of an input element
+
+export type InputStateFunctions = {
+  setInput: (value: string) => void;
+  setErrorMsg: (errMsg: string) => void;
+};
+
+export type ParentStateFunctions = {
+  updateValue: (value: string) => void;
+  updateErrors: (hasError: boolean) => void;
+};
+
+// Generic function for updating inputs
+export const onInputChange = (
+  inputText: string,
+  validateInput: (value: string) => [boolean, string],
+  input: InputStateFunctions,
+  parent: ParentStateFunctions
+) => {
+  const [isValidInput, errMsg]: [boolean, string] = validateInput(inputText);
+
+  // Make changes within the component
+  input.setInput(inputText);
+  input.setErrorMsg(errMsg);
+
+  // Propagate changes to parent
+  if (isValidInput) {
+    parent.updateValue(inputText);
+    parent.updateErrors(false);
+  } else {
+    parent.updateErrors(true);
+  }
 };
