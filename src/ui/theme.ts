@@ -157,6 +157,14 @@ export const theme = extendTheme({
         },
       },
     },
+    FormControlErrorMessage: {
+      defaultProps: {
+        _text: {
+          _light: { color: "error.500" },
+          _dark: { color: "error.400" },
+        },
+      },
+    },
   },
   config: {
     useSystemColorMode: false,
