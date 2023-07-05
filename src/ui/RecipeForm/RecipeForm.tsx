@@ -5,7 +5,7 @@ import type { RecipeBook, Recipe, Yield } from "../../core/recipe";
 import type { RecipeErrors } from "../../core/form";
 import type { RecipeFormProps } from "../../Stack";
 import { addRecipe, updateRecipe } from "../../core/recipe";
-import { blankRecipe, noRecipeErrors } from "../../core/form";
+import { blankRecipe, getInitialErrors } from "../../core/form";
 import { AppContext, AppContextType } from "../../AppContext";
 import { Header } from "../generic/Header";
 import { RecipeYieldInput } from "./RecipeYieldInput";
@@ -38,7 +38,7 @@ export const RecipeForm = ({ navigation, route }: RecipeFormProps) => {
   const [recipeName, setRecipeName] = useState<string>(initialRecipeName);
   const [recipe, setRecipe] = useState<Recipe>(initialRecipe);
   const [errors, setErrors] = useState<RecipeErrors>(
-    noRecipeErrors(initialRecipe)
+    getInitialErrors(initialRecipe, isNewRecipe(route))
   );
 
   const updateRecipeYield = (newYield: Yield) => {

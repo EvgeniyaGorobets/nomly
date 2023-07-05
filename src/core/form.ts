@@ -12,9 +12,16 @@ export type RecipeErrors = {
 };
 
 // return a RecipeErrors object that shows no errors
-export const noRecipeErrors = (recipe: Recipe): RecipeErrors => {
+export const getInitialErrors = (
+  recipe: Recipe,
+  isNewRecipe: boolean
+): RecipeErrors => {
+  // By default, a recipe should have no errors when it is first opened an edit mode
+  // Because it should be impossible to save a recipe with errors
+  // The only exception are new recipes, which have blank name by default
+  // Eventually I might want to refactor this to use the validation functions below, for consistency
   const errors: RecipeErrors = {
-    name: false,
+    name: isNewRecipe ? true : false,
     yieldAmount: false,
     yieldUnits: false,
   };
