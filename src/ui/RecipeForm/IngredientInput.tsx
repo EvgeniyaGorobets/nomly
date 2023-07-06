@@ -1,14 +1,7 @@
 import React, { useState } from "react";
-import {
-  Row,
-  Input,
-  Column,
-  FormControl,
-  Select,
-  Icon,
-  IconButton,
-} from "native-base";
-import { AntDesign } from "@expo/vector-icons";
+import { View } from "react-native";
+import { HelperText, TextInput, IconButton } from "react-native-paper";
+import { Select } from "native-base";
 
 import { UNITS, Unit, Ingredient } from "../../core/recipe";
 import {
@@ -105,69 +98,50 @@ export const IngredientInput: React.FC<IngredientInputProps> = ({
   };
 
   return (
-    <Column>
-      <Row w="100%" alignItems="center">
-        <IconButton
-          icon={
-            <Icon
-              as={AntDesign}
-              name="close"
-              _light={{ color: "error.400" }}
-              _dark={{ color: "error.400" }}
-            />
-          }
-          onPress={deleteIngredient}
-          w="8%"
-        />
-        <FormControl isRequired isInvalid={isNameInvalid()} w="52%">
-          <Column>
-            <Input
-              value={ingredientName}
-              onChangeText={onChangeName}
-              variant="underlined"
-              placeholder="Ingredient name"
-              onFocus={onNameFocus}
-              onBlur={() => setNameBlurred(true)}
-            />
-          </Column>
-        </FormControl>
-        <FormControl isRequired isInvalid={isAmountInvalid()} w="10%">
-          <Column>
-            <Input
-              value={ingredientAmount}
-              onChangeText={onChangeAmount}
-              keyboardType="numeric"
-              variant="underlined"
-              textAlign="right"
-              onFocus={onAmountFocus}
-              onBlur={() => setAmountBlurred(true)}
-            />
-          </Column>
-        </FormControl>
-        <FormControl isRequired w="30%">
-          <Select
-            selectedValue={ingredient.units}
-            accessibilityLabel="Choose Ingredient Units"
-            _selectedItem={{ bg: "teal.600" }}
-            onValueChange={(newUnit: string) => updateUnits(newUnit as Unit)}
-            borderRadius={0}
-            borderTopWidth={0}
-            borderLeftWidth={0}
-            borderRightWidth={0}
-          >
-            {UNITS.map((unit: Unit) => (
-              <Select.Item label={unit} value={unit} key={unit} />
-            ))}
-          </Select>
-        </FormControl>
-      </Row>
-      <Row w="100%">
-        <FormControl isInvalid={isNameInvalid() || isAmountInvalid()}>
-          <FormControl.ErrorMessage>
-            {[nameErrorMsg, amountErrorMsg].join("\n").trim()}
-          </FormControl.ErrorMessage>
-        </FormControl>
-      </Row>
-    </Column>
+    <View>
+      <View>
+        <IconButton icon="close" onPress={deleteIngredient} />
+        <View>
+          <TextInput
+            value={ingredientName}
+            onChangeText={onChangeName}
+            mode="outlined"
+            placeholder="Ingredient name"
+            onFocus={onNameFocus}
+            onBlur={() => setNameBlurred(true)}
+          />
+        </View>
+        <View>
+          <TextInput
+            value={ingredientAmount}
+            onChangeText={onChangeAmount}
+            keyboardType="numeric"
+            mode="outlined"
+            textAlign="right"
+            onFocus={onAmountFocus}
+            onBlur={() => setAmountBlurred(true)}
+          />
+        </View>
+        <Select
+          selectedValue={ingredient.units}
+          accessibilityLabel="Choose Ingredient Units"
+          _selectedItem={{ bg: "teal.600" }}
+          onValueChange={(newUnit: string) => updateUnits(newUnit as Unit)}
+          borderRadius={0}
+          borderTopWidth={0}
+          borderLeftWidth={0}
+          borderRightWidth={0}
+        >
+          {UNITS.map((unit: Unit) => (
+            <Select.Item label={unit} value={unit} key={unit} />
+          ))}
+        </Select>
+      </View>
+      <View>
+        <HelperText type="error" visible={isNameInvalid() || isAmountInvalid()}>
+          {[nameErrorMsg, amountErrorMsg].join("\n").trim()}
+        </HelperText>
+      </View>
+    </View>
   );
 };
