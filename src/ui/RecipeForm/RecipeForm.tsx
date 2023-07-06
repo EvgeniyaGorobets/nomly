@@ -1,5 +1,6 @@
 import React, { useContext, useState } from "react";
-import { Button, Center, ScrollView, Column } from "native-base";
+import { View, ScrollView } from "react-native";
+import { Button } from "react-native-paper";
 
 import type { RecipeBook, Recipe, Yield } from "../../core/recipe";
 import type { RecipeErrors } from "../../core/form";
@@ -54,13 +55,13 @@ export const RecipeForm = ({ navigation, route }: RecipeFormProps) => {
   };
 
   return (
-    <Center>
+    <View>
       <Header
         navigation={navigation}
         title={isNewRecipe(route) ? "Add Recipe" : "Edit Recipe"}
       />
-      <ScrollView px={4} flexGrow={1} _contentContainerStyle={{ flexGrow: 1 }}>
-        <Column flex={1}>
+      <ScrollView>
+        <View>
           <RecipeNameInput
             initialName={initialRecipeName}
             parentFunctions={{
@@ -99,20 +100,17 @@ export const RecipeForm = ({ navigation, route }: RecipeFormProps) => {
             setErrors={setErrors}
           />
           <RecipeNotesInput recipe={recipe} setRecipe={setRecipe} />
-        </Column>
-        <Column my="15px" w="100%">
+        </View>
+        <View>
           <Button
-            isDisabled={Object.values(errors).some((value) => value === true)}
+            mode="contained"
+            disabled={Object.values(errors).some((value) => value === true)}
             onPress={() => saveRecipe()}
-            _text={{
-              fontWeight: "semibold",
-              fontSize: "lg",
-            }}
           >
             SAVE
           </Button>
-        </Column>
+        </View>
       </ScrollView>
-    </Center>
+    </View>
   );
 };

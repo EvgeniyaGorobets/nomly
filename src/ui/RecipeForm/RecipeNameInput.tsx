@@ -1,5 +1,5 @@
 import React, { useContext, useState } from "react";
-import { Input, Column, FormControl } from "native-base";
+import { View } from "react-native";
 import { TextInput } from "react-native-paper";
 
 import { AppContext, AppContextType } from "../../AppContext";
@@ -43,18 +43,19 @@ export const RecipeNameInput = ({
     );
 
   return (
-    <FormControl isRequired isInvalid={isDirty && isBlurred && errorMsg !== ""}>
-      <Column paddingY="5px">
-        <TextInput
-          value={recipeName}
-          placeholder="Recipe Name"
-          onChangeText={onChangeText}
-          mode="outlined"
-          onFocus={onFocus}
-          onBlur={onBlur}
-        />
-        <FormControl.ErrorMessage>{errorMsg}</FormControl.ErrorMessage>
-      </Column>
-    </FormControl>
+    //<FormControl isRequired isInvalid={isDirty && isBlurred && errorMsg !== ""}>
+    <View>
+      <TextInput
+        value={recipeName}
+        placeholder="Recipe Name"
+        onChangeText={onChangeText}
+        mode="outlined"
+        onFocus={onFocus}
+        onBlur={onBlur}
+      />
+    </View>
+    //</FormControl>
   );
 };
+
+// <FormControl.ErrorMessage>{errorMsg}</FormControl.ErrorMessage>

@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { View } from "react-native";
 import { Input, Column, FormControl, Row, Heading } from "native-base";
 import { TextInput, Text } from "react-native-paper";
 
@@ -68,32 +69,28 @@ export const RecipeYieldInput = ({
     );
 
   return (
-    <Column>
-      <Row alignItems="center" w="100%" paddingY="5px">
+    <View>
+      <View>
         <Text variant="headlineSmall">Recipe Yield</Text>
-        <FormControl isRequired isInvalid={isAmountInvalid()} w="15%">
-          <TextInput
-            value={amount}
-            onChangeText={onChangeAmount}
-            keyboardType="numeric"
-            mode="outlined"
-            textAlign="center"
-            onFocus={onAmountFocus}
-            onBlur={() => setAmountBlurred(true)}
-          />
-        </FormControl>
-        <FormControl isRequired isInvalid={isUnitsInvalid()} w="30%">
-          <TextInput
-            value={units}
-            onChangeText={onChangeUnits}
-            mode="outlined"
-            textAlign="center"
-            onFocus={onUnitsFocus}
-            onBlur={() => setUnitsBlurred(true)}
-          />
-        </FormControl>
-      </Row>
-      <Row w="100%">
+        <TextInput
+          value={amount}
+          onChangeText={onChangeAmount}
+          keyboardType="numeric"
+          mode="outlined"
+          textAlign="center"
+          onFocus={onAmountFocus}
+          onBlur={() => setAmountBlurred(true)}
+        />
+        <TextInput
+          value={units}
+          onChangeText={onChangeUnits}
+          mode="outlined"
+          textAlign="center"
+          onFocus={onUnitsFocus}
+          onBlur={() => setUnitsBlurred(true)}
+        />
+      </View>
+      <View>
         <FormControl
           isRequired
           isInvalid={isAmountInvalid() || isUnitsInvalid()}
@@ -102,7 +99,7 @@ export const RecipeYieldInput = ({
             {[amountErrorMsg, unitsErrorMsg].join("\n").trim()}
           </FormControl.ErrorMessage>
         </FormControl>
-      </Row>
-    </Column>
+      </View>
+    </View>
   );
 };

@@ -1,5 +1,5 @@
 import React from "react";
-import { Input, Column, Heading } from "native-base";
+import { View } from "react-native";
 import { TextInput, Text } from "react-native-paper";
 
 import type { Recipe } from "../../core/recipe";
@@ -11,7 +11,7 @@ type RecipeNotesProps = {
 
 export const RecipeNotesInput = ({ recipe, setRecipe }: RecipeNotesProps) => {
   return (
-    <Column>
+    <View>
       <Text variant="headlineSmall">Notes</Text>
       <TextInput
         value={recipe.notes}
@@ -21,6 +21,6 @@ export const RecipeNotesInput = ({ recipe, setRecipe }: RecipeNotesProps) => {
         textAlignVertical="top"
         mode="outlined"
       />
-    </Column>
+    </View>
   );
 };
