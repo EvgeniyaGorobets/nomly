@@ -39,12 +39,8 @@ export const storage: { [key: string]: StorageSlot } = {
     key: "recipe-book",
     type: "object",
   },
-  COLOR: {
-    key: "color-mode",
-    type: "string",
-  },
-  FRACTION: {
-    key: "fraction-mode",
-    type: "string",
+  PREFS: {
+    key: "preferences",
+    type: "object",
   },
 };

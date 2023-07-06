@@ -3,11 +3,21 @@ import React from "react";
 import { RecipeBook } from "./core/recipe";
 import { AppAlert } from "./core/alert";
 
+export type Preferences = {
+  fractionMode: boolean;
+  darkMode: boolean;
+};
+
+export const defaultPreferences: Preferences = {
+  fractionMode: false,
+  darkMode: false,
+};
+
 export type AppContextType = {
   recipes: RecipeBook;
   saveRecipes: (recipes: RecipeBook) => Promise<void>;
-  fractionMode: boolean;
-  toggleFractionMode: (mode: boolean) => Promise<void>;
+  prefs: Preferences;
+  togglePreference: (pref: keyof Preferences, mode: boolean) => Promise<void>;
   alerts: AppAlert[];
   setAlerts: (alerts: AppAlert[]) => void;
 };
@@ -17,8 +27,11 @@ export const AppContext = React.createContext<AppContextType>({
   saveRecipes: (recipes: RecipeBook) => {
     return new Promise((resolve) => {});
   },
-  fractionMode: true,
-  toggleFractionMode: (mode: boolean) => {
+  prefs: {
+    fractionMode: true,
+    darkMode: true,
+  },
+  togglePreference: (pref: keyof Preferences, mode: boolean) => {
     return new Promise((resolve) => {});
   },
   alerts: [],

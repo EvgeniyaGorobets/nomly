@@ -14,12 +14,15 @@ import {
   Theme,
   ColorModeManager,
   AppAlert,
+  Preferences,
+  defaultPreferences,
 } from "./src";
 import { fetchData, saveData, storage } from "./src/core/storage";
 
 export default function App() {
   const [recipeBook, setRecipeBook] = useState<RecipeBook>({});
-  const [fractionMode, setFractionMode] = useState<boolean>(false);
+  const [preferences, setPreferences] =
+    useState<Preferences>(defaultPreferences);
   const [alerts, setAlerts] = useState<AppAlert[]>([]);
 
   // two functions that simultaneously take care of:
@@ -40,21 +43,24 @@ export default function App() {
     }
   };
 
-  const toggleFractionMode = async (mode: boolean): Promise<void> => {
-    setFractionMode(mode);
+  const togglePreference = async (
+    pref: keyof Preferences,
+    mode: boolean
+  ): Promise<void> => {
+    setPreferences({ ...preferences, [pref]: mode });
     try {
-      await saveData(storage.FRACTION, mode.toString());
+      await saveData(storage.PREFS, preferences);
     } catch (err) {
       const alert: AppAlert = {
         status: "error",
-        title: "Failed to save fraction-mode preference to storage",
+        title: "Failed to save preferences to storage",
         description: `${err}`,
       };
       setAlerts([...alerts, alert]);
     }
   };
 
-  // Fetch recipe book and fraction mode preferencefrom storage the first time the app loads
+  // Fetch recipe book and preferences from storage the first time the app loads
   useEffect(() => {
     (async () => {
       try {
@@ -72,14 +78,14 @@ export default function App() {
       }
 
       try {
-        const fractionMode: string | null = await fetchData(storage.FRACTION);
-        if (fractionMode) {
-          setFractionMode(fractionMode === "true");
+        const prefs: Preferences | null = await fetchData(storage.PREFS);
+        if (prefs) {
+          setPreferences(prefs);
         }
       } catch (err) {
         const alert: AppAlert = {
           status: "error",
-          title: "Failed to fetch fraction-mode preference from storage",
+          title: "Failed to fetch preferences from storage",
           description: `${err}`,
         };
         setAlerts([...alerts, alert]);
@@ -93,8 +99,8 @@ export default function App() {
         value={{
           recipes: recipeBook,
           saveRecipes: saveRecipes,
-          fractionMode: fractionMode,
-          toggleFractionMode: toggleFractionMode,
+          prefs: preferences,
+          togglePreference,
           alerts: alerts,
           setAlerts: setAlerts,
         }}
