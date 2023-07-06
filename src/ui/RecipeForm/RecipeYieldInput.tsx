@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Input, Column, FormControl, Row, Heading } from "native-base";
+import { TextInput, Text } from "react-native-paper";
 
 import {
   onInputChange,
@@ -69,27 +70,24 @@ export const RecipeYieldInput = ({
   return (
     <Column>
       <Row alignItems="center" w="100%" paddingY="5px">
-        <Heading size="md" w="55%">
-          Recipe Yield
-        </Heading>
+        <Text variant="headlineSmall">Recipe Yield</Text>
         <FormControl isRequired isInvalid={isAmountInvalid()} w="15%">
-          <Input
+          <TextInput
             value={amount}
             onChangeText={onChangeAmount}
             keyboardType="numeric"
-            variant="underlined"
+            mode="outlined"
             textAlign="center"
             onFocus={onAmountFocus}
             onBlur={() => setAmountBlurred(true)}
           />
         </FormControl>
         <FormControl isRequired isInvalid={isUnitsInvalid()} w="30%">
-          <Input
+          <TextInput
             value={units}
             onChangeText={onChangeUnits}
-            variant="underlined"
+            mode="outlined"
             textAlign="center"
-            marginLeft="5px"
             onFocus={onUnitsFocus}
             onBlur={() => setUnitsBlurred(true)}
           />

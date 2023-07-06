@@ -1,5 +1,6 @@
 import React from "react";
-import { Row, Icon, Column, Heading, Text, Pressable } from "native-base";
+import { Row, Icon, Column, Heading, Pressable } from "native-base";
+import { Text, IconButton } from "react-native-paper";
 import { AntDesign } from "@expo/vector-icons";
 
 import type { RecipeErrors } from "../../core/form";
@@ -35,7 +36,7 @@ export const IngredientFormSection = ({
 
   return (
     <Column flex={1} my="10px" paddingBottom="10px">
-      <Heading size="md">Ingredients</Heading>
+      <Text variant="headlineSmall">Ingredients</Text>
       {recipe.ingredients.map((ingredient: Ingredient, i: number) => (
         <IngredientInput
           key={i}
@@ -54,16 +55,13 @@ export const IngredientFormSection = ({
       ))}
       <Pressable onPress={addNewIngredient}>
         <Row alignItems="center">
-          <Icon
-            as={AntDesign}
-            name="plus"
-            size="md"
-            m="5px"
-            _light={{ color: "primary.500" }}
-            _dark={{ color: "primary.300" }}
+          <IconButton
+            icon="plus"
+            size={20}
+            onPress={() => console.log("Pressed")}
           />
           <Column borderBottomWidth={1} flexGrow={1} paddingY="8px">
-            <Text>Add Ingredient</Text>
+            <Text variant="bodyLarge">Add Ingredient</Text>
           </Column>
         </Row>
       </Pressable>
