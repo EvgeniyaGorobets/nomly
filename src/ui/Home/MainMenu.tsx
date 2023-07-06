@@ -1,13 +1,6 @@
 import React, { useContext } from "react";
-import {
-  IconButton,
-  Icon,
-  Menu,
-  Text,
-  Row,
-  Switch,
-  useColorMode,
-} from "native-base";
+import { Switch } from "react-native-paper";
+import { IconButton, Icon, Menu, Text, Row } from "native-base";
 import { AntDesign, Feather, Ionicons } from "@expo/vector-icons";
 
 import { AppContext, AppContextType } from "../../AppContext";
@@ -17,7 +10,6 @@ import type { AppAlert } from "../../core/alert";
 
 export const MainMenu = ({ openModal }: { openModal: () => void }) => {
   const context: AppContextType = useContext(AppContext);
-  const { colorMode, toggleColorMode } = useColorMode();
 
   const tryToImportRecipes = async (): Promise<void> => {
     let recipeBook: RecipeBook | null | undefined;
@@ -137,11 +129,12 @@ export const MainMenu = ({ openModal }: { openModal: () => void }) => {
               _light={{ color: "dark.600" }}
             />
             <Switch
-              size="md"
-              isChecked={colorMode === "dark"}
-              onToggle={toggleColorMode}
+              value={context.prefs.darkMode}
+              onValueChange={() =>
+                context.togglePreference("darkMode", !context.prefs.darkMode)
+              }
               aria-label={
-                colorMode === "light"
+                context.prefs.darkMode
                   ? "switch to dark mode"
                   : "switch to light mode"
               }
@@ -161,11 +154,15 @@ export const MainMenu = ({ openModal }: { openModal: () => void }) => {
               0.75
             </Text>
             <Switch
-              size="md"
-              isChecked={context.fractionMode}
-              onToggle={() => context.toggleFractionMode(!context.fractionMode)}
+              value={context.prefs.fractionMode}
+              onValueChange={() =>
+                context.togglePreference(
+                  "fractionMode",
+                  !context.prefs.fractionMode
+                )
+              }
               aria-label={
-                context.fractionMode
+                context.prefs.fractionMode
                   ? "switch to decimal mode"
                   : "switch to fraction mode"
               }
