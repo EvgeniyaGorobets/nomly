@@ -1,14 +1,6 @@
 import React, { useState } from "react";
-import {
-  Row,
-  Text,
-  Pressable,
-  Box,
-  Column,
-  Input,
-  FormControl,
-  Heading,
-} from "native-base";
+import { View } from "react-native";
+import { Button, HelperText, Text, TextInput } from "react-native-paper";
 
 import { Yield } from "../../core/recipe";
 import { isNumeric } from "../../core/form";
@@ -77,56 +69,54 @@ export const AdjustableYield = ({
   };
 
   return (
-    <Column paddingY="15px" borderBottomWidth={1}>
-      <Heading size="md">Recipe Yield:</Heading>
-      <FormControl isInvalid={isInvalid && isBlurred}>
-        <Column>
-          <Row width="100%" alignItems="center">
-            <Input
-              value={yieldAmount.toString()}
-              isDisabled={!isCustomizable}
-              onChangeText={(text: string) => tryToUpdateYield(text)}
-              onFocus={() => setBlurred(false)}
-              onBlur={() => setBlurred(true)}
-              width="15%"
-              textAlign="center"
-            />
-            <Text width="30%" px="5px">
-              {originalYield.units}
-            </Text>
-            <Pressable onPress={() => updateYield(0, originalYield.amount)}>
-              <Box {...getButtonStyle(selected, 0).button} width="35px">
-                <Text {...getButtonStyle(selected, 0).text}>x1</Text>
-              </Box>
-            </Pressable>
-            <Pressable onPress={() => updateYield(1, originalYield.amount * 2)}>
-              <Box {...getButtonStyle(selected, 1).button} width="35px">
-                <Text {...getButtonStyle(selected, 1).text}>x2</Text>
-              </Box>
-            </Pressable>
-            <Pressable onPress={() => updateYield(2, originalYield.amount * 4)}>
-              <Box {...getButtonStyle(selected, 2).button} width="35px">
-                <Text {...getButtonStyle(selected, 2).text}>x4</Text>
-              </Box>
-            </Pressable>
-            <Pressable
-              onPress={() => {
-                setSelected(3);
-                setCustomizable(true);
-              }}
-            >
-              <Box {...getButtonStyle(selected, 3).button}>
-                <Text {...getButtonStyle(selected, 3).text}>Custom</Text>
-              </Box>
-            </Pressable>
-          </Row>
-          <Row width="100%">
-            <FormControl.ErrorMessage>
-              Recipe yield must be a number
-            </FormControl.ErrorMessage>
-          </Row>
-        </Column>
-      </FormControl>
-    </Column>
+    <View>
+      <Text variant="headlineSmall">Recipe Yield:</Text>
+      <View>
+        <View>
+          <TextInput
+            value={yieldAmount.toString()}
+            disabled={!isCustomizable}
+            onChangeText={(text: string) => tryToUpdateYield(text)}
+            onFocus={() => setBlurred(false)}
+            onBlur={() => setBlurred(true)}
+            textAlign="center"
+            mode="outlined"
+          />
+          <Text variant="bodyLarge">{originalYield.units}</Text>
+          <Button
+            mode="contained-tonal"
+            onPress={() => updateYield(0, originalYield.amount)}
+          >
+            <Text {...getButtonStyle(selected, 0).text}>x1</Text>
+          </Button>
+          <Button
+            mode="contained-tonal"
+            onPress={() => updateYield(1, originalYield.amount * 2)}
+          >
+            <Text {...getButtonStyle(selected, 1).text}>x2</Text>
+          </Button>
+          <Button
+            mode="contained-tonal"
+            onPress={() => updateYield(2, originalYield.amount * 4)}
+          >
+            <Text {...getButtonStyle(selected, 2).text}>x4</Text>
+          </Button>
+          <Button
+            mode="contained-tonal"
+            onPress={() => {
+              setSelected(3);
+              setCustomizable(true);
+            }}
+          >
+            <Text {...getButtonStyle(selected, 3).text}>Custom</Text>
+          </Button>
+        </View>
+        <View>
+          <HelperText type="error" visible={isInvalid && isBlurred}>
+            Recipe yield must be a number
+          </HelperText>
+        </View>
+      </View>
+    </View>
   );
 };

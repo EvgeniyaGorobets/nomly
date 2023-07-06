@@ -1,15 +1,6 @@
 import React, { useContext, useState } from "react";
-import {
-  Center,
-  Row,
-  ScrollView,
-  Column,
-  Heading,
-  Text,
-  Icon,
-  IconButton,
-} from "native-base";
-import { AntDesign } from "@expo/vector-icons";
+import { View, ScrollView } from "react-native";
+import { IconButton, List, Text } from "react-native-paper";
 
 import type { RecipeScreenProps } from "../../Stack";
 import type { Ingredient, Recipe } from "../../core/recipe";
@@ -37,66 +28,55 @@ export const RecipeView = ({ navigation, route }: RecipeScreenProps) => {
   };
 
   return (
-    <Center>
+    <View>
       <Header
         navigation={navigation}
         title={route.params.recipeName}
         rightComponent={
-          <Row flexGrow={0} flexShrink={0} justifyContent="flex-end" margin={0}>
+          <View>
             <IconButton
               onPress={() => {
                 navigation.navigate("Form", {
                   recipeName: route.params.recipeName,
                 });
               }}
-              padding="5px"
-              icon={
-                <Icon
-                  as={AntDesign}
-                  name="edit"
-                  size="lg"
-                  _dark={{ color: "light.400" }}
-                  _light={{ color: "light.50" }}
-                />
-              }
+              icon="square-edit-outline"
             />
             <RecipeMenu recipeName={route.params.recipeName} />
-          </Row>
+          </View>
         }
       />
-      <ScrollView w="100%" px={4}>
+      <ScrollView>
         <AdjustableYield
           originalYield={recipe.yield}
           updateIngredients={updateIngredients}
         />
-        <Column paddingY="15px" borderBottomWidth={1}>
-          <Heading size="md">Ingredients</Heading>
-          <Row>
-            <Column paddingRight="15px">
+        <View>
+          <Text variant="headlineSmall">Ingredients</Text>
+          <View>
+            <View>
               {ingredients.map((ingredient: Ingredient, i: number) => (
-                <Row key={i}>
-                  <Text>
-                    {formatIngredientAmount(ingredient, context.fractionMode)}
-                  </Text>
-                </Row>
+                <List.Item
+                  key={i}
+                  title={formatIngredientAmount(
+                    ingredient,
+                    context.fractionMode
+                  )}
+                />
               ))}
-            </Column>
-            <Column>
+            </View>
+            <View>
               {ingredients.map((ingredient: Ingredient, i: number) => (
-                <Row key={i}>
-                  <Text>{ingredient.name}</Text>
-                </Row>
+                <List.Item key={i} title={ingredient.name} />
               ))}
-            </Column>
-          </Row>
-        </Column>
-        <Column paddingY="15px">
-          <Heading marginBottom="5px" size="md">
-            Notes
-          </Heading>
-          <Text>{recipe.notes}</Text>
-        </Column>
+            </View>
+          </View>
+        </View>
+        <View>
+          <Text variant="headlineSmall">Notes</Text>
+          <Text variant="bodyLarge">{recipe.notes}</Text>
+        </View>
       </ScrollView>
-    </Center>
+    </View>
   );
 };
