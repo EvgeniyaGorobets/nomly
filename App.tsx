@@ -12,6 +12,7 @@ import {
   Stack,
   AppContext,
   Theme,
+  DefaultTheme,
   ColorModeManager,
   AppAlert,
   Preferences,
@@ -105,7 +106,7 @@ export default function App() {
           setAlerts: setAlerts,
         }}
       >
-        <PaperProvider>
+        <PaperProvider theme={DefaultTheme}>
           <NativeBaseProvider theme={Theme} colorModeManager={ColorModeManager}>
             <NavigationContainer>
               <Stack.Navigator

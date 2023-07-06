@@ -1,4 +1,32 @@
+import { ThemeProp } from "react-native-paper/lib/typescript/src/types";
+import {
+  MD3DarkTheme,
+  MD3LightTheme,
+  adaptNavigationTheme,
+} from "react-native-paper";
+import {
+  DarkTheme as NavigationDarkTheme,
+  DefaultTheme as NavigationDefaultTheme,
+} from "@react-navigation/native";
 import { extendTheme } from "native-base";
+import merge from "deepmerge";
+
+const { LightTheme, DarkTheme } = adaptNavigationTheme({
+  reactNavigationLight: NavigationDefaultTheme,
+  reactNavigationDark: NavigationDarkTheme,
+});
+
+const CombinedDefaultTheme = merge(MD3LightTheme, LightTheme);
+const CombinedDarkTheme = merge(MD3DarkTheme, DarkTheme);
+
+export const DefaultTheme: ThemeProp = merge(CombinedDefaultTheme, {
+  colors: {
+    primary: "#4ecca3", // or try "#6cd4b2"
+    onPrimary: "#f9f9fa",
+    primaryContainer: "#6cd4b2",
+    onPrimaryContainer: "#c2f5e4", // this is too dark, needs more contrast
+  },
+});
 
 // extend the theme
 export const Theme = extendTheme({
