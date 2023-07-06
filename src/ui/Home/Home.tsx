@@ -1,14 +1,7 @@
 import React, { useContext, useState } from "react";
-import {
-  Center,
-  Row,
-  Fab,
-  Icon,
-  ScrollView,
-  Heading,
-  Pressable,
-} from "native-base";
-import { AntDesign } from "@expo/vector-icons";
+import { View } from "react-native";
+import { FAB } from "react-native-paper";
+import { Row, ScrollView, Heading, Pressable } from "native-base";
 import { EdgeInsets, useSafeAreaInsets } from "react-native-safe-area-context";
 
 import type { HomeScreenProps } from "../../Stack";
@@ -29,7 +22,7 @@ export const Home = ({ navigation }: HomeScreenProps) => {
   const [isModalOpen, setModalOpen] = useState<boolean>(false);
 
   return (
-    <Center px={4}>
+    <View>
       <Row
         w="100%"
         justifyContent="space-between"
@@ -69,19 +62,13 @@ export const Home = ({ navigation }: HomeScreenProps) => {
             </Pressable>
           ))}
       </ScrollView>
-      <Fab
-        renderInPortal={false}
-        shadow={2}
-        icon={<Icon as={AntDesign} name="plus" size="lg" />}
-        padding="10px"
-        onPress={() => navigation.navigate("Form")}
-      />
+      <FAB icon="plus" onPress={() => navigation.navigate("Form")} />
       <AlertList />
       <RecipeActionSheet
         isOpen={selectedRecipe != ""}
         recipeName={selectedRecipe}
         onClose={() => setSelected("")}
       />
-    </Center>
+    </View>
   );
 };

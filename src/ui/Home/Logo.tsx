@@ -1,5 +1,6 @@
 import React from "react";
-import { Image, useColorModeValue } from "native-base";
+import { Image } from "react-native";
+import { useColorModeValue } from "native-base";
 // @ts-ignore
 import lightLogo from "../../../assets/nomly_logo_light.png";
 // @ts-ignore
@@ -14,10 +15,7 @@ export const Logo = () => {
     <Image
       key={colorMode}
       source={colorMode === "light" ? lightLogo : darkLogo}
-      alt="nomly logo"
-      width="130px"
-      height="40px"
-      marginTop="2px"
+      // alt="nomly logo"  // need higher version of react for alt; might come back to this
     />
   );
 };
