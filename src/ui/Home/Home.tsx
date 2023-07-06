@@ -1,7 +1,6 @@
 import React, { useContext, useState } from "react";
-import { View } from "react-native";
-import { FAB } from "react-native-paper";
-import { Row, ScrollView, Heading, Pressable } from "native-base";
+import { View, ScrollView } from "react-native";
+import { FAB, List } from "react-native-paper";
 import { EdgeInsets, useSafeAreaInsets } from "react-native-safe-area-context";
 
 import type { HomeScreenProps } from "../../Stack";
@@ -23,43 +22,30 @@ export const Home = ({ navigation }: HomeScreenProps) => {
 
   return (
     <View>
-      <Row
-        w="100%"
-        justifyContent="space-between"
-        my="15px"
-        paddingTop={`${insets.top}px`}
-      >
+      <View>
         <Logo />
         <MainMenu openModal={() => setModalOpen(true)} />
-      </Row>
+      </View>
       <DeleteRecipesModal
         isOpen={isModalOpen}
         closeModal={() => setModalOpen(false)}
       />
       <SearchBar query={searchQuery} setQuery={setSearchQuery} />
-      <ScrollView flex={1} w="100%" my="10px">
+      <ScrollView>
         {Object.keys(context.recipes)
           .filter((recipeName: string) =>
             recipeName.toLowerCase().includes(searchQuery.toLowerCase())
           )
           .sort()
           .map((recipeName: string, i: number) => (
-            <Pressable
+            <List.Item
               key={i}
+              title={recipeName}
               onLongPress={() => setSelected(recipeName)}
               onPress={() => {
                 navigation.navigate("Recipe", { recipeName: recipeName });
               }}
-            >
-              <Row
-                w="100%"
-                paddingX="10px"
-                paddingY="15px"
-                borderBottomWidth={1}
-              >
-                <Heading size="sm">{recipeName}</Heading>
-              </Row>
-            </Pressable>
+            />
           ))}
       </ScrollView>
       <FAB icon="plus" onPress={() => navigation.navigate("Form")} />
