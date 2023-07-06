@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { View } from "react-native";
-import { Input, Column, FormControl, Row, Heading } from "native-base";
-import { TextInput, Text } from "react-native-paper";
+import { HelperText, TextInput, Text } from "react-native-paper";
 
 import {
   onInputChange,
@@ -91,14 +90,12 @@ export const RecipeYieldInput = ({
         />
       </View>
       <View>
-        <FormControl
-          isRequired
-          isInvalid={isAmountInvalid() || isUnitsInvalid()}
+        <HelperText
+          type="error"
+          visible={isAmountInvalid() || isUnitsInvalid()}
         >
-          <FormControl.ErrorMessage>
-            {[amountErrorMsg, unitsErrorMsg].join("\n").trim()}
-          </FormControl.ErrorMessage>
-        </FormControl>
+          {[amountErrorMsg, unitsErrorMsg].join("\n").trim()}
+        </HelperText>
       </View>
     </View>
   );

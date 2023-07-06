@@ -1,6 +1,6 @@
 import React, { useContext, useState } from "react";
 import { View } from "react-native";
-import { TextInput } from "react-native-paper";
+import { TextInput, HelperText } from "react-native-paper";
 
 import { AppContext, AppContextType } from "../../AppContext";
 import {
@@ -43,7 +43,6 @@ export const RecipeNameInput = ({
     );
 
   return (
-    //<FormControl isRequired isInvalid={isDirty && isBlurred && errorMsg !== ""}>
     <View>
       <TextInput
         value={recipeName}
@@ -53,9 +52,12 @@ export const RecipeNameInput = ({
         onFocus={onFocus}
         onBlur={onBlur}
       />
+      <HelperText
+        type="error"
+        visible={isDirty && isBlurred && errorMsg !== ""}
+      >
+        {errorMsg}
+      </HelperText>
     </View>
-    //</FormControl>
   );
 };
-
-// <FormControl.ErrorMessage>{errorMsg}</FormControl.ErrorMessage>
