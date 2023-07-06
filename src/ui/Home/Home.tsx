@@ -1,7 +1,6 @@
 import React, { useContext, useState } from "react";
 import { View, ScrollView } from "react-native";
-import { FAB, List } from "react-native-paper";
-import { EdgeInsets, useSafeAreaInsets } from "react-native-safe-area-context";
+import { Appbar, FAB, List } from "react-native-paper";
 
 import type { HomeScreenProps } from "../../Stack";
 import { AppContext, AppContextType } from "../../AppContext";
@@ -14,7 +13,6 @@ import { AlertList } from "./AlertList";
 
 export const Home = ({ navigation }: HomeScreenProps) => {
   const context: AppContextType = useContext(AppContext);
-  const insets: EdgeInsets = useSafeAreaInsets();
 
   const [selectedRecipe, setSelected] = useState<string>("");
   const [searchQuery, setSearchQuery] = useState<string>("");
@@ -22,10 +20,10 @@ export const Home = ({ navigation }: HomeScreenProps) => {
 
   return (
     <View>
-      <View>
+      <Appbar.Header>
         <Logo />
         <MainMenu openModal={() => setModalOpen(true)} />
-      </View>
+      </Appbar.Header>
       <DeleteRecipesModal
         isOpen={isModalOpen}
         closeModal={() => setModalOpen(false)}
