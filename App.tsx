@@ -14,7 +14,6 @@ import {
   Theme,
   DefaultTheme,
   DarkModeTheme,
-  ColorModeManager,
   AppAlert,
   Preferences,
   defaultPreferences,
@@ -110,7 +109,7 @@ export default function App() {
         }}
       >
         <PaperProvider theme={theme}>
-          <NativeBaseProvider theme={Theme} colorModeManager={ColorModeManager}>
+          <NativeBaseProvider theme={Theme}>
             <NavigationContainer>
               <Stack.Navigator
                 screenOptions={{ headerShown: false, animation: "none" }}

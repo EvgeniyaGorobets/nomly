@@ -5,7 +5,6 @@ export {
   Theme,
   DefaultTheme,
   DarkModeTheme,
-  ColorModeManager,
 } from "./ui";
 export { Stack } from "./Stack";
 export { AppContext, Preferences, defaultPreferences } from "./AppContext";
