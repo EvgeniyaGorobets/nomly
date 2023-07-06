@@ -16,15 +16,23 @@ const { LightTheme, DarkTheme } = adaptNavigationTheme({
   reactNavigationDark: NavigationDarkTheme,
 });
 
-const CombinedDefaultTheme = merge(MD3LightTheme, LightTheme);
+const CombinedLightTheme = merge(MD3LightTheme, LightTheme);
 const CombinedDarkTheme = merge(MD3DarkTheme, DarkTheme);
 
-export const DefaultTheme: ThemeProp = merge(CombinedDefaultTheme, {
+export const DefaultTheme: ThemeProp = merge(CombinedLightTheme, {
   colors: {
     primary: "#4ecca3", // or try "#6cd4b2"
     onPrimary: "#f9f9fa",
     primaryContainer: "#6cd4b2",
     onPrimaryContainer: "#c2f5e4", // this is too dark, needs more contrast
+
+    error: "#ef4444",
+  },
+});
+
+export const DarkModeTheme: ThemeProp = merge(CombinedDarkTheme, {
+  colors: {
+    background: "#1f2022",
   },
 });
 

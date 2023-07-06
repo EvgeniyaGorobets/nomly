@@ -13,6 +13,7 @@ import {
   AppContext,
   Theme,
   DefaultTheme,
+  DarkModeTheme,
   ColorModeManager,
   AppAlert,
   Preferences,
@@ -25,6 +26,8 @@ export default function App() {
   const [preferences, setPreferences] =
     useState<Preferences>(defaultPreferences);
   const [alerts, setAlerts] = useState<AppAlert[]>([]);
+
+  const theme = preferences.darkMode ? DarkModeTheme : DefaultTheme;
 
   // two functions that simultaneously take care of:
   // 1. updating the AppContext
@@ -106,7 +109,7 @@ export default function App() {
           setAlerts: setAlerts,
         }}
       >
-        <PaperProvider theme={DefaultTheme}>
+        <PaperProvider theme={theme}>
           <NativeBaseProvider theme={Theme} colorModeManager={ColorModeManager}>
             <NavigationContainer>
               <Stack.Navigator
