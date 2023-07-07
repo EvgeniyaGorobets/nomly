@@ -30,7 +30,8 @@ const decimalToFractionMap = {
   "0.875": "⅞",
 };
 
-const getClosestFraction = (decimal: number): string => {
+// exported for testing only
+export const getClosestFraction = (decimal: number): string => {
   const potentialFractions: string[] = [
     "0",
     ...Object.keys(decimalToFractionMap),
@@ -48,7 +49,8 @@ const getClosestFraction = (decimal: number): string => {
   return potentialFractions[indexOfDelta];
 };
 
-const convertToFraction = (amount: number): string => {
+// exported for testing only
+export const convertToFraction = (amount: number): string => {
   if (amount % 1 === 0) {
     // amount is a whole number
     return amount.toString();
@@ -80,5 +82,8 @@ export const formatIngredientAmount = (
     fractionMode && ["cups", "tbsp", "tsp"].indexOf(ingredient.units) !== -1
       ? convertToFraction(ingredient.amount)
       : roundDecimal(ingredient.amount);
-  return `${amount} ${ingredient.units}`;
+
+  const unitString: string =
+    ingredient.units !== "N/A" ? ` ${ingredient.units}` : "";
+  return `${amount}${unitString}`;
 };
