@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { View } from "react-native";
 import { HelperText, TextInput, IconButton } from "react-native-paper";
-import { Select } from "native-base";
+import DropDown from "react-native-paper-dropdown";
 
 import { UNITS, Unit, Ingredient } from "../../core/recipe";
 import {
@@ -30,6 +30,8 @@ export const IngredientInput: React.FC<IngredientInputProps> = ({
   const [isNameDirty, setNameDirty] = useState<boolean>(false);
   const [isNameBlurred, setNameBlurred] = useState<boolean>(true);
   const [nameErrorMsg, setNameErrorMsg] = useState<string>("");
+
+  const [showDropDown, setShowDropDown] = useState(false);
 
   const isNameInvalid = () =>
     isNameDirty && isNameBlurred && nameErrorMsg !== "";
@@ -122,20 +124,18 @@ export const IngredientInput: React.FC<IngredientInputProps> = ({
             onBlur={() => setAmountBlurred(true)}
           />
         </View>
-        <Select
-          selectedValue={ingredient.units}
-          accessibilityLabel="Choose Ingredient Units"
-          _selectedItem={{ bg: "teal.600" }}
-          onValueChange={(newUnit: string) => updateUnits(newUnit as Unit)}
-          borderRadius={0}
-          borderTopWidth={0}
-          borderLeftWidth={0}
-          borderRightWidth={0}
-        >
-          {UNITS.map((unit: Unit) => (
-            <Select.Item label={unit} value={unit} key={unit} />
-          ))}
-        </Select>
+        <DropDown
+          label={"Units"}
+          mode={"outlined"}
+          visible={showDropDown}
+          showDropDown={() => setShowDropDown(true)}
+          onDismiss={() => setShowDropDown(false)}
+          value={ingredient.units}
+          setValue={(_value: any) => updateUnits(_value as Unit)}
+          list={UNITS.map((unit: Unit) => {
+            return { label: unit, value: unit };
+          })}
+        />
       </View>
       <View>
         <HelperText type="error" visible={isNameInvalid() || isAmountInvalid()}>
