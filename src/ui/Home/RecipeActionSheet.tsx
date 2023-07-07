@@ -1,7 +1,9 @@
 import React, { useContext } from "react";
-import { Actionsheet, Icon, Text } from "native-base";
-import { AntDesign } from "@expo/vector-icons";
+import { View } from "react-native";
+import { List } from "react-native-paper";
 import { useNavigation } from "@react-navigation/native";
+import BottomSheet from "@gorhom/bottom-sheet";
+import { Style } from "react-native-paper/lib/typescript/src/components/List/utils";
 
 import { AppContext, AppContextType } from "../../AppContext";
 import type { HomeScreenProps } from "../../Stack";
@@ -24,46 +26,39 @@ export const RecipeActionSheet: React.FC<RecipeActionProps> = ({
   const navigation = useNavigation<NavigationProp>();
 
   return (
-    <Actionsheet isOpen={isOpen} onClose={onClose}>
-      <Actionsheet.Content>
-        <Actionsheet.Item
-          startIcon={<Icon as={AntDesign} size="6" name="edit" />}
+    <BottomSheet index={0} snapPoints={["25%"]}>
+      <View>
+        <List.Item
+          title="Edit Recipe"
+          left={(props: { color: string; style: Style }) => (
+            <List.Icon {...props} icon="pencil" />
+          )}
           onPress={() => {
             navigation.navigate("Form", { recipeName: recipeName });
             onClose();
           }}
-        >
-          Edit recipe
-        </Actionsheet.Item>
-        <Actionsheet.Item
-          startIcon={<Icon as={AntDesign} size="6" name="copy1" />}
+        />
+        <List.Item
+          title="Clone Recipe"
+          left={(props: { color: string; style: Style }) => (
+            <List.Icon {...props} icon="content-copy" />
+          )}
           onPress={() => {
             context.saveRecipes(cloneRecipe(context.recipes, recipeName));
             onClose();
           }}
-        >
-          Clone recipe
-        </Actionsheet.Item>
-        <Actionsheet.Item
-          startIcon={
-            <Icon
-              as={AntDesign}
-              size="6"
-              name="delete"
-              _dark={{ color: "error.400" }}
-              _light={{ color: "error.500" }}
-            />
-          }
+        />
+        <List.Item
+          title="Delete Recipe"
+          left={(props: { color: string; style: Style }) => (
+            <List.Icon {...props} icon="delete-outline" />
+          )}
           onPress={() => {
             context.saveRecipes(deleteRecipe(context.recipes, recipeName));
             onClose();
           }}
-        >
-          <Text _dark={{ color: "error.400" }} _light={{ color: "error.500" }}>
-            Delete recipe
-          </Text>
-        </Actionsheet.Item>
-      </Actionsheet.Content>
-    </Actionsheet>
+        />
+      </View>
+    </BottomSheet>
   );
 };
