@@ -13,7 +13,8 @@ export const adjustIngredientAmounts = (
   }));
 };
 
-const roundDecimal = (decimal: number): string => {
+// exported for testing only
+export const roundDecimal = (decimal: number): string => {
   return Number(decimal.toFixed(3)).toString();
 };
 
