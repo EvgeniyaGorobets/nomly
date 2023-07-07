@@ -8,7 +8,6 @@ import {
   DarkTheme as NavigationDarkTheme,
   DefaultTheme as NavigationDefaultTheme,
 } from "@react-navigation/native";
-import { extendTheme } from "native-base";
 import merge from "deepmerge";
 
 const { LightTheme, DarkTheme } = adaptNavigationTheme({
@@ -37,7 +36,7 @@ export const DarkModeTheme: ThemeProp = merge(CombinedDarkTheme, {
 });
 
 // extend the theme
-export const Theme = extendTheme({
+const NativeBaseTheme = {
   colors: {
     primary: {
       50: "#c2f5e4",
@@ -184,10 +183,4 @@ export const Theme = extendTheme({
     useSystemColorMode: false,
     initialColorMode: "light",
   },
-});
-
-// not sure what the stuff below is for
-type MyThemeType = typeof Theme;
-declare module "native-base" {
-  interface ICustomTheme extends MyThemeType {}
-}
+};

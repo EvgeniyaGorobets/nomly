@@ -2,7 +2,6 @@ export {
   Home,
   RecipeForm,
   RecipeView,
-  Theme,
   DefaultTheme,
   DarkModeTheme,
 } from "./ui";

@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { NativeBaseProvider } from "native-base";
 import { PaperProvider } from "react-native-paper";
 import { NavigationContainer } from "@react-navigation/native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
@@ -11,7 +10,6 @@ import {
   RecipeView,
   Stack,
   AppContext,
-  Theme,
   DefaultTheme,
   DarkModeTheme,
   AppAlert,
@@ -109,17 +107,15 @@ export default function App() {
         }}
       >
         <PaperProvider theme={theme}>
-          <NativeBaseProvider theme={Theme}>
-            <NavigationContainer>
-              <Stack.Navigator
-                screenOptions={{ headerShown: false, animation: "none" }}
-              >
-                <Stack.Screen name="Home" component={Home} />
-                <Stack.Screen name="Form" component={RecipeForm} />
-                <Stack.Screen name="Recipe" component={RecipeView} />
-              </Stack.Navigator>
-            </NavigationContainer>
-          </NativeBaseProvider>
+          <NavigationContainer>
+            <Stack.Navigator
+              screenOptions={{ headerShown: false, animation: "none" }}
+            >
+              <Stack.Screen name="Home" component={Home} />
+              <Stack.Screen name="Form" component={RecipeForm} />
+              <Stack.Screen name="Recipe" component={RecipeView} />
+            </Stack.Navigator>
+          </NavigationContainer>
         </PaperProvider>
       </AppContext.Provider>
     </SafeAreaProvider>
