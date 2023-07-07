@@ -1,6 +1,6 @@
 import React, { useContext, useState } from "react";
 import { View, ScrollView } from "react-native";
-import { Button } from "react-native-paper";
+import { Appbar, Button } from "react-native-paper";
 
 import type { RecipeBook, Recipe, Yield } from "../../core/recipe";
 import type { RecipeErrors } from "../../core/form";
@@ -8,7 +8,6 @@ import type { RecipeFormProps } from "../../Stack";
 import { addRecipe, updateRecipe } from "../../core/recipe";
 import { blankRecipe, getInitialErrors } from "../../core/form";
 import { AppContext, AppContextType } from "../../AppContext";
-import { Header } from "../generic/Header";
 import { RecipeYieldInput } from "./RecipeYieldInput";
 import { RecipeNameInput } from "./RecipeNameInput";
 import { RecipeNotesInput } from "./RecipeNotesInput";
@@ -56,10 +55,12 @@ export const RecipeForm = ({ navigation, route }: RecipeFormProps) => {
 
   return (
     <View>
-      <Header
-        navigation={navigation}
-        title={isNewRecipe(route) ? "Add Recipe" : "Edit Recipe"}
-      />
+      <Appbar.Header>
+        <Appbar.BackAction onPress={() => navigation.goBack()} />
+        <Appbar.Content
+          title={isNewRecipe(route) ? "Add Recipe" : "Edit Recipe"}
+        />
+      </Appbar.Header>
       <ScrollView>
         <View>
           <RecipeNameInput

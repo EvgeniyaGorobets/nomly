@@ -1,11 +1,10 @@
 import React, { useContext, useState } from "react";
 import { View, ScrollView } from "react-native";
-import { IconButton, List, Text } from "react-native-paper";
+import { Appbar, List, Text } from "react-native-paper";
 
 import type { RecipeScreenProps } from "../../Stack";
 import type { Ingredient, Recipe } from "../../core/recipe";
 import { AppContext, AppContextType } from "../../AppContext";
-import { Header } from "../generic/Header";
 import { AdjustableYield } from "./AdjustableYield";
 import {
   adjustIngredientAmounts,
@@ -29,23 +28,19 @@ export const RecipeView = ({ navigation, route }: RecipeScreenProps) => {
 
   return (
     <View>
-      <Header
-        navigation={navigation}
-        title={route.params.recipeName}
-        rightComponent={
-          <View>
-            <IconButton
-              onPress={() => {
-                navigation.navigate("Form", {
-                  recipeName: route.params.recipeName,
-                });
-              }}
-              icon="square-edit-outline"
-            />
-            <RecipeMenu recipeName={route.params.recipeName} />
-          </View>
-        }
-      />
+      <Appbar.Header>
+        <Appbar.BackAction onPress={() => navigation.goBack()} />
+        <Appbar.Content title={route.params.recipeName} />
+        <Appbar.Action
+          icon="pencil"
+          onPress={() => {
+            navigation.navigate("Form", {
+              recipeName: route.params.recipeName,
+            });
+          }}
+        />
+        <RecipeMenu recipeName={route.params.recipeName} />
+      </Appbar.Header>
       <ScrollView>
         <AdjustableYield
           originalYield={recipe.yield}
@@ -60,7 +55,7 @@ export const RecipeView = ({ navigation, route }: RecipeScreenProps) => {
                   key={i}
                   title={formatIngredientAmount(
                     ingredient,
-                    context.fractionMode
+                    context.prefs.fractionMode
                   )}
                 />
               ))}
