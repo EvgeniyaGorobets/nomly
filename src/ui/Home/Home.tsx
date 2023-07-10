@@ -22,7 +22,7 @@ export const Home = ({ navigation }: HomeScreenProps) => {
     <View>
       <Appbar.Header>
         <Logo />
-        <MainMenu openModal={() => setModalOpen(true)} />
+        <MainMenu openDeleteRecipesModal={() => setModalOpen(true)} />
       </Appbar.Header>
       <DeleteRecipesModal
         isOpen={isModalOpen}

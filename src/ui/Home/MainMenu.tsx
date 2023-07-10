@@ -21,7 +21,11 @@ const PrefsMenuItemStyle: ViewStyle = {
   alignItems: "center",
 };
 
-export const MainMenu = ({ openModal }: { openModal: () => void }) => {
+export const MainMenu = ({
+  openDeleteRecipesModal,
+}: {
+  openDeleteRecipesModal: () => void;
+}) => {
   const context: AppContextType = useContext(AppContext);
   const [isVisible, setVisibility] = useState<boolean>(false);
   const toggleVisiblity = () => {
@@ -75,7 +79,11 @@ export const MainMenu = ({ openModal }: { openModal: () => void }) => {
         visible={isVisible}
         onDismiss={toggleVisiblity}
         anchor={
-          <Appbar.Action icon="dots-vertical" onPress={toggleVisiblity} />
+          <Appbar.Action
+            icon="dots-vertical"
+            onPress={toggleVisiblity}
+            accessibilityHint="Toggle main menu"
+          />
         }
         anchorPosition="bottom"
       >
@@ -93,7 +101,7 @@ export const MainMenu = ({ openModal }: { openModal: () => void }) => {
         <Menu.Item
           title="Delete all recipes"
           leadingIcon="upload"
-          onPress={openModal}
+          onPress={openDeleteRecipesModal}
         />
         <Divider />
         <Text variant="titleMedium">Preferences</Text>
