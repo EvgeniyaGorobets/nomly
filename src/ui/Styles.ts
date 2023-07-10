@@ -10,3 +10,9 @@ export const FlexStyles = StyleSheet.create({
     flexDirection: "column",
   },
 });
+
+export const ContainerStyles = StyleSheet.create({
+  screen: {
+    height: "100%",
+  },
+});

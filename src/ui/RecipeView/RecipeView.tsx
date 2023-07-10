@@ -12,6 +12,8 @@ import {
 } from "../../core/ingredient-amounts";
 import { RecipeMenu } from "./RecipeMenu";
 
+import { ContainerStyles } from "../Styles";
+
 export const RecipeView = ({ navigation, route }: RecipeScreenProps) => {
   const context: AppContextType = useContext(AppContext);
   const recipe: Recipe = context.recipes[route.params.recipeName];
@@ -27,7 +29,7 @@ export const RecipeView = ({ navigation, route }: RecipeScreenProps) => {
   };
 
   return (
-    <View>
+    <View style={ContainerStyles.screen}>
       <Appbar.Header>
         <Appbar.BackAction onPress={() => navigation.goBack()} />
         <Appbar.Content title={route.params.recipeName} />

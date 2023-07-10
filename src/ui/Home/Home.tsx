@@ -10,6 +10,7 @@ import { SearchBar } from "./SearchBar";
 import { Logo } from "./Logo";
 import { DeleteRecipesModal } from "./DeleteRecipesModal";
 import { AlertList } from "./AlertList";
+import { ContainerStyles } from "../Styles";
 
 export const Home = ({ navigation }: HomeScreenProps) => {
   const context: AppContextType = useContext(AppContext);
@@ -19,7 +20,7 @@ export const Home = ({ navigation }: HomeScreenProps) => {
   const [isModalOpen, setModalOpen] = useState<boolean>(false);
 
   return (
-    <View>
+    <View style={ContainerStyles.screen}>
       <Appbar.Header>
         <Logo />
         <MainMenu openDeleteRecipesModal={() => setModalOpen(true)} />
