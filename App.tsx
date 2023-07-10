@@ -107,7 +107,7 @@ export default function App() {
         }}
       >
         <PaperProvider theme={theme}>
-          <NavigationContainer>
+          <NavigationContainer theme={theme}>
             <Stack.Navigator
               screenOptions={{ headerShown: false, animation: "none" }}
             >
