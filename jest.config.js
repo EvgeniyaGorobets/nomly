@@ -14,4 +14,5 @@ module.exports = {
       "|react-native-vector-icons" +
       ")/)",
   ],
+  setupFilesAfterEnv: ["./jest.setup.ts"],
 };
