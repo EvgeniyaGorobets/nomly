@@ -1,6 +1,6 @@
 import { StyleSheet } from "react-native";
 
-export const FlexStyles = StyleSheet.create({
+export const Styles = StyleSheet.create({
   row: {
     display: "flex",
     flexDirection: "row",
@@ -9,10 +9,13 @@ export const FlexStyles = StyleSheet.create({
     display: "flex",
     flexDirection: "column",
   },
-});
-
-export const ContainerStyles = StyleSheet.create({
   screen: {
     height: "100%",
+  },
+  fab: {
+    position: "absolute",
+    margin: 16,
+    right: 0,
+    bottom: 0,
   },
 });

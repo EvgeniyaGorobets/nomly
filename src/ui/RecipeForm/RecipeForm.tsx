@@ -13,7 +13,7 @@ import { RecipeNameInput } from "./RecipeNameInput";
 import { RecipeNotesInput } from "./RecipeNotesInput";
 import { IngredientFormSection } from "./IngredientFormSection";
 
-import { ContainerStyles } from "../Styles";
+import { Styles } from "../Styles";
 
 type RouteProp = RecipeFormProps["route"];
 
@@ -56,7 +56,7 @@ export const RecipeForm = ({ navigation, route }: RecipeFormProps) => {
   };
 
   return (
-    <View style={ContainerStyles.screen}>
+    <View style={Styles.screen}>
       <Appbar.Header>
         <Appbar.BackAction onPress={() => navigation.goBack()} />
         <Appbar.Content

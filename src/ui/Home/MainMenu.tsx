@@ -10,13 +10,13 @@ import {
 } from "react-native-paper";
 
 import { AppContext, AppContextType } from "../../AppContext";
-import { FlexStyles } from "../Styles";
+import { Styles } from "../Styles";
 import { exportRecipeBook, importRecipeBook } from "../../core/backup";
 import type { RecipeBook } from "../../core/recipe";
 import type { AppAlert } from "../../core/alert";
 
 const PrefsMenuItemStyle: ViewStyle = {
-  ...FlexStyles.row,
+  ...Styles.row,
   justifyContent: "space-around",
   alignItems: "center",
 };
