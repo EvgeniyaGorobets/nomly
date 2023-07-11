@@ -32,6 +32,11 @@ export const DarkModeTheme = merge(CombinedDarkTheme, {
   colors: {
     background: "#1f2022",
   },
+  fonts: {
+    titleMedium: {
+      fontSize: 20,
+    },
+  },
 });
 
 // extend the theme

@@ -1,18 +1,20 @@
 import React, { useContext, useState } from "react";
-import { View, ScrollView } from "react-native";
-import { Appbar, List, Text } from "react-native-paper";
+import { ScrollView, View } from "react-native";
+import { Appbar, Divider, List, Text } from "react-native-paper";
 
+import { AdjustableYield } from "./AdjustableYield";
+import { RecipeMenu } from "./RecipeMenu";
+
+import { Styles } from "../Styles";
+import { AppContext } from "../../AppContext";
+
+import type { AppContextType } from "../../AppContext";
 import type { RecipeScreenProps } from "../../Stack";
 import type { Ingredient, Recipe } from "../../core/recipe";
-import { AppContext, AppContextType } from "../../AppContext";
-import { AdjustableYield } from "./AdjustableYield";
 import {
   adjustIngredientAmounts,
   formatIngredientAmount,
 } from "../../core/ingredient-amounts";
-import { RecipeMenu } from "./RecipeMenu";
-
-import { Styles } from "../Styles";
 
 export const RecipeView = ({ navigation, route }: RecipeScreenProps) => {
   const context: AppContextType = useContext(AppContext);
@@ -43,7 +45,7 @@ export const RecipeView = ({ navigation, route }: RecipeScreenProps) => {
         />
         <RecipeMenu recipeName={route.params.recipeName} />
       </Appbar.Header>
-      <ScrollView>
+      <ScrollView style={Styles.content}>
         <AdjustableYield
           originalYield={recipe.yield}
           updateIngredients={updateIngredients}
@@ -69,6 +71,7 @@ export const RecipeView = ({ navigation, route }: RecipeScreenProps) => {
             </View>
           </View>
         </View>
+        <Divider />
         <View>
           <Text variant="headlineSmall">Notes</Text>
           <Text variant="bodyLarge">{recipe.notes}</Text>

@@ -12,6 +12,10 @@ export const Styles = StyleSheet.create({
   screen: {
     height: "100%",
   },
+  content: {
+    marginHorizontal: 15,
+    marginVertical: 10,
+  },
   fab: {
     position: "absolute",
     margin: 16,
