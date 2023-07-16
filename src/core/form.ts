@@ -102,18 +102,18 @@ export type ParentStateFunctions = {
 // Generic function for updating inputs
 export const onInputChange = (
   inputText: string,
-  validateInput: (value: string) => [boolean, string],
+  validateInput: (value: string) => string,
   input: InputStateFunctions,
   parent: ParentStateFunctions
 ) => {
-  const [isValidInput, errMsg]: [boolean, string] = validateInput(inputText);
+  const errorMessage: string = validateInput(inputText);
 
   // Make changes within the component
   input.setInput(inputText);
-  input.setErrorMsg(errMsg);
+  input.setErrorMsg(errorMessage);
 
   // Propagate changes to parent
-  if (isValidInput) {
+  if (errorMessage === "") {
     parent.updateValue(inputText);
     parent.updateErrors(false);
   } else {

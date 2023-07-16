@@ -56,10 +56,9 @@ describe("isNumeric", () => {
 
 describe("validateRecipeName", () => {
   it("returns false for the empty string", () => {
-    expect(validateRecipeName("old recipe name", "", {})).toStrictEqual([
-      false,
-      "Recipe name cannot be empty",
-    ]);
+    expect(validateRecipeName("old recipe name", "", {})).toStrictEqual(
+      "Recipe name cannot be empty"
+    );
   });
 
   it("returns false for the strings longer than 100 characters", () => {
@@ -69,10 +68,7 @@ describe("validateRecipeName", () => {
         "This is a super long recipe name that is one hundred and one characters long; this is not readable!!!",
         {}
       )
-    ).toStrictEqual([
-      false,
-      "Recipe name cannot be longer than 100 characters",
-    ]);
+    ).toStrictEqual("Recipe name cannot be longer than 100 characters");
   });
 
   it("returns false if this recipe name already exists in the recipe book", () => {
@@ -86,7 +82,7 @@ describe("validateRecipeName", () => {
 
     expect(
       validateRecipeName("", "Quinoa Broccoli Casserole", recipeBook)
-    ).toStrictEqual([false, "A recipe with this name already exists"]);
+    ).toStrictEqual("A recipe with this name already exists");
   });
 
   it("returns true if this is a brand new recipe name", () => {
@@ -100,7 +96,7 @@ describe("validateRecipeName", () => {
 
     expect(
       validateRecipeName("", "Quinoa Broccoli Casserole", recipeBook)
-    ).toStrictEqual([true, ""]);
+    ).toStrictEqual("");
   });
 
   it("returns true if the recipe name is unchanged", () => {
@@ -118,49 +114,44 @@ describe("validateRecipeName", () => {
         "Quinoa Broccoli Casserole",
         recipeBook
       )
-    ).toStrictEqual([true, ""]);
+    ).toStrictEqual("");
   });
 });
 
 describe("validateRecipeYieldAmount", () => {
   it("returns false for the empty string", () => {
-    expect(validateRecipeYieldAmount("")).toStrictEqual([
-      false,
-      "Recipe yield is required",
-    ]);
+    expect(validateRecipeYieldAmount("")).toStrictEqual(
+      "Recipe yield is required"
+    );
   });
 
   it("returns false for non-numeric strings", () => {
-    expect(validateRecipeYieldAmount("three")).toStrictEqual([
-      false,
-      "Recipe yield must be a number",
-    ]);
+    expect(validateRecipeYieldAmount("three")).toStrictEqual(
+      "Recipe yield must be a number"
+    );
   });
 
   it("returns false for negative numbers and zero", () => {
-    expect(validateRecipeYieldAmount("0")).toStrictEqual([
-      false,
-      "Recipe yield must be greater than zero",
-    ]);
-    expect(validateRecipeYieldAmount("-3")).toStrictEqual([
-      false,
-      "Recipe yield must be greater than zero",
-    ]);
+    expect(validateRecipeYieldAmount("0")).toStrictEqual(
+      "Recipe yield must be greater than zero"
+    );
+    expect(validateRecipeYieldAmount("-3")).toStrictEqual(
+      "Recipe yield must be greater than zero"
+    );
   });
 
   it("returns true for positive numbers", () => {
-    expect(validateRecipeYieldAmount("10")).toStrictEqual([true, ""]);
+    expect(validateRecipeYieldAmount("10")).toStrictEqual("");
     // For now, I'm allowing decimals in the recipe yield
-    expect(validateRecipeYieldAmount("3.5")).toStrictEqual([true, ""]);
+    expect(validateRecipeYieldAmount("3.5")).toStrictEqual("");
   });
 });
 
 describe("validateIngredientName", () => {
   it("returns false for the empty string", () => {
-    expect(validateIngredientName("")).toStrictEqual([
-      false,
-      "Ingredient name cannot be empty",
-    ]);
+    expect(validateIngredientName("")).toStrictEqual(
+      "Ingredient name cannot be empty"
+    );
   });
 
   it("returns false for strings greater than 50 characters", () => {
@@ -168,69 +159,58 @@ describe("validateIngredientName", () => {
       validateIngredientName(
         "super long ingredient name that is longer than 50 characters"
       )
-    ).toStrictEqual([
-      false,
-      "Ingredient name cannot be longer than 50 characters",
-    ]);
+    ).toStrictEqual("Ingredient name cannot be longer than 50 characters");
   });
 
   it("returns true for all other strings", () => {
-    expect(validateIngredientName("chocolate chips")).toStrictEqual([true, ""]);
-    expect(validateIngredientName("0ni0n5")).toStrictEqual([true, ""]);
+    expect(validateIngredientName("chocolate chips")).toStrictEqual("");
+    expect(validateIngredientName("0ni0n5")).toStrictEqual("");
   });
 });
 
 describe("validateRecipeYieldUnits", () => {
   it("returns false for the empty string", () => {
-    expect(validateRecipeYieldUnits("")).toStrictEqual([
-      false,
-      "Recipe yield units cannot be empty",
-    ]);
+    expect(validateRecipeYieldUnits("")).toStrictEqual(
+      "Recipe yield units cannot be empty"
+    );
   });
 
   it("returns false for strings greater than 25 characters", () => {
     expect(
       validateRecipeYieldUnits("mouth-watering slices of pie")
-    ).toStrictEqual([
-      false,
-      "Recipe yield units cannot be longer than 25 characters",
-    ]);
+    ).toStrictEqual("Recipe yield units cannot be longer than 25 characters");
   });
 
   it("returns true for all other strings", () => {
-    expect(validateRecipeYieldUnits("cookies")).toStrictEqual([true, ""]);
-    expect(validateRecipeYieldUnits("HOT DOGS")).toStrictEqual([true, ""]);
+    expect(validateRecipeYieldUnits("cookies")).toStrictEqual("");
+    expect(validateRecipeYieldUnits("HOT DOGS")).toStrictEqual("");
   });
 });
 
 describe("validateIngredientAmount", () => {
   it("returns false for the empty string", () => {
-    expect(validateIngredientAmount("")).toStrictEqual([
-      false,
-      "Ingredient amount is required",
-    ]);
+    expect(validateIngredientAmount("")).toStrictEqual(
+      "Ingredient amount is required"
+    );
   });
 
   it("returns false for non-numeric strings", () => {
-    expect(validateIngredientAmount("three")).toStrictEqual([
-      false,
-      "Ingredient amount must be a number",
-    ]);
+    expect(validateIngredientAmount("three")).toStrictEqual(
+      "Ingredient amount must be a number"
+    );
   });
 
   it("returns false for negative numbers and zero", () => {
-    expect(validateIngredientAmount("0")).toStrictEqual([
-      false,
-      "Ingredient amount must be greater than zero",
-    ]);
-    expect(validateIngredientAmount("-3")).toStrictEqual([
-      false,
-      "Ingredient amount must be greater than zero",
-    ]);
+    expect(validateIngredientAmount("0")).toStrictEqual(
+      "Ingredient amount must be greater than zero"
+    );
+    expect(validateIngredientAmount("-3")).toStrictEqual(
+      "Ingredient amount must be greater than zero"
+    );
   });
 
   it("returns true for positive numbers", () => {
-    expect(validateIngredientAmount("10")).toStrictEqual([true, ""]);
-    expect(validateIngredientAmount("3.5")).toStrictEqual([true, ""]);
+    expect(validateIngredientAmount("10")).toStrictEqual("");
+    expect(validateIngredientAmount("3.5")).toStrictEqual("");
   });
 });
