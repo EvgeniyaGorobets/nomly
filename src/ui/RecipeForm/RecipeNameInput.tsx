@@ -3,11 +3,8 @@ import { View } from "react-native";
 import { TextInput, HelperText } from "react-native-paper";
 
 import { AppContext, AppContextType } from "../../AppContext";
-import {
-  onInputChange,
-  validateRecipeName,
-  ParentStateFunctions,
-} from "../../core/form";
+import { validateRecipeName } from "../../core/form-validation";
+import { onInputChange, ParentStateFunctions } from "../../core/form";
 
 type RecipeNameProps = {
   initialName: string;

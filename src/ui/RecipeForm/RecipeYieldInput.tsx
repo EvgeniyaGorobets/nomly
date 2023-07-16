@@ -5,11 +5,10 @@ import { HelperText, TextInput, Text } from "react-native-paper";
 import { Styles } from "../Styles";
 
 import {
-  onInputChange,
   validateRecipeYieldAmount,
   validateRecipeYieldUnits,
-  ParentStateFunctions,
-} from "../../core/form";
+} from "../../core/form-validation";
+import { onInputChange, ParentStateFunctions } from "../../core/form";
 import type { Yield } from "../../core/recipe";
 
 type RecipeYieldProps = {

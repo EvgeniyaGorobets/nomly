@@ -1,4 +1,4 @@
-import type { RecipeBook, Recipe, Ingredient } from "./recipe";
+import type { Recipe, Ingredient } from "./recipe";
 
 // * ------ FORM VALIDATION ------ *
 // * Functions to help validate the form/recipe
@@ -32,64 +32,6 @@ export const getInitialErrors = (
   });
 
   return errors;
-};
-
-export const isNumeric = (amount: string): boolean => {
-  return !isNaN(Number(amount));
-};
-
-export const validateRecipeName = (
-  initialName: string,
-  newName: string,
-  recipeBook: RecipeBook
-): [boolean, string] => {
-  if (newName.length == 0) {
-    return [false, "Recipe name cannot be empty"];
-  } else if (newName !== initialName && newName in recipeBook) {
-    return [false, "A recipe with this name already exists"];
-  } else {
-    return [true, ""];
-  }
-};
-
-export const validateRecipeYieldAmount = (
-  amount: string
-): [boolean, string] => {
-  if (!isNumeric(amount)) {
-    return [false, "Yield must be an integer"];
-  } else if (Number(amount) <= 0) {
-    return [false, "Recipe yield must be greater than zero"];
-  } else if (!Number.isInteger(Number(amount))) {
-    return [false, "Recipe yield cannot be a decimal"];
-  } else {
-    return [true, ""];
-  }
-};
-
-export const validateRecipeYieldUnits = (units: string): [boolean, string] => {
-  if (units.length === 0) {
-    return [false, "Recipe yield units cannot be empty"];
-  } else {
-    return [true, ""];
-  }
-};
-
-export const validateIngredientName = (name: string): [boolean, string] => {
-  if (name.length === 0) {
-    return [false, "Ingredient name cannot be empty"];
-  } else {
-    return [true, ""];
-  }
-};
-
-export const validateIngredientAmount = (amount: string): [boolean, string] => {
-  if (!isNumeric(amount)) {
-    return [false, "Ingredient amount must be a number"];
-  } else if (Number(amount) <= 0) {
-    return [false, "Ingredient amount must be greater than zero"];
-  } else {
-    return [true, ""];
-  }
 };
 
 // * ------ FORM EDITING ------ *

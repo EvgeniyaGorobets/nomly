@@ -1,6 +1,6 @@
 import React from "react";
 import { View } from "react-native";
-import { Button, Text, IconButton } from "react-native-paper";
+import { Button, Text } from "react-native-paper";
 
 import type { RecipeErrors } from "../../core/form";
 import {

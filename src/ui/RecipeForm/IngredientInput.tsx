@@ -8,10 +8,10 @@ import { Styles } from "../Styles";
 import type { Unit, Ingredient } from "../../core/recipe";
 import { UNITS } from "../../core/recipe";
 import {
-  onInputChange,
   validateIngredientName,
   validateIngredientAmount,
-} from "../../core/form";
+} from "../../core/form-validation";
+import { onInputChange } from "../../core/form";
 
 type IngredientInputProps = {
   ingredient: Ingredient;

@@ -11,7 +11,7 @@ import {
 import { Styles } from "../Styles";
 
 import type { Yield } from "../../core/recipe";
-import { isNumeric } from "../../core/form";
+import { validateRecipeYieldAmount } from "../../core/form-validation";
 
 type AdjustableYieldProps = {
   originalYield: Yield;
@@ -28,6 +28,7 @@ export const AdjustableYield = ({
   const [selected, setSelected] = useState<string>("1");
   const [isCustomizable, setCustomizable] = useState<boolean>(false);
   const [isInvalid, setInvalid] = useState<boolean>(false);
+  const [errorMsg, setErrorMsg] = useState<string>("");
 
   const toggleYield = (value: string) => {
     setSelected(value);
@@ -48,11 +49,13 @@ export const AdjustableYield = ({
 
   const tryToUpdateYield = (newAmount: string) => {
     setYieldAmount(newAmount);
-    if (isNumeric(newAmount)) {
-      setInvalid(false);
+
+    const [isNewYieldValid, errorText] = validateRecipeYieldAmount(newAmount);
+    setInvalid(!isNewYieldValid);
+    setErrorMsg(errorText);
+
+    if (isNewYieldValid) {
       updateIngredients(Number(newAmount));
-    } else {
-      setInvalid(true);
     }
   };
 
@@ -114,7 +117,7 @@ export const AdjustableYield = ({
       </View>
       <View>
         <HelperText type="error" visible={isInvalid}>
-          Recipe yield must be a number
+          {errorMsg}
         </HelperText>
       </View>
       <Divider />
