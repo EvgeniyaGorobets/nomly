@@ -3,7 +3,10 @@ import { View } from "react-native";
 import { HelperText, TextInput, IconButton } from "react-native-paper";
 import DropDown from "react-native-paper-dropdown";
 
-import { UNITS, Unit, Ingredient } from "../../core/recipe";
+import { Styles } from "../Styles";
+
+import type { Unit, Ingredient } from "../../core/recipe";
+import { UNITS } from "../../core/recipe";
 import {
   onInputChange,
   validateIngredientName,
@@ -100,42 +103,66 @@ export const IngredientInput: React.FC<IngredientInputProps> = ({
   };
 
   return (
-    <View>
-      <View>
-        <IconButton icon="close" onPress={deleteIngredient} />
-        <View>
+    <View style={{ ...Styles.row, marginVertical: 10 }}>
+      <View
+        style={{
+          ...Styles.column,
+          width: "10%",
+          alignItems: "flex-end",
+        }}
+      >
+        <IconButton
+          icon="close"
+          onPress={deleteIngredient}
+          style={{ paddingTop: 5 }}
+        />
+      </View>
+      <View
+        style={{
+          ...Styles.column,
+          width: "90%",
+        }}
+      >
+        <View style={{ ...Styles.row, marginBottom: 5 }}>
           <TextInput
+            label="Ingredient Name"
             value={ingredientName}
             onChangeText={onChangeName}
             mode="outlined"
             placeholder="Ingredient name"
             onFocus={onNameFocus}
             onBlur={() => setNameBlurred(true)}
+            style={{ width: "100%" }}
           />
         </View>
-        <View>
-          <TextInput
-            value={ingredientAmount}
-            onChangeText={onChangeAmount}
-            keyboardType="numeric"
-            mode="outlined"
-            textAlign="right"
-            onFocus={onAmountFocus}
-            onBlur={() => setAmountBlurred(true)}
-          />
+        <View style={Styles.row}>
+          <View style={{ width: "40%", marginRight: 5 }}>
+            <TextInput
+              label="Amount"
+              value={ingredientAmount}
+              onChangeText={onChangeAmount}
+              keyboardType="numeric"
+              mode="outlined"
+              textAlign="right"
+              onFocus={onAmountFocus}
+              onBlur={() => setAmountBlurred(true)}
+            />
+          </View>
+          <View style={{ flexGrow: 1 }}>
+            <DropDown
+              label="Units"
+              mode={"outlined"}
+              visible={showDropDown}
+              showDropDown={() => setShowDropDown(true)}
+              onDismiss={() => setShowDropDown(false)}
+              value={ingredient.units}
+              setValue={(_value: Unit) => updateUnits(_value)}
+              list={UNITS.map((unit: Unit) => {
+                return { label: unit, value: unit };
+              })}
+            />
+          </View>
         </View>
-        <DropDown
-          label={"Units"}
-          mode={"outlined"}
-          visible={showDropDown}
-          showDropDown={() => setShowDropDown(true)}
-          onDismiss={() => setShowDropDown(false)}
-          value={ingredient.units}
-          setValue={(_value: any) => updateUnits(_value as Unit)}
-          list={UNITS.map((unit: Unit) => {
-            return { label: unit, value: unit };
-          })}
-        />
       </View>
       <View>
         <HelperText type="error" visible={isNameInvalid() || isAmountInvalid()}>

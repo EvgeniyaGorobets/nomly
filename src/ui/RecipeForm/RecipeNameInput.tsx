@@ -23,16 +23,12 @@ export const RecipeNameInput = ({
   const [recipeName, setRecipeName] = useState<string>(initialName);
   const [isDirty, setDirty] = useState<boolean>(false);
   const [errorMsg, setErrorMsg] = useState<string>("");
-  const [isBlurred, setBlurred] = useState<boolean>(true);
 
   const onFocus = () => {
     if (!isDirty) {
       setDirty(true);
     }
-    setBlurred(false);
   };
-
-  const onBlur = () => setBlurred(true);
 
   const onChangeText = (newName: string) =>
     onInputChange(
@@ -42,22 +38,23 @@ export const RecipeNameInput = ({
       parentFunctions
     );
 
+  const showErrorText = () => isDirty && errorMsg !== "";
+
   return (
-    <View>
+    <View style={{ marginBottom: 10 }}>
       <TextInput
         value={recipeName}
         placeholder="Recipe Name"
+        label="Recipe Name"
         onChangeText={onChangeText}
         mode="outlined"
         onFocus={onFocus}
-        onBlur={onBlur}
       />
-      <HelperText
-        type="error"
-        visible={isDirty && isBlurred && errorMsg !== ""}
-      >
-        {errorMsg}
-      </HelperText>
+      {showErrorText() && (
+        <HelperText type="error" visible={showErrorText()}>
+          {errorMsg}
+        </HelperText>
+      )}
     </View>
   );
 };

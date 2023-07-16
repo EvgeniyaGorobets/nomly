@@ -11,7 +11,7 @@ type RecipeNotesProps = {
 
 export const RecipeNotesInput = ({ recipe, setRecipe }: RecipeNotesProps) => {
   return (
-    <View>
+    <View style={{ marginVertical: 10 }}>
       <Text variant="headlineSmall">Notes</Text>
       <TextInput
         value={recipe.notes}

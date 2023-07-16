@@ -34,7 +34,7 @@ export const IngredientFormSection = ({
   };
 
   return (
-    <View>
+    <View style={{ marginVertical: 10 }}>
       <Text variant="headlineSmall">Ingredients</Text>
       {recipe.ingredients.map((ingredient: Ingredient, i: number) => (
         <IngredientInput
@@ -52,17 +52,8 @@ export const IngredientFormSection = ({
           }
         />
       ))}
-      <Button onPress={addNewIngredient}>
-        <View>
-          <IconButton
-            icon="plus"
-            size={20}
-            onPress={() => console.log("Pressed")}
-          />
-          <View>
-            <Text variant="bodyLarge">Add Ingredient</Text>
-          </View>
-        </View>
+      <Button icon="plus" mode="contained-tonal" onPress={addNewIngredient}>
+        <Text variant="bodyLarge">Add Ingredient</Text>
       </Button>
     </View>
   );

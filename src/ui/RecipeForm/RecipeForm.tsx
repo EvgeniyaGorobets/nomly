@@ -1,6 +1,6 @@
 import React, { useContext, useState } from "react";
 import { View, ScrollView } from "react-native";
-import { Appbar, Button } from "react-native-paper";
+import { Appbar, Button, Divider } from "react-native-paper";
 
 import type { RecipeBook, Recipe, Yield } from "../../core/recipe";
 import type { RecipeErrors } from "../../core/form";
@@ -63,7 +63,7 @@ export const RecipeForm = ({ navigation, route }: RecipeFormProps) => {
           title={isNewRecipe(route) ? "Add Recipe" : "Edit Recipe"}
         />
       </Appbar.Header>
-      <ScrollView>
+      <ScrollView style={Styles.content}>
         <View>
           <RecipeNameInput
             initialName={initialRecipeName}
@@ -96,12 +96,14 @@ export const RecipeForm = ({ navigation, route }: RecipeFormProps) => {
                 setErrors({ ...errors, yieldUnits: hasError }),
             }}
           />
+          <Divider />
           <IngredientFormSection
             recipe={recipe}
             setRecipe={setRecipe}
             errors={errors}
             setErrors={setErrors}
           />
+          <Divider />
           <RecipeNotesInput recipe={recipe} setRecipe={setRecipe} />
         </View>
         <View>

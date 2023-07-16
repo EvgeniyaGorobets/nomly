@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import { View } from "react-native";
 import { HelperText, TextInput, Text } from "react-native-paper";
 
+import { Styles } from "../Styles";
+
 import {
   onInputChange,
   validateRecipeYieldAmount,
@@ -23,19 +25,14 @@ export const RecipeYieldInput = ({
 }: RecipeYieldProps) => {
   const [amount, setAmount] = useState<string>(recipeYield.amount.toString());
   const [isAmountDirty, setAmountDirty] = useState<boolean>(false);
-  const [isAmountBlurred, setAmountBlurred] = useState<boolean>(true);
   const [amountErrorMsg, setAmountErrorMsg] = useState<string>("");
 
-  const isAmountInvalid = () =>
-    isAmountDirty && isAmountBlurred && amountErrorMsg !== "";
-
+  const isAmountInvalid = () => isAmountDirty && amountErrorMsg !== "";
   const onAmountFocus = () => {
     if (!isAmountDirty) {
       setAmountDirty(true);
     }
-    setAmountBlurred(false);
   };
-
   const onChangeAmount = (newAmount: string) =>
     onInputChange(
       newAmount,
@@ -46,19 +43,14 @@ export const RecipeYieldInput = ({
 
   const [units, setUnits] = useState<string>(recipeYield.units);
   const [isUnitsDirty, setUnitsDirty] = useState<boolean>(false);
-  const [isUnitsBlurred, setUnitsBlurred] = useState<boolean>(true);
   const [unitsErrorMsg, setUnitsErrorMsg] = useState<string>("");
 
-  const isUnitsInvalid = () =>
-    isUnitsDirty && isUnitsBlurred && unitsErrorMsg !== "";
-
+  const isUnitsInvalid = () => isUnitsDirty && unitsErrorMsg !== "";
   const onUnitsFocus = () => {
     if (!isUnitsDirty) {
       setUnitsDirty(true);
     }
-    setUnitsBlurred(false);
   };
-
   const onChangeUnits = (newUnits: string) =>
     onInputChange(
       newUnits,
@@ -67,35 +59,56 @@ export const RecipeYieldInput = ({
       parentUnitFunctions
     );
 
+  const showErrorText = () => isAmountInvalid() || isUnitsInvalid();
+
   return (
-    <View>
-      <View>
-        <Text variant="headlineSmall">Recipe Yield</Text>
+    <View style={{ marginBottom: 5 }}>
+      <View
+        style={{
+          ...Styles.row,
+          alignItems: "center",
+          marginBottom: 10,
+        }}
+      >
+        <View
+          style={{
+            ...Styles.row,
+            alignItems: "center",
+            height: "100%",
+            marginRight: 10,
+            marginVertical: 10,
+          }}
+        >
+          <Text variant="titleMedium" style={{ paddingTop: 10 }}>
+            Recipe Yield:
+          </Text>
+        </View>
         <TextInput
+          label="Amount"
           value={amount}
           onChangeText={onChangeAmount}
           keyboardType="numeric"
           mode="outlined"
           textAlign="center"
           onFocus={onAmountFocus}
-          onBlur={() => setAmountBlurred(true)}
+          style={{ width: "29%", marginHorizontal: 5 }}
         />
         <TextInput
+          label="Units"
           value={units}
           onChangeText={onChangeUnits}
           mode="outlined"
           textAlign="center"
           onFocus={onUnitsFocus}
-          onBlur={() => setUnitsBlurred(true)}
+          style={{ width: "33%" }}
         />
       </View>
       <View>
-        <HelperText
-          type="error"
-          visible={isAmountInvalid() || isUnitsInvalid()}
-        >
-          {[amountErrorMsg, unitsErrorMsg].join("\n").trim()}
-        </HelperText>
+        {showErrorText() && (
+          <HelperText type="error" visible={showErrorText()}>
+            {[amountErrorMsg, unitsErrorMsg].join("\n").trim()}
+          </HelperText>
+        )}
       </View>
     </View>
   );
