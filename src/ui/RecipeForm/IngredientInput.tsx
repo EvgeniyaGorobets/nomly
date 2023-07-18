@@ -31,13 +31,11 @@ export const IngredientInput: React.FC<IngredientInputProps> = ({
   // Variables and functions to keep track of ingredient name
   const [ingredientName, setIngredientName] = useState<string>(ingredient.name);
   const [isNameDirty, setNameDirty] = useState<boolean>(false);
-  const [isNameBlurred, setNameBlurred] = useState<boolean>(true);
   const [nameErrorMsg, setNameErrorMsg] = useState<string>("");
 
   const [showDropDown, setShowDropDown] = useState(false);
 
-  const isNameInvalid = () =>
-    isNameDirty && isNameBlurred && nameErrorMsg !== "";
+  const isNameInvalid = () => isNameDirty && nameErrorMsg !== "";
 
   const updateName = (newName: string) => {
     updateIngredient({
@@ -50,27 +48,26 @@ export const IngredientInput: React.FC<IngredientInputProps> = ({
     if (!isNameDirty) {
       setNameDirty(true);
     }
-    setNameBlurred(false);
   };
 
-  const onChangeName = (newName: string) =>
+  const onChangeName = (newName: string) => {
+    onNameFocus(); // temporarily firing it here because onFocus() doesn't work with RNTL
     onInputChange(
       newName,
       validateIngredientName,
       { setInput: setIngredientName, setErrorMsg: setNameErrorMsg },
       { updateValue: updateName, updateErrors: setIngredientNameError }
     );
+  };
 
   // variables and functions to keep track of ingredient amount
   const [ingredientAmount, setIngredientAmount] = useState<string>(
     ingredient.amount.toString()
   );
   const [isAmountDirty, setAmountDirty] = useState<boolean>(false);
-  const [isAmountBlurred, setAmountBlurred] = useState<boolean>(true);
   const [amountErrorMsg, setAmountErrorMsg] = useState<string>("");
 
-  const isAmountInvalid = () =>
-    isAmountDirty && isAmountBlurred && amountErrorMsg !== "";
+  const isAmountInvalid = () => isAmountDirty && amountErrorMsg !== "";
 
   const updateAmount = (newAmount: string) => {
     updateIngredient({
@@ -83,16 +80,17 @@ export const IngredientInput: React.FC<IngredientInputProps> = ({
     if (!isAmountDirty) {
       setAmountDirty(true);
     }
-    setAmountBlurred(false);
   };
 
-  const onChangeAmount = (newAmount: string) =>
+  const onChangeAmount = (newAmount: string) => {
+    onAmountFocus(); // temporarily firing it here because onFocus() doesn't work with RNTL
     onInputChange(
       newAmount,
       validateIngredientAmount,
       { setInput: setIngredientAmount, setErrorMsg: setAmountErrorMsg },
       { updateValue: updateAmount, updateErrors: setIngredientAmountError }
     );
+  };
 
   // Function to keep track of ingredient units
   const updateUnits = (newUnits: Unit) => {
@@ -115,6 +113,7 @@ export const IngredientInput: React.FC<IngredientInputProps> = ({
           icon="close"
           onPress={deleteIngredient}
           style={{ paddingTop: 5 }}
+          accessibilityHint="Delete ingredient"
         />
       </View>
       <View
@@ -131,7 +130,6 @@ export const IngredientInput: React.FC<IngredientInputProps> = ({
             mode="outlined"
             placeholder="Ingredient name"
             onFocus={onNameFocus}
-            onBlur={() => setNameBlurred(true)}
             style={{ width: "100%" }}
           />
         </View>
@@ -145,7 +143,6 @@ export const IngredientInput: React.FC<IngredientInputProps> = ({
               mode="outlined"
               textAlign="right"
               onFocus={onAmountFocus}
-              onBlur={() => setAmountBlurred(true)}
             />
           </View>
           <View style={{ flexGrow: 1 }}>
@@ -165,9 +162,14 @@ export const IngredientInput: React.FC<IngredientInputProps> = ({
         </View>
       </View>
       <View>
-        <HelperText type="error" visible={isNameInvalid() || isAmountInvalid()}>
-          {[nameErrorMsg, amountErrorMsg].join("\n").trim()}
-        </HelperText>
+        {(isNameInvalid() || isAmountInvalid()) && (
+          <HelperText
+            type="error"
+            visible={isNameInvalid() || isAmountInvalid()}
+          >
+            {[nameErrorMsg, amountErrorMsg].join("\n").trim()}
+          </HelperText>
+        )}
       </View>
     </View>
   );
