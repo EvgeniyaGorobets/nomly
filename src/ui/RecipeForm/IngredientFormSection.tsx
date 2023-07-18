@@ -28,6 +28,7 @@ export const IngredientFormSection = ({
     // new ingredient by default has an error so we must disable the SAVE button
     setErrors({
       ...errors,
+      [`ingredientName-${recipe.ingredients.length}`]: true,
       [`ingredientAmount-${recipe.ingredients.length}`]: true,
     });
     setRecipe(addIngredient(recipe));
@@ -52,7 +53,12 @@ export const IngredientFormSection = ({
           }
         />
       ))}
-      <Button icon="plus" mode="contained-tonal" onPress={addNewIngredient}>
+      <Button
+        icon="plus"
+        mode="contained-tonal"
+        onPress={addNewIngredient}
+        accessibilityHint="Add ingredient"
+      >
         <Text variant="bodyLarge">Add Ingredient</Text>
       </Button>
     </View>
