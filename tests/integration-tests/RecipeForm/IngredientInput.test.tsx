@@ -89,10 +89,13 @@ describe("IngredientInput", () => {
 
     // after you select an option, the menu should become invisible again
     fireEvent.press(mLDropdownOption);
-    // expect(screen.queryByText("cups")).toBeNull(); -- doesn't work for some reason
-    // the input should change to show the new selected value
-    // expect(screen.queryByDisplayValue("oz")).toBeNull(); -- doesn't work for some reason
-    // expect(screen.getByDisplayValue("mL")).toBeVisible(); -- doesn't work for some reason
+    // NOTE -- for ingredient amount and ingredient name, the state of the input text is managed
+    // locally within the component, and changes are only propagated up to the parent if the entered value is valid
+    // However, for the dropdown, since all selected values are guaranteed to be valid, the state
+    // of the dropdown input is managed by the parent
+    // Therefore, we can't do this: expect(screen.getByDisplayValue("mL")).toBeVisible();
+    // because the display value won't change until the parent's state is updated
+    // We can only test whether the callbacks are called
     expect(mockUpdateIngredient).toBeCalledTimes(1);
     expect(mockUpdateIngredient).toBeCalledWith({
       name: "milk",
@@ -126,12 +129,20 @@ describe("IngredientInput", () => {
     expect(mockSetIngredientNameError).toBeCalledTimes(2);
     expect(mockSetIngredientNameError).toHaveBeenLastCalledWith(true);
 
+    // until this point, updateIngredient shouldn't have been called, bc the
+    // change should only propagate to the parent if the new value is valid
+    expect(mockUpdateIngredient).toBeCalledTimes(0);
+
     // all other strings are valid
     oldErrorMessage = expectedErrorMessage;
     fireEvent.changeText(ingredientNameInput, "m1Lk");
     // error messages should be removed
     expect(screen.queryByText(oldErrorMessage)).toBeNull();
+    expect(mockSetIngredientNameError).toBeCalledTimes(3);
     expect(mockSetIngredientNameError).toHaveBeenLastCalledWith(false);
+
+    // now, we should see a call to updateIngredient, since the last change was valid
+    expect(mockUpdateIngredient).toBeCalledTimes(1);
   });
 
   it("shows an error message when the ingredient amount is invalid", () => {
@@ -173,12 +184,20 @@ describe("IngredientInput", () => {
     expect(mockSetIngredientAmountError).toBeCalledTimes(4);
     expect(mockSetIngredientAmountError).toHaveBeenLastCalledWith(true);
 
+    // until this point, updateIngredient shouldn't have been called, bc the
+    // change should only propagate to the parent if the new value is valid
+    expect(mockUpdateIngredient).toBeCalledTimes(0);
+
     // only positive numbers are valid
     oldErrorMessage = expectedErrorMessage;
     fireEvent.changeText(ingredientAmountInput, "2");
     // error messages should be removed
     expect(screen.queryByText(oldErrorMessage)).toBeNull();
+    expect(mockSetIngredientAmountError).toBeCalledTimes(5);
     expect(mockSetIngredientAmountError).toHaveBeenLastCalledWith(false);
+
+    // now, we should see a call to updateIngredient, since the last change was valid
+    expect(mockUpdateIngredient).toBeCalledTimes(1);
   });
 
   it("fires the deleteIngredient callback when the X is pressed", () => {

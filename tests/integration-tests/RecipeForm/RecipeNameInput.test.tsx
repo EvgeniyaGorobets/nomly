@@ -79,12 +79,14 @@ describe("RecipeNameInput", () => {
 
     fireEvent.changeText(recipeNameInput, "");
     expect(screen.getByText("Recipe name cannot be empty")).toBeVisible();
+    expect(mockUpdateRecipeName).toBeCalledTimes(0);
     expect(mockUpdateRecipeNameErrors).toBeCalledTimes(1);
     expect(mockUpdateRecipeNameErrors).toHaveBeenLastCalledWith(true);
 
     // Check that the error message is removed once the recipe name is no longer an empty string
     fireEvent.changeText(recipeNameInput, "Quinoa");
     expect(screen.queryByText("Recipe name cannot be empty")).toBe(null);
+    expect(mockUpdateRecipeName).toBeCalledTimes(1);
     expect(mockUpdateRecipeNameErrors).toBeCalledTimes(2);
     expect(mockUpdateRecipeNameErrors).toHaveBeenLastCalledWith(false);
   });
@@ -101,6 +103,7 @@ describe("RecipeNameInput", () => {
     expect(
       screen.getByText("Recipe name cannot be longer than 100 characters")
     ).toBeVisible();
+    expect(mockUpdateRecipeName).toBeCalledTimes(0);
     expect(mockUpdateRecipeNameErrors).toBeCalledTimes(1);
     expect(mockUpdateRecipeNameErrors).toHaveBeenLastCalledWith(true);
 
@@ -112,6 +115,7 @@ describe("RecipeNameInput", () => {
     expect(
       screen.queryByText("Recipe name cannot be longer than 100 characters")
     ).toBe(null);
+    expect(mockUpdateRecipeName).toBeCalledTimes(1);
     expect(mockUpdateRecipeNameErrors).toBeCalledTimes(2);
     expect(mockUpdateRecipeNameErrors).toHaveBeenLastCalledWith(false);
   });
@@ -125,6 +129,7 @@ describe("RecipeNameInput", () => {
     expect(
       screen.getByText("A recipe with this name already exists")
     ).toBeVisible();
+    expect(mockUpdateRecipeName).toBeCalledTimes(0);
     expect(mockUpdateRecipeNameErrors).toBeCalledTimes(1);
     expect(mockUpdateRecipeNameErrors).toHaveBeenLastCalledWith(true);
 
@@ -133,6 +138,7 @@ describe("RecipeNameInput", () => {
     expect(screen.queryByText("A recipe with this name already exists")).toBe(
       null
     );
+    expect(mockUpdateRecipeName).toBeCalledTimes(1);
     expect(mockUpdateRecipeNameErrors).toBeCalledTimes(2);
     expect(mockUpdateRecipeNameErrors).toHaveBeenLastCalledWith(false);
   });

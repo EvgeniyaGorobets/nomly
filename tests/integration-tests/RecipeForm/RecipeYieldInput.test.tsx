@@ -100,6 +100,10 @@ describe("RecipeYieldInput", () => {
     expect(mockUpdateYieldAmountErrors).toBeCalledTimes(4);
     expect(mockUpdateYieldAmountErrors).toHaveBeenLastCalledWith(true);
 
+    // until this point, updateYieldAmount shouldn't have been called, bc the
+    // change should only propagate to the parent if the new value is valid
+    expect(mockUpdateYieldAmount).toBeCalledTimes(0);
+
     // only positive numbers are valid
     oldErrorMessage = expectedErrorMessage;
     fireEvent.changeText(recipeAmountInput, "24");
@@ -107,6 +111,9 @@ describe("RecipeYieldInput", () => {
     expect(screen.queryByText(oldErrorMessage)).toBeNull();
     expect(mockUpdateYieldAmountErrors).toBeCalledTimes(5);
     expect(mockUpdateYieldAmountErrors).toHaveBeenLastCalledWith(false);
+
+    // now, we should see a call to updateYieldAmount, since the last change was valid
+    expect(mockUpdateYieldAmount).toBeCalledTimes(1);
   });
 
   it("shows an error message when the yield units are invalid", () => {
@@ -131,6 +138,10 @@ describe("RecipeYieldInput", () => {
     expect(mockUpdateYieldUnitsErrors).toBeCalledTimes(2);
     expect(mockUpdateYieldUnitsErrors).toHaveBeenLastCalledWith(true);
 
+    // until this point, updateYieldUnits shouldn't have been called, bc the
+    // change should only propagate to the parent if the new value is valid
+    expect(mockUpdateYieldUnits).toBeCalledTimes(0);
+
     // everything else is valid
     oldErrorMessage = expectedErrorMessage;
     fireEvent.changeText(recipeUnitsInput, "SERVINGS");
@@ -138,5 +149,8 @@ describe("RecipeYieldInput", () => {
     expect(screen.queryByText(oldErrorMessage)).toBeNull();
     expect(mockUpdateYieldUnitsErrors).toBeCalledTimes(3);
     expect(mockUpdateYieldUnitsErrors).toHaveBeenLastCalledWith(false);
+
+    // now, we should see a call to updateYieldUnits, since the last change was valid
+    expect(mockUpdateYieldUnits).toBeCalledTimes(1);
   });
 });
