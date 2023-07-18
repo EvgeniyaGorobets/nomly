@@ -27,13 +27,15 @@ export const RecipeNameInput = ({
     }
   };
 
-  const onChangeText = (newName: string) =>
+  const onChangeText = (newName: string) => {
+    onFocus(); // temporarily firing it here because onFocus() doesn't work with RNTL
     onInputChange(
       newName,
       (text: string) => validateRecipeName(initialName, text, context.recipes),
       { setInput: setRecipeName, setErrorMsg: setErrorMsg },
       parentFunctions
     );
+  };
 
   const showErrorText = () => isDirty && errorMsg !== "";
 

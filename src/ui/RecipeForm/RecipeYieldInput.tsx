@@ -32,13 +32,15 @@ export const RecipeYieldInput = ({
       setAmountDirty(true);
     }
   };
-  const onChangeAmount = (newAmount: string) =>
+  const onChangeAmount = (newAmount: string) => {
+    onAmountFocus(); // temporarily firing it here because onFocus() doesn't work with RNTL
     onInputChange(
       newAmount,
       validateRecipeYieldAmount,
       { setInput: setAmount, setErrorMsg: setAmountErrorMsg },
       parentAmountFunctions
     );
+  };
 
   const [units, setUnits] = useState<string>(recipeYield.units);
   const [isUnitsDirty, setUnitsDirty] = useState<boolean>(false);
@@ -50,13 +52,15 @@ export const RecipeYieldInput = ({
       setUnitsDirty(true);
     }
   };
-  const onChangeUnits = (newUnits: string) =>
+  const onChangeUnits = (newUnits: string) => {
+    onUnitsFocus(); // temporarily firing it here because onFocus() doesn't work with RNTL
     onInputChange(
       newUnits,
       validateRecipeYieldUnits,
       { setInput: setUnits, setErrorMsg: setUnitsErrorMsg },
       parentUnitFunctions
     );
+  };
 
   const showErrorText = () => isAmountInvalid() || isUnitsInvalid();
 
