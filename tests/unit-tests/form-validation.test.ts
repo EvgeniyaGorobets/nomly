@@ -147,6 +147,25 @@ describe("validateRecipeYieldAmount", () => {
   });
 });
 
+describe("validateRecipeYieldUnits", () => {
+  it("returns false for the empty string", () => {
+    expect(validateRecipeYieldUnits("")).toStrictEqual(
+      "Recipe yield units cannot be empty"
+    );
+  });
+
+  it("returns false for strings greater than 25 characters", () => {
+    expect(
+      validateRecipeYieldUnits("mouth-watering slices of pie")
+    ).toStrictEqual("Recipe yield units cannot be longer than 25 characters");
+  });
+
+  it("returns true for all other strings", () => {
+    expect(validateRecipeYieldUnits("cookies")).toStrictEqual("");
+    expect(validateRecipeYieldUnits("HOT DOGS")).toStrictEqual("");
+  });
+});
+
 describe("validateIngredientName", () => {
   it("returns false for the empty string", () => {
     expect(validateIngredientName("")).toStrictEqual(
@@ -165,25 +184,6 @@ describe("validateIngredientName", () => {
   it("returns true for all other strings", () => {
     expect(validateIngredientName("chocolate chips")).toStrictEqual("");
     expect(validateIngredientName("0ni0n5")).toStrictEqual("");
-  });
-});
-
-describe("validateRecipeYieldUnits", () => {
-  it("returns false for the empty string", () => {
-    expect(validateRecipeYieldUnits("")).toStrictEqual(
-      "Recipe yield units cannot be empty"
-    );
-  });
-
-  it("returns false for strings greater than 25 characters", () => {
-    expect(
-      validateRecipeYieldUnits("mouth-watering slices of pie")
-    ).toStrictEqual("Recipe yield units cannot be longer than 25 characters");
-  });
-
-  it("returns true for all other strings", () => {
-    expect(validateRecipeYieldUnits("cookies")).toStrictEqual("");
-    expect(validateRecipeYieldUnits("HOT DOGS")).toStrictEqual("");
   });
 });
 
