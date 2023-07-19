@@ -3,6 +3,8 @@ import {
   addIngredient,
   deleteIngredient,
   updateIngredient,
+  validateIngredientAmount,
+  validateIngredientName,
 } from "../../src/core/ingredient";
 
 describe("addIngredient", () => {
@@ -82,5 +84,54 @@ describe("updateIngredient", () => {
       amount: 100,
       units: "g",
     });
+  });
+});
+
+describe("validateIngredientName", () => {
+  it("returns false for the empty string", () => {
+    expect(validateIngredientName("")).toStrictEqual(
+      "Ingredient name cannot be empty"
+    );
+  });
+
+  it("returns false for strings greater than 50 characters", () => {
+    expect(
+      validateIngredientName(
+        "super long ingredient name that is longer than 50 characters"
+      )
+    ).toStrictEqual("Ingredient name cannot be longer than 50 characters");
+  });
+
+  it("returns true for all other strings", () => {
+    expect(validateIngredientName("chocolate chips")).toStrictEqual("");
+    expect(validateIngredientName("0ni0n5")).toStrictEqual("");
+  });
+});
+
+describe("validateIngredientAmount", () => {
+  it("returns false for the empty string", () => {
+    expect(validateIngredientAmount("")).toStrictEqual(
+      "Ingredient amount is required"
+    );
+  });
+
+  it("returns false for non-numeric strings", () => {
+    expect(validateIngredientAmount("three")).toStrictEqual(
+      "Ingredient amount must be a number"
+    );
+  });
+
+  it("returns false for negative numbers and zero", () => {
+    expect(validateIngredientAmount("0")).toStrictEqual(
+      "Ingredient amount must be greater than zero"
+    );
+    expect(validateIngredientAmount("-3")).toStrictEqual(
+      "Ingredient amount must be greater than zero"
+    );
+  });
+
+  it("returns true for positive numbers", () => {
+    expect(validateIngredientAmount("10")).toStrictEqual("");
+    expect(validateIngredientAmount("3.5")).toStrictEqual("");
   });
 });

@@ -1,58 +1,9 @@
 import {
-  isNumeric,
   validateRecipeName,
   validateRecipeYieldAmount,
   validateRecipeYieldUnits,
-  validateIngredientName,
-  validateIngredientAmount,
 } from "../../src/core/form-validation";
 import type { RecipeBook } from "../../src/core/recipe";
-
-describe("isNumeric", () => {
-  it("returns true for positive integers and zero", () => {
-    expect(isNumeric("0")).toBe(true);
-    expect(isNumeric("1")).toBe(true);
-    expect(isNumeric("235")).toBe(true);
-  });
-
-  it("returns true for positive decimals", () => {
-    expect(isNumeric("0.5")).toBe(true);
-    expect(isNumeric("1.12")).toBe(true);
-  });
-
-  it("returns true for negative integers", () => {
-    expect(isNumeric("-3")).toBe(true);
-    expect(isNumeric("-101")).toBe(true);
-  });
-
-  it("returns true for negative decimals", () => {
-    expect(isNumeric("-3.2")).toBe(true);
-    expect(isNumeric("-0.667")).toBe(true);
-  });
-
-  it("returns false for strings with letters", () => {
-    expect(isNumeric("hi")).toBe(false);
-    // expect(isNumeric("1.5e2")).toBe(false); -- this actually returns true
-    // but probably nobody will ever try to use this syntax so I'm just going to accept it
-    // as a valid number
-    expect(isNumeric("seven")).toBe(false);
-    expect(isNumeric("70 cookies")).toBe(false);
-  });
-
-  it("returns false for strings with spaces", () => {
-    expect(isNumeric("10 20 30")).toBe(false);
-    expect(isNumeric("  2  3")).toBe(false);
-  });
-
-  it("returns false for strings with special characters", () => {
-    expect(isNumeric("1/2")).toBe(false);
-    expect(isNumeric("$3")).toBe(false);
-  });
-
-  it("returns false for the empty string", () => {
-    expect(isNumeric("")).toBe(false);
-  });
-});
 
 describe("validateRecipeName", () => {
   it("returns false for the empty string", () => {
@@ -163,54 +114,5 @@ describe("validateRecipeYieldUnits", () => {
   it("returns true for all other strings", () => {
     expect(validateRecipeYieldUnits("cookies")).toStrictEqual("");
     expect(validateRecipeYieldUnits("HOT DOGS")).toStrictEqual("");
-  });
-});
-
-describe("validateIngredientName", () => {
-  it("returns false for the empty string", () => {
-    expect(validateIngredientName("")).toStrictEqual(
-      "Ingredient name cannot be empty"
-    );
-  });
-
-  it("returns false for strings greater than 50 characters", () => {
-    expect(
-      validateIngredientName(
-        "super long ingredient name that is longer than 50 characters"
-      )
-    ).toStrictEqual("Ingredient name cannot be longer than 50 characters");
-  });
-
-  it("returns true for all other strings", () => {
-    expect(validateIngredientName("chocolate chips")).toStrictEqual("");
-    expect(validateIngredientName("0ni0n5")).toStrictEqual("");
-  });
-});
-
-describe("validateIngredientAmount", () => {
-  it("returns false for the empty string", () => {
-    expect(validateIngredientAmount("")).toStrictEqual(
-      "Ingredient amount is required"
-    );
-  });
-
-  it("returns false for non-numeric strings", () => {
-    expect(validateIngredientAmount("three")).toStrictEqual(
-      "Ingredient amount must be a number"
-    );
-  });
-
-  it("returns false for negative numbers and zero", () => {
-    expect(validateIngredientAmount("0")).toStrictEqual(
-      "Ingredient amount must be greater than zero"
-    );
-    expect(validateIngredientAmount("-3")).toStrictEqual(
-      "Ingredient amount must be greater than zero"
-    );
-  });
-
-  it("returns true for positive numbers", () => {
-    expect(validateIngredientAmount("10")).toStrictEqual("");
-    expect(validateIngredientAmount("3.5")).toStrictEqual("");
   });
 });

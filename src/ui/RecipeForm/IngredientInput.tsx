@@ -6,11 +6,11 @@ import DropDown from "react-native-paper-dropdown";
 import { Styles } from "../Styles";
 
 import type { Unit, Ingredient } from "../../core/ingredient";
-import { UNITS } from "../../core/ingredient";
 import {
+  UNITS,
   validateIngredientName,
   validateIngredientAmount,
-} from "../../core/form-validation";
+} from "../../core/ingredient";
 import { onInputChange } from "../../core/form";
 
 type IngredientInputProps = {

@@ -1,3 +1,7 @@
+import { isNumeric } from "./utils";
+
+/* -- TYPES --*/
+
 export const UNITS = ["cups", "tbsp", "tsp", "mL", "g", "oz", "N/A"] as const;
 export type Unit = (typeof UNITS)[number];
 
@@ -36,4 +40,38 @@ export const updateIngredient = (
     ingredient,
     ...ingredients.slice(index + 1),
   ];
+};
+
+/**
+ * Checks whether the ingredient name is a valid string. If it isn't, returns
+ * an error message describing the error. If it is, returns an empty string.
+ * @param name - The proposed ingredient name
+ * @returns The error message, or an empty string if there are no errors
+ */
+export const validateIngredientName = (name: string): string => {
+  if (name.length === 0) {
+    return "Ingredient name cannot be empty";
+  } else if (name.length > 50) {
+    return "Ingredient name cannot be longer than 50 characters";
+  } else {
+    return "";
+  }
+};
+
+/**
+ * Checks whether the ingredient amount is a valid number. If it isn't, returns
+ * an error message describing the error. It if is, returns an empty string.
+ * @param amount - The proposed ingredient amount
+ * @returns The error message, or an empty string if there are no errors
+ */
+export const validateIngredientAmount = (amount: string): string => {
+  if (amount === "") {
+    return "Ingredient amount is required";
+  } else if (!isNumeric(amount)) {
+    return "Ingredient amount must be a number";
+  } else if (Number(amount) <= 0) {
+    return "Ingredient amount must be greater than zero";
+  } else {
+    return "";
+  }
 };
