@@ -88,7 +88,10 @@ export const RecipeForm = ({ navigation, route }: RecipeFormProps) => {
   return (
     <View style={Styles.screen}>
       <Appbar.Header>
-        <Appbar.BackAction onPress={() => navigation.goBack()} />
+        <Appbar.BackAction
+          onPress={() => navigation.goBack()}
+          accessibilityHint="Go back to previous screen"
+        />
         <Appbar.Content
           title={isNewRecipe(route) ? "Add Recipe" : "Edit Recipe"}
         />
@@ -130,6 +133,7 @@ export const RecipeForm = ({ navigation, route }: RecipeFormProps) => {
             mode="contained"
             disabled={Object.values(errors).some((value) => value === true)}
             onPress={() => saveRecipe()}
+            accessibilityHint="Save recipe"
           >
             SAVE
           </Button>

@@ -48,6 +48,7 @@ export const RecipeNameInput = ({
         onChangeText={onChangeText}
         mode="outlined"
         onFocus={onFocus}
+        accessibilityHint="Recipe name input"
       />
       {showErrorText() && (
         <HelperText type="error" visible={showErrorText()}>

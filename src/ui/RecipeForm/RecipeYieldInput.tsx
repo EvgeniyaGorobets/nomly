@@ -95,6 +95,7 @@ export const RecipeYieldInput = ({
           textAlign="center"
           onFocus={onAmountFocus}
           style={{ width: "29%", marginHorizontal: 5 }}
+          accessibilityHint="Recipe yield amount input"
         />
         <TextInput
           label="Units"
@@ -104,6 +105,7 @@ export const RecipeYieldInput = ({
           textAlign="center"
           onFocus={onUnitsFocus}
           style={{ width: "33%" }}
+          accessibilityHint="Recipe yield units input"
         />
       </View>
       <View>
