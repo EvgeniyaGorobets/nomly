@@ -8,26 +8,10 @@ import type { RecipeErrors } from "../../../src/core/form";
 
 describe("IngredientFormSection", () => {
   const mockIngredients: Ingredient[] = [
-    {
-      name: "flour",
-      amount: 2,
-      units: "cups",
-    },
-    {
-      name: "sugar",
-      amount: 16,
-      units: "tbsp",
-    },
-    {
-      name: "chocolate chips",
-      amount: 8,
-      units: "oz",
-    },
-    {
-      name: "butter",
-      amount: 100,
-      units: "g",
-    },
+    { name: "flour", amount: 2, units: "cups" },
+    { name: "sugar", amount: 16, units: "tbsp" },
+    { name: "chocolate chips", amount: 8, units: "oz" },
+    { name: "butter", amount: 100, units: "g" },
   ];
   const mockErrors: RecipeErrors = {
     name: false,
