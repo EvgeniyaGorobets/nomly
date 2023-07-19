@@ -13,31 +13,11 @@ export type RecipeBook = { [key: string]: Recipe };
 
 /* ---- FUNCTIONS --- */
 
-export const addRecipe = (
-  recipeBook: RecipeBook,
-  newRecipe: Recipe,
-  recipeName: string
-): RecipeBook => {
-  if (recipeName in recipeBook) {
-    throw Error(
-      `Failed to add recipe: a recipe with the name '${recipeName}' already exists in the recipe book.`
-    );
-  }
-  return { ...recipeBook, [recipeName]: newRecipe };
-};
-
-// This is basically the same function as above, but a different validation check
-// Maybe I should turn them into one function
 export const updateRecipe = (
   recipeBook: RecipeBook,
   newRecipe: Recipe,
   recipeName: string
 ): RecipeBook => {
-  if (!(recipeName in recipeBook)) {
-    throw Error(
-      `Failed to update recipe: a recipe with the name '${recipeName}' does not exist in the recipe book.`
-    );
-  }
   return { ...recipeBook, [recipeName]: newRecipe };
 };
 

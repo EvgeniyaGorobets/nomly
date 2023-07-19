@@ -6,7 +6,7 @@ import type { RecipeBook, Recipe } from "../../core/recipe-book";
 import type { Ingredient } from "../../core/ingredient";
 import type { RecipeErrors } from "../../core/form";
 import type { RecipeFormProps } from "../../Stack";
-import { addRecipe, updateRecipe } from "../../core/recipe-book";
+import { updateRecipe } from "../../core/recipe-book";
 import { blankRecipe, getInitialErrors } from "../../core/form";
 import { AppContext, AppContextType } from "../../AppContext";
 import { RecipeYieldInput } from "./RecipeYieldInput";
@@ -79,9 +79,11 @@ export const RecipeForm = ({ navigation, route }: RecipeFormProps) => {
   /* End of callbacks to update form errors */
 
   const saveRecipe = () => {
-    const newRecipeBook: RecipeBook = isNewRecipe(route)
-      ? addRecipe(context.recipes, recipe, recipeName)
-      : updateRecipe(context.recipes, recipe, recipeName);
+    const newRecipeBook: RecipeBook = updateRecipe(
+      context.recipes,
+      recipe,
+      recipeName
+    );
     context.saveRecipes(newRecipeBook);
     navigation.goBack();
   };
