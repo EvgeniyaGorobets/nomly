@@ -3,7 +3,7 @@ import { render, screen, fireEvent } from "@testing-library/react-native";
 import { PaperProvider } from "react-native-paper";
 
 import { IngredientFormSection } from "../../../src/ui/RecipeForm/IngredientFormSection";
-import type { Ingredient } from "../../../src/core/recipe";
+import type { Ingredient } from "../../../src/core/ingredient";
 import type { RecipeErrors } from "../../../src/core/form";
 
 describe("IngredientFormSection", () => {

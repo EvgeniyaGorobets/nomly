@@ -3,7 +3,7 @@ import { render, screen, fireEvent } from "@testing-library/react-native";
 import { PaperProvider } from "react-native-paper";
 
 import { IngredientInput } from "../../../src/ui/RecipeForm/IngredientInput";
-import type { Ingredient } from "../../../src/core/recipe";
+import type { Ingredient } from "../../../src/core/ingredient";
 
 describe("IngredientInput", () => {
   const mockDeleteIngredient = jest.fn();

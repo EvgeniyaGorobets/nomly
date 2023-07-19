@@ -1,4 +1,5 @@
-import type { Recipe, Ingredient } from "./recipe";
+import type { Recipe } from "./recipe";
+import type { Ingredient } from "./ingredient";
 
 // * ------ FORM VALIDATION ------ *
 // * Functions to help validate the form/recipe
@@ -46,35 +47,6 @@ export const blankRecipe = (): Recipe => {
     ingredients: [],
     notes: "",
   };
-};
-
-export const addIngredient = (ingredients: Ingredient[]): Ingredient[] => {
-  const blankIngredient: Ingredient = {
-    name: "",
-    amount: 0,
-    units: "cups",
-  };
-
-  return [...ingredients, blankIngredient];
-};
-
-export const deleteIngredient = (
-  ingredients: Ingredient[],
-  index: number
-): Ingredient[] => {
-  return [...ingredients.slice(0, index), ...ingredients.slice(index + 1)];
-};
-
-export const updateIngredient = (
-  ingredients: Ingredient[],
-  index: number,
-  ingredient: Ingredient
-): Ingredient[] => {
-  return [
-    ...ingredients.slice(0, index),
-    ingredient,
-    ...ingredients.slice(index + 1),
-  ];
 };
 
 // * ------ INPUT STATE MANAGEMENT ------ *

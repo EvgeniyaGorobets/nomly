@@ -2,14 +2,15 @@ import React from "react";
 import { View } from "react-native";
 import { Button, Text } from "react-native-paper";
 
+import { IngredientInput } from "./IngredientInput";
+
 import type { RecipeErrors } from "../../core/form";
 import {
   addIngredient,
   deleteIngredient,
   updateIngredient,
-} from "../../core/form";
-import { IngredientInput } from "./IngredientInput";
-import type { Ingredient } from "../../core/recipe";
+} from "../../core/ingredient";
+import type { Ingredient } from "../../core/ingredient";
 
 type IngredientSectionProps = {
   ingredients: Array<Ingredient>;

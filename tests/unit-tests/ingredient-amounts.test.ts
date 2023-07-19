@@ -5,7 +5,7 @@ import {
   convertToFraction,
   formatIngredientAmount,
 } from "../../src/core/ingredient-amounts";
-import { Ingredient } from "../../src/core/recipe";
+import { Ingredient } from "../../src/core/ingredient";
 
 describe("roundDecimal", () => {
   it("truncates long decimals", () => {

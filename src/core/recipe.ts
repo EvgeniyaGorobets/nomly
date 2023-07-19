@@ -1,18 +1,10 @@
+import type { Ingredient } from "./ingredient";
+
 /* ---- TYPES ---- */
 
 export type Yield = {
   amount: number;
   units: string;
-};
-
-export const UNITS = ["cups", "tbsp", "tsp", "mL", "g", "oz", "N/A"] as const;
-export type Unit = typeof UNITS[number];
-// other less common units of measurement: cloves, slices, sprigs
-
-export type Ingredient = {
-  name: string;
-  amount: number;
-  units: Unit;
 };
 
 export type Recipe = {

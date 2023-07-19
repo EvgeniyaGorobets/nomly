@@ -5,8 +5,8 @@ import DropDown from "react-native-paper-dropdown";
 
 import { Styles } from "../Styles";
 
-import type { Unit, Ingredient } from "../../core/recipe";
-import { UNITS } from "../../core/recipe";
+import type { Unit, Ingredient } from "../../core/ingredient";
+import { UNITS } from "../../core/ingredient";
 import {
   validateIngredientName,
   validateIngredientAmount,

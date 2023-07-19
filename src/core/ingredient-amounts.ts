@@ -1,6 +1,6 @@
 /*--- business logic for manipulating the ingredient amounts in a recipe ---*/
 
-import { Ingredient } from "./recipe";
+import { Ingredient } from "./ingredient";
 
 export const adjustIngredientAmounts = (
   ingredients: Ingredient[],

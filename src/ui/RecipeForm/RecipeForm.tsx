@@ -2,7 +2,8 @@ import React, { useContext, useState } from "react";
 import { View, ScrollView } from "react-native";
 import { Appbar, Button, Divider } from "react-native-paper";
 
-import type { RecipeBook, Recipe, Ingredient } from "../../core/recipe";
+import type { RecipeBook, Recipe } from "../../core/recipe";
+import type { Ingredient } from "../../core/ingredient";
 import type { RecipeErrors } from "../../core/form";
 import type { RecipeFormProps } from "../../Stack";
 import { addRecipe, updateRecipe } from "../../core/recipe";
@@ -58,7 +59,7 @@ export const RecipeForm = ({ navigation, route }: RecipeFormProps) => {
     });
   };
 
-  const updateIngredients = (newIngredients: Array<Ingredient>) => {
+  const updateIngredients = (newIngredients: Ingredient[]) => {
     setRecipe({ ...recipe, ingredients: newIngredients });
   };
   /* End of callbacks to update recipe */
