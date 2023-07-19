@@ -13,6 +13,11 @@ export type Ingredient = {
 
 /* -- FUNCTIONS --*/
 
+/**
+ * Adds a new, blank ingredient to the end of the given list of ingredients
+ * @param ingredients A list of ingredients
+ * @returns A copy of the ingredient list, with the new ingredient at the end
+ */
 export const addIngredient = (ingredients: Ingredient[]): Ingredient[] => {
   const blankIngredient: Ingredient = {
     name: "",
@@ -23,6 +28,12 @@ export const addIngredient = (ingredients: Ingredient[]): Ingredient[] => {
   return [...ingredients, blankIngredient];
 };
 
+/**
+ * Deletes the ingredient at the specified index from a list of ingredients
+ * @param ingredients A list of ingredients
+ * @param index The position of the ingredient to be deleted
+ * @returns A copy of the ingredient list, without the deleted ingredient
+ */
 export const deleteIngredient = (
   ingredients: Ingredient[],
   index: number
@@ -30,6 +41,13 @@ export const deleteIngredient = (
   return [...ingredients.slice(0, index), ...ingredients.slice(index + 1)];
 };
 
+/**
+ * Updates the ingredient at the specified index in a list of ingredients
+ * @param ingredients A list of ingredients
+ * @param index The position of the ingredient to be updated
+ * @param ingredient The updated ingredient
+ * @returns A copy of the ingredient list, with the ingredient at position i updated
+ */
 export const updateIngredient = (
   ingredients: Ingredient[],
   index: number,
