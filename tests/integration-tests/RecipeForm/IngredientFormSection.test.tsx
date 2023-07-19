@@ -3,39 +3,32 @@ import { render, screen, fireEvent } from "@testing-library/react-native";
 import { PaperProvider } from "react-native-paper";
 
 import { IngredientFormSection } from "../../../src/ui/RecipeForm/IngredientFormSection";
-import type { Recipe } from "../../../src/core/recipe";
+import type { Ingredient } from "../../../src/core/recipe";
 import type { RecipeErrors } from "../../../src/core/form";
 
-describe("IngredientInput", () => {
-  const mockRecipe: Recipe = {
-    yield: {
-      amount: 12,
-      units: "cookies",
+describe("IngredientFormSection", () => {
+  const mockIngredients: Ingredient[] = [
+    {
+      name: "flour",
+      amount: 2,
+      units: "cups",
     },
-    ingredients: [
-      {
-        name: "flour",
-        amount: 2,
-        units: "cups",
-      },
-      {
-        name: "sugar",
-        amount: 16,
-        units: "tbsp",
-      },
-      {
-        name: "chocolate chips",
-        amount: 8,
-        units: "oz",
-      },
-      {
-        name: "butter",
-        amount: 100,
-        units: "g",
-      },
-    ],
-    notes: "",
-  };
+    {
+      name: "sugar",
+      amount: 16,
+      units: "tbsp",
+    },
+    {
+      name: "chocolate chips",
+      amount: 8,
+      units: "oz",
+    },
+    {
+      name: "butter",
+      amount: 100,
+      units: "g",
+    },
+  ];
   const mockErrors: RecipeErrors = {
     name: false,
     yieldAmount: false,
@@ -49,15 +42,15 @@ describe("IngredientInput", () => {
     "ingredientName-3": false,
     "ingredientAmount-3": false,
   };
-  const mockSetRecipe = jest.fn();
+  const mockUpdateIngredients = jest.fn();
   const mockSetErrors = jest.fn();
 
   beforeEach(() => {
     render(
       <PaperProvider>
         <IngredientFormSection
-          recipe={mockRecipe}
-          setRecipe={mockSetRecipe}
+          ingredients={mockIngredients}
+          updateIngredients={mockUpdateIngredients}
           errors={mockErrors}
           setErrors={mockSetErrors}
         />
@@ -94,14 +87,11 @@ describe("IngredientInput", () => {
   it("calls updateRecipe when a new ingredient is added", () => {
     fireEvent.press(screen.getByAccessibilityHint("Add ingredient"));
 
-    expect(mockSetRecipe).toBeCalledTimes(1);
-    expect(mockSetRecipe).toBeCalledWith({
-      ...mockRecipe,
-      ingredients: [
-        ...mockRecipe.ingredients,
-        { name: "", amount: 0, units: "cups" },
-      ],
-    });
+    expect(mockUpdateIngredients).toBeCalledTimes(1);
+    expect(mockUpdateIngredients).toBeCalledWith([
+      ...mockIngredients,
+      { name: "", amount: 0, units: "cups" },
+    ]);
 
     // it should initialize error tracking for the new ingredient
     // TODO: this seems like a good candidate for refactoring; maybe RecipeForm should handle all this

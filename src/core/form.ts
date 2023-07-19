@@ -48,42 +48,33 @@ export const blankRecipe = (): Recipe => {
   };
 };
 
-export const addIngredient = (recipe: Recipe): Recipe => {
+export const addIngredient = (ingredients: Ingredient[]): Ingredient[] => {
   const blankIngredient: Ingredient = {
     name: "",
     amount: 0,
     units: "cups",
   };
 
-  return {
-    ...recipe,
-    ingredients: [...recipe.ingredients, blankIngredient],
-  };
+  return [...ingredients, blankIngredient];
 };
 
-export const deleteIngredient = (recipe: Recipe, index: number): Recipe => {
-  return {
-    ...recipe,
-    ingredients: [
-      ...recipe.ingredients.slice(0, index),
-      ...recipe.ingredients.slice(index + 1),
-    ],
-  };
+export const deleteIngredient = (
+  ingredients: Ingredient[],
+  index: number
+): Ingredient[] => {
+  return [...ingredients.slice(0, index), ...ingredients.slice(index + 1)];
 };
 
 export const updateIngredient = (
-  recipe: Recipe,
+  ingredients: Ingredient[],
   index: number,
   ingredient: Ingredient
-): Recipe => {
-  return {
-    ...recipe,
-    ingredients: [
-      ...recipe.ingredients.slice(0, index),
-      ingredient,
-      ...recipe.ingredients.slice(index + 1),
-    ],
-  };
+): Ingredient[] => {
+  return [
+    ...ingredients.slice(0, index),
+    ingredient,
+    ...ingredients.slice(index + 1),
+  ];
 };
 
 // * ------ INPUT STATE MANAGEMENT ------ *

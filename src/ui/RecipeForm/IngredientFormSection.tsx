@@ -9,18 +9,18 @@ import {
   updateIngredient,
 } from "../../core/form";
 import { IngredientInput } from "./IngredientInput";
-import { Ingredient, Recipe } from "../../core/recipe";
+import type { Ingredient } from "../../core/recipe";
 
 type IngredientSectionProps = {
-  recipe: Recipe;
-  setRecipe: (recipe: Recipe) => void;
+  ingredients: Array<Ingredient>;
+  updateIngredients: (newIngredients: Array<Ingredient>) => void;
   errors: RecipeErrors;
   setErrors: (newErrors: RecipeErrors) => void;
 };
 
 export const IngredientFormSection = ({
-  recipe,
-  setRecipe,
+  ingredients,
+  updateIngredients,
   errors,
   setErrors,
 }: IngredientSectionProps) => {
@@ -28,22 +28,24 @@ export const IngredientFormSection = ({
     // new ingredient by default has an error so we must disable the SAVE button
     setErrors({
       ...errors,
-      [`ingredientName-${recipe.ingredients.length}`]: true,
-      [`ingredientAmount-${recipe.ingredients.length}`]: true,
+      [`ingredientName-${ingredients.length}`]: true,
+      [`ingredientAmount-${ingredients.length}`]: true,
     });
-    setRecipe(addIngredient(recipe));
+    updateIngredients(addIngredient(ingredients));
   };
 
   return (
     <View style={{ marginVertical: 10 }}>
       <Text variant="headlineSmall">Ingredients</Text>
-      {recipe.ingredients.map((ingredient: Ingredient, i: number) => (
+      {ingredients.map((ingredient: Ingredient, i: number) => (
         <IngredientInput
           key={i}
           ingredient={ingredient}
-          deleteIngredient={() => setRecipe(deleteIngredient(recipe, i))}
+          deleteIngredient={() =>
+            updateIngredients(deleteIngredient(ingredients, i))
+          }
           updateIngredient={(ingredient: Ingredient) => {
-            setRecipe(updateIngredient(recipe, i, ingredient));
+            updateIngredients(updateIngredient(ingredients, i, ingredient));
           }}
           setIngredientNameError={(hasErr: boolean) =>
             setErrors({ ...errors, [`ingredientName-${i}`]: hasErr })

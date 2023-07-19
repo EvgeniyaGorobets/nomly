@@ -2,7 +2,7 @@ import React, { useContext, useState } from "react";
 import { View, ScrollView } from "react-native";
 import { Appbar, Button, Divider } from "react-native-paper";
 
-import type { RecipeBook, Recipe, Yield } from "../../core/recipe";
+import type { RecipeBook, Recipe, Ingredient } from "../../core/recipe";
 import type { RecipeErrors } from "../../core/form";
 import type { RecipeFormProps } from "../../Stack";
 import { addRecipe, updateRecipe } from "../../core/recipe";
@@ -43,9 +43,39 @@ export const RecipeForm = ({ navigation, route }: RecipeFormProps) => {
     getInitialErrors(initialRecipe, isNewRecipe(route))
   );
 
-  const updateRecipeYield = (newYield: Yield) => {
-    setRecipe({ ...recipe, yield: newYield });
+  /* Callbacks passed to form children to update various parts of the recipe */
+  const updateRecipeYieldAmount = (newAmount: string) => {
+    setRecipe({
+      ...recipe,
+      yield: { ...recipe.yield, amount: Number(newAmount) },
+    });
   };
+
+  const updateRecipeYieldUnits = (newUnits: string) => {
+    setRecipe({
+      ...recipe,
+      yield: { ...recipe.yield, units: newUnits },
+    });
+  };
+
+  const updateIngredients = (newIngredients: Array<Ingredient>) => {
+    setRecipe({ ...recipe, ingredients: newIngredients });
+  };
+  /* End of callbacks to update recipe */
+
+  /* Callbacks passed to form children to update form errors */
+  const updateRecipeNameError = (hasError: boolean) => {
+    setErrors({ ...errors, name: hasError });
+  };
+
+  const updateRecipeYieldAmountError = (hasError: boolean) => {
+    setErrors({ ...errors, yieldAmount: hasError });
+  };
+
+  const updateRecipeYieldUnitsError = (hasError: boolean) => {
+    setErrors({ ...errors, yieldUnits: hasError });
+  };
+  /* End of callbacks to update form errors */
 
   const saveRecipe = () => {
     const newRecipeBook: RecipeBook = isNewRecipe(route)
@@ -69,8 +99,7 @@ export const RecipeForm = ({ navigation, route }: RecipeFormProps) => {
             initialName={initialRecipeName}
             parentFunctions={{
               updateValue: setRecipeName,
-              updateErrors: (hasError: boolean) =>
-                setErrors({ ...errors, name: hasError }),
+              updateErrors: updateRecipeNameError,
             }}
           />
           <RecipeYieldInput
@@ -78,28 +107,18 @@ export const RecipeForm = ({ navigation, route }: RecipeFormProps) => {
             // These props are really messy but I can't find a cleaner way to do this
             // "parent" functions (for yield amount, yield units, resp.) are the functions that help manage the parent's state
             parentAmountFunctions={{
-              updateValue: (newAmount: string) =>
-                updateRecipeYield({
-                  ...recipe.yield,
-                  amount: Number(newAmount),
-                }),
-              updateErrors: (hasError: boolean) =>
-                setErrors({ ...errors, yieldAmount: hasError }),
+              updateValue: updateRecipeYieldAmount,
+              updateErrors: updateRecipeYieldAmountError,
             }}
             parentUnitFunctions={{
-              updateValue: (newUnits: string) =>
-                updateRecipeYield({
-                  ...recipe.yield,
-                  units: newUnits,
-                }),
-              updateErrors: (hasError: boolean) =>
-                setErrors({ ...errors, yieldUnits: hasError }),
+              updateValue: updateRecipeYieldUnits,
+              updateErrors: updateRecipeYieldUnitsError,
             }}
           />
           <Divider />
           <IngredientFormSection
-            recipe={recipe}
-            setRecipe={setRecipe}
+            ingredients={recipe.ingredients}
+            updateIngredients={updateIngredients}
             errors={errors}
             setErrors={setErrors}
           />
