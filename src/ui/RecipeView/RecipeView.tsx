@@ -10,7 +10,8 @@ import { AppContext } from "../../AppContext";
 
 import type { AppContextType } from "../../AppContext";
 import type { RecipeScreenProps } from "../../Stack";
-import type { Ingredient, Recipe } from "../../core/recipe";
+import type { Ingredient } from "../../core/ingredient";
+import type { Recipe } from "../../core/recipe-book";
 import {
   adjustIngredientAmounts,
   formatIngredientAmount,

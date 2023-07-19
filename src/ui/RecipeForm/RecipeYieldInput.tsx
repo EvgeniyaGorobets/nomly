@@ -7,9 +7,9 @@ import { Styles } from "../Styles";
 import {
   validateRecipeYieldAmount,
   validateRecipeYieldUnits,
-} from "../../core/form-validation";
+} from "../../core/recipe-yield";
 import { onInputChange, ParentStateFunctions } from "../../core/form";
-import type { Yield } from "../../core/recipe";
+import type { Yield } from "../../core/recipe-yield";
 
 type RecipeYieldProps = {
   recipeYield: Yield;

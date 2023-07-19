@@ -2,7 +2,7 @@ import React, { useContext, useState } from "react";
 import { Menu, IconButton } from "react-native-paper";
 
 import { AppContext, AppContextType } from "../../AppContext";
-import { deleteRecipe, cloneRecipe } from "../../core/recipe";
+import { deleteRecipe, cloneRecipe } from "../../core/recipe-book";
 
 export const RecipeMenu = ({ recipeName }: { recipeName: string }) => {
   const context: AppContextType = useContext(AppContext);

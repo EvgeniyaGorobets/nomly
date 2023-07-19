@@ -1,4 +1,4 @@
-import type { Recipe } from "./recipe";
+import type { Recipe } from "./recipe-book";
 import type { Ingredient } from "./ingredient";
 
 // * ------ FORM VALIDATION ------ *

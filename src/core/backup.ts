@@ -1,7 +1,8 @@
 import { StorageAccessFramework as SAF } from "expo-file-system";
 import * as DocumentPicker from "expo-document-picker";
-import { RecipeBook, UNITS } from "./recipe";
-import { isNumeric } from "./form";
+import type { RecipeBook } from "./recipe-book";
+import { UNITS } from "./ingredient";
+import { isNumeric } from "./utils";
 
 const FILE_NAME: string = "nomly-recipe-book.json";
 const MIME_TYPE: string = "application/json";

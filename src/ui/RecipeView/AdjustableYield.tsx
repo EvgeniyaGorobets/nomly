@@ -10,8 +10,8 @@ import {
 
 import { Styles } from "../Styles";
 
-import type { Yield } from "../../core/recipe";
-import { validateRecipeYieldAmount } from "../../core/form-validation";
+import type { Yield } from "../../core/recipe-yield";
+import { validateRecipeYieldAmount } from "../../core/recipe-yield";
 
 type AdjustableYieldProps = {
   originalYield: Yield;

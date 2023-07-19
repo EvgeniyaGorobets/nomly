@@ -2,7 +2,7 @@ import React from "react";
 import { View } from "react-native";
 import { TextInput, Text } from "react-native-paper";
 
-import type { Recipe } from "../../core/recipe";
+import type { Recipe } from "../../core/recipe-book";
 
 type RecipeNotesProps = {
   recipe: Recipe;

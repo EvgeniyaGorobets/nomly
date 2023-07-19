@@ -2,11 +2,11 @@ import React, { useContext, useState } from "react";
 import { View, ScrollView } from "react-native";
 import { Appbar, Button, Divider } from "react-native-paper";
 
-import type { RecipeBook, Recipe } from "../../core/recipe";
+import type { RecipeBook, Recipe } from "../../core/recipe-book";
 import type { Ingredient } from "../../core/ingredient";
 import type { RecipeErrors } from "../../core/form";
 import type { RecipeFormProps } from "../../Stack";
-import { addRecipe, updateRecipe } from "../../core/recipe";
+import { addRecipe, updateRecipe } from "../../core/recipe-book";
 import { blankRecipe, getInitialErrors } from "../../core/form";
 import { AppContext, AppContextType } from "../../AppContext";
 import { RecipeYieldInput } from "./RecipeYieldInput";
