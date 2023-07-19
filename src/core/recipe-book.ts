@@ -1,5 +1,6 @@
 import type { Ingredient } from "./ingredient";
 import type { Yield } from "./recipe-yield";
+import { deepCopy } from "./utils";
 
 /* ---- TYPES ---- */
 
@@ -25,7 +26,7 @@ export const updateRecipe = (
   newRecipe: Recipe,
   recipeName: string
 ): RecipeBook => {
-  return { ...recipeBook, [recipeName]: newRecipe };
+  return { ...deepCopy(recipeBook), [recipeName]: newRecipe };
 };
 
 /**
@@ -44,7 +45,7 @@ export const deleteRecipe = (
     );
   }
 
-  const clonedRecipeBook = { ...recipeBook };
+  const clonedRecipeBook = deepCopy(recipeBook);
   delete clonedRecipeBook[recipeName];
   return clonedRecipeBook;
 };
@@ -60,23 +61,9 @@ export const cloneRecipe = (
   recipeBook: RecipeBook,
   recipeName: string
 ): RecipeBook => {
-  const recipe = recipeBook[recipeName];
-
-  // deep copy
-  const clonedYield: Yield = { ...recipe.yield };
-  const clonedIngredients: Ingredient[] = recipe.ingredients.map(
-    (ingredient) => {
-      return { ...ingredient };
-    }
-  );
-
   return {
-    ...recipeBook,
-    [`${recipeName} (Copy)`]: {
-      yield: clonedYield,
-      ingredients: clonedIngredients,
-      notes: recipe.notes,
-    },
+    ...deepCopy(recipeBook),
+    [`${recipeName} (Copy)`]: deepCopy(recipeBook[recipeName]),
   };
 };
 
