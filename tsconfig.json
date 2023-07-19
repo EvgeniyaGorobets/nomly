@@ -3,5 +3,6 @@
   "compilerOptions": {
     "strict": true
   },
-  "include": ["./jest.setup.ts"]
+  "include": ["./jest.setup.ts"],
+  "types": ["node", "jest", "@testing-library/jest-dom"]
 }

@@ -12,6 +12,9 @@ module.exports = {
       "|expo-file-system" +
       "|expo-modules-core" +
       "|react-native-vector-icons" +
+      "|react-native-paper-dropdown" +
+      "|@react-navigation" +
+      "|react-native-paper" +
       ")/)",
   ],
   setupFilesAfterEnv: ["./jest.setup.ts"],
