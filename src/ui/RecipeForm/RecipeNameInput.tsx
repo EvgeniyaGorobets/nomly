@@ -3,7 +3,7 @@ import { View } from "react-native";
 import { TextInput, HelperText } from "react-native-paper";
 
 import { AppContext, AppContextType } from "../../AppContext";
-import { validateRecipeName } from "../../core/form-validation";
+import { validateRecipeName } from "../../core/recipe-book";
 import { onInputChange, ParentStateFunctions } from "../../core/form";
 
 type RecipeNameProps = {
