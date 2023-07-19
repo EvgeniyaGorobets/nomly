@@ -113,7 +113,7 @@ export const IngredientInput: React.FC<IngredientInputProps> = ({
           icon="close"
           onPress={deleteIngredient}
           style={{ paddingTop: 5 }}
-          accessibilityHint="Delete ingredient"
+          accessibilityHint={`Delete ${ingredient.name} from ingredients`}
         />
       </View>
       <View

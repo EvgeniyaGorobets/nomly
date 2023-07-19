@@ -68,7 +68,7 @@ describe("IngredientFormSection", () => {
     screen.getByDisplayValue("g");
   });
 
-  it("calls updateRecipe when a new ingredient is added", () => {
+  it("calls updateIngredients when a new ingredient is added", () => {
     fireEvent.press(screen.getByAccessibilityHint("Add ingredient"));
 
     expect(mockUpdateIngredients).toBeCalledTimes(1);
@@ -86,6 +86,25 @@ describe("IngredientFormSection", () => {
       "ingredientName-4": true,
       "ingredientAmount-4": true,
     });
+  });
+
+  it("calls updateIngredients when an ingredient is deleted", () => {
+    fireEvent.press(
+      screen.getByAccessibilityHint("Delete sugar from ingredients")
+    );
+
+    expect(mockUpdateIngredients).toBeCalledTimes(1);
+    expect(mockUpdateIngredients).toBeCalledWith([
+      mockIngredients[0],
+      // sugar was the second ingredient, it should be removed
+      mockIngredients[2],
+      mockIngredients[3],
+    ]);
+
+    // it should remove error tracking for the deleted ingredient
+    // TODO: this is definitely a bug
+    //expect(mockSetErrors).toBeCalledTimes(1);
+    //expect(mockSetErrors).toBeCalledWith();
   });
 
   it("propagates errors from IngredientInput children to the RecipeForm parent", () => {

@@ -201,7 +201,9 @@ describe("IngredientInput", () => {
   });
 
   it("fires the deleteIngredient callback when the X is pressed", () => {
-    fireEvent.press(screen.getByAccessibilityHint("Delete ingredient"));
+    fireEvent.press(
+      screen.getByAccessibilityHint("Delete milk from ingredients")
+    );
     expect(mockDeleteIngredient).toBeCalledTimes(1);
   });
 });
