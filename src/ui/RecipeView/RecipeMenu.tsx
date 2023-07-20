@@ -1,37 +1,53 @@
 import React, { useContext, useState } from "react";
 import { Menu, IconButton } from "react-native-paper";
 
-import { AppContext, AppContextType } from "../../AppContext";
+import { AppContext } from "../../AppContext";
+import { type RecipeScreenProps } from "../../Stack";
 import { deleteRecipe, cloneRecipe } from "../../core/recipe-book";
 
-export const RecipeMenu = ({ recipeName }: { recipeName: string }) => {
-  const context: AppContextType = useContext(AppContext);
+type RecipeMenuProps = {
+  recipeName: string;
+  nav: RecipeScreenProps["navigation"];
+};
 
+export const RecipeMenu = ({ recipeName, nav }: RecipeMenuProps) => {
   const [isVisible, setVisibility] = useState<boolean>(false);
   const toggleVisiblity = () => {
     setVisibility(!isVisible);
+  };
+
+  const { recipes, saveRecipes } = useContext(AppContext);
+  const cloneThisRecipe = () => {
+    saveRecipes(cloneRecipe(recipes, recipeName));
+    nav.navigate("Recipe", { recipeName: `${recipeName} (Copy)` });
+  };
+  const deleteThisRecipe = () => {
+    saveRecipes(deleteRecipe(recipes, recipeName));
+    nav.goBack();
   };
 
   return (
     <Menu
       visible={isVisible}
       onDismiss={toggleVisiblity}
-      anchor={<IconButton icon="dots-vertical" onPress={toggleVisiblity} />}
+      anchor={
+        <IconButton
+          icon="dots-vertical"
+          onPress={toggleVisiblity}
+          accessibilityHint="Open recipe menu"
+        />
+      }
       anchorPosition="bottom"
     >
       <Menu.Item
         title="Clone recipe"
         leadingIcon="content-copy"
-        onPress={() =>
-          context.saveRecipes(cloneRecipe(context.recipes, recipeName))
-        }
+        onPress={cloneThisRecipe}
       />
       <Menu.Item
         title="Delete recipe"
         leadingIcon="delete-outline"
-        onPress={() =>
-          context.saveRecipes(deleteRecipe(context.recipes, recipeName))
-        }
+        onPress={deleteThisRecipe}
       />
     </Menu>
   );

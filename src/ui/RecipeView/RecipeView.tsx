@@ -8,7 +8,6 @@ import { RecipeMenu } from "./RecipeMenu";
 import { Styles } from "../Styles";
 import { AppContext } from "../../AppContext";
 
-import type { AppContextType } from "../../AppContext";
 import type { RecipeScreenProps } from "../../Stack";
 import type { Ingredient } from "../../core/ingredient";
 import type { Recipe } from "../../core/recipe-book";
@@ -18,8 +17,8 @@ import {
 } from "../../core/ingredient-amounts";
 
 export const RecipeView = ({ navigation, route }: RecipeScreenProps) => {
-  const context: AppContextType = useContext(AppContext);
-  const recipe: Recipe = context.recipes[route.params.recipeName];
+  const { recipes, prefs } = useContext(AppContext);
+  const recipe: Recipe = recipes[route.params.recipeName];
 
   const [ingredients, setIngredients] = useState<Ingredient[]>(
     recipe.ingredients
@@ -44,7 +43,7 @@ export const RecipeView = ({ navigation, route }: RecipeScreenProps) => {
             });
           }}
         />
-        <RecipeMenu recipeName={route.params.recipeName} />
+        <RecipeMenu recipeName={route.params.recipeName} nav={navigation} />
       </Appbar.Header>
       <ScrollView style={Styles.content}>
         <AdjustableYield
@@ -58,10 +57,7 @@ export const RecipeView = ({ navigation, route }: RecipeScreenProps) => {
               {ingredients.map((ingredient: Ingredient, i: number) => (
                 <List.Item
                   key={i}
-                  title={formatIngredientAmount(
-                    ingredient,
-                    context.prefs.fractionMode
-                  )}
+                  title={formatIngredientAmount(ingredient, prefs.fractionMode)}
                 />
               ))}
             </View>
