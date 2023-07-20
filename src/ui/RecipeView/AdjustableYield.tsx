@@ -47,14 +47,14 @@ export const AdjustableYield = ({
     }
   };
 
-  const tryToUpdateYield = (newAmount: string) => {
+  const onYieldChange = (newAmount: string) => {
     setYieldAmount(newAmount);
 
-    const [isNewYieldValid, errorText] = validateRecipeYieldAmount(newAmount);
-    setInvalid(!isNewYieldValid);
-    setErrorMsg(errorText);
+    const errorMessage: string = validateRecipeYieldAmount(newAmount);
+    setInvalid(errorMessage !== "");
+    setErrorMsg(errorMessage);
 
-    if (isNewYieldValid) {
+    if (errorMessage === "") {
       updateIngredients(Number(newAmount));
     }
   };
@@ -75,7 +75,7 @@ export const AdjustableYield = ({
           value={yieldAmount.toString()}
           editable={isCustomizable}
           error={isInvalid}
-          onChangeText={(text: string) => tryToUpdateYield(text)}
+          onChangeText={onYieldChange}
           textAlign="center"
           mode="flat"
           style={{
@@ -116,9 +116,11 @@ export const AdjustableYield = ({
         />
       </View>
       <View>
-        <HelperText type="error" visible={isInvalid}>
-          {errorMsg}
-        </HelperText>
+        {isInvalid && (
+          <HelperText type="error" visible={isInvalid}>
+            {errorMsg}
+          </HelperText>
+        )}
       </View>
       <Divider />
     </View>

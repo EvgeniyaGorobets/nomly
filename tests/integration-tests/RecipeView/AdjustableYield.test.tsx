@@ -25,15 +25,15 @@ describe("AdjustableYield", () => {
 
   it("changes the input value when you press x1, x2, or x4", () => {
     fireEvent.press(screen.getByText("x2"));
-    expect(screen.queryByDisplayValue("12")).toBe(null);
+    expect(screen.queryByDisplayValue("12")).toBeNull();
     screen.getByDisplayValue("24");
 
     fireEvent.press(screen.getByText("x4"));
-    expect(screen.queryByDisplayValue("24")).toBe(null);
+    expect(screen.queryByDisplayValue("24")).toBeNull();
     screen.getByDisplayValue("48");
 
     fireEvent.press(screen.getByText("x1"));
-    expect(screen.queryByDisplayValue("48")).toBe(null);
+    expect(screen.queryByDisplayValue("48")).toBeNull();
     screen.getByDisplayValue("12");
   });
 
@@ -48,7 +48,7 @@ describe("AdjustableYield", () => {
     expect(screen.getByDisplayValue("48")).toBeDisabled();
   });
 
-  it("lets you edit the yield manually when 'custom is selected", () => {
+  it("lets you edit the yield manually when 'custom' is selected", () => {
     fireEvent.press(screen.getByText("Custom"));
     expect(screen.getByDisplayValue("12")).toBeEnabled();
 
@@ -90,7 +90,7 @@ describe("AdjustableYield", () => {
   });
 
   it("shows an error when the yield is not a number", () => {
-    expect(screen.getByText("Recipe yield must be a number")).not.toBeVisible();
+    expect(screen.queryByText("Recipe yield must be a number")).toBeNull();
 
     fireEvent.press(screen.getByText("Custom"));
     fireEvent.changeText(screen.getByDisplayValue("12"), "abc"); // not a number!
@@ -99,13 +99,12 @@ describe("AdjustableYield", () => {
     expect(screen.getByText("Recipe yield must be a number")).toBeVisible();
   });
 
-  it("removes error messages when the yield is reset to one of the automatic", () => {
+  it("removes error messages when the yield is reset to one of the predefined amounts", () => {
     fireEvent.press(screen.getByText("Custom"));
     fireEvent.changeText(screen.getByDisplayValue("12"), "abc"); // not a number!
-    // Not working for some reason
     expect(screen.getByText("Recipe yield must be a number")).toBeVisible();
 
     fireEvent.press(screen.getByText("x4"));
-    expect(screen.getByText("Recipe yield must be a number")).not.toBeVisible();
+    expect(screen.queryByText("Recipe yield must be a number")).toBeNull();
   });
 });
