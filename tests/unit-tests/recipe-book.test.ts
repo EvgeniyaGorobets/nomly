@@ -2,6 +2,7 @@ import type { Recipe, RecipeBook } from "../../src/core/recipe-book";
 import {
   cloneRecipe,
   deleteRecipe,
+  getBlankRecipe,
   updateRecipe,
   validateRecipeName,
 } from "../../src/core/recipe-book";
@@ -152,6 +153,22 @@ describe("updateRecipe", () => {
     expect(newRecipeBook).toStrictEqual({
       "Quinoa Broccoli Casserole": newRecipe,
     });
+  });
+});
+
+describe("getBlankRecipe", () => {
+  it("returns a new recipe data structure with no ingredients and no notes", () => {
+    const blankRecipe: Recipe = getBlankRecipe();
+    expect(blankRecipe).toStrictEqual({
+      yield: { amount: 1, units: "servings" },
+      ingredients: [],
+      notes: "",
+    });
+
+    // make sure it's not just returning a pointer to the same object in memeory
+    const secondBlankRecipe: Recipe = getBlankRecipe();
+    secondBlankRecipe.notes = "blah blah blah";
+    expect(blankRecipe.notes).toBe("");
   });
 });
 

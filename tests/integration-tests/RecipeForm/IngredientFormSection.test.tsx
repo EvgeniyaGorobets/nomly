@@ -3,8 +3,8 @@ import { render, screen, fireEvent } from "@testing-library/react-native";
 import { PaperProvider } from "react-native-paper";
 
 import { IngredientFormSection } from "../../../src/ui/RecipeForm/IngredientFormSection";
-import type { Ingredient } from "../../../src/core/ingredient";
-import type { RecipeErrors } from "../../../src/core/form";
+import { type Ingredient } from "../../../src/core/ingredient";
+import { type IngredientErrors } from "../../../src/core/recipe-errors";
 
 describe("IngredientFormSection", () => {
   const mockIngredients: Ingredient[] = [
@@ -13,20 +13,13 @@ describe("IngredientFormSection", () => {
     { name: "chocolate chips", amount: 8, units: "oz" },
     { name: "butter", amount: 100, units: "g" },
   ];
-  const mockErrors: RecipeErrors = {
-    name: false,
-    yieldAmount: false,
-    yieldUnits: false,
-    "ingredientName-0": false,
-    "ingredientAmount-0": false,
-    "ingredientName-1": false,
-    "ingredientAmount-1": false,
-    "ingredientName-2": false,
-    "ingredientAmount-2": false,
-    "ingredientName-3": false,
-    "ingredientAmount-3": false,
-  };
-  const mockUpdateIngredients = jest.fn();
+  const mockErrors: IngredientErrors[] = [
+    { name: false, amount: false },
+    { name: true, amount: false },
+    { name: false, amount: true },
+    { name: true, amount: true },
+  ];
+  const mockSetIngredients = jest.fn();
   const mockSetErrors = jest.fn();
 
   beforeEach(() => {
@@ -34,8 +27,8 @@ describe("IngredientFormSection", () => {
       <PaperProvider>
         <IngredientFormSection
           ingredients={mockIngredients}
-          updateIngredients={mockUpdateIngredients}
-          errors={mockErrors}
+          setIngredients={mockSetIngredients}
+          ingredientErrors={mockErrors}
           setErrors={mockSetErrors}
         />
       </PaperProvider>
@@ -68,76 +61,82 @@ describe("IngredientFormSection", () => {
     screen.getByDisplayValue("g");
   });
 
-  it("calls updateIngredients when a new ingredient is added", () => {
+  it("calls setIngredients and setErrors when a new ingredient is added", () => {
     fireEvent.press(screen.getByAccessibilityHint("Add ingredient"));
 
-    expect(mockUpdateIngredients).toBeCalledTimes(1);
-    expect(mockUpdateIngredients).toBeCalledWith([
+    expect(mockSetIngredients).toBeCalledTimes(1);
+    expect(mockSetIngredients).toBeCalledWith([
       ...mockIngredients,
       { name: "", amount: 0, units: "cups" },
     ]);
 
-    // it should initialize error tracking for the new ingredient
-    // TODO: this seems like a good candidate for refactoring; maybe RecipeForm should handle all this
-    // and only provide a single callback to IngredientFormSection
     expect(mockSetErrors).toBeCalledTimes(1);
-    expect(mockSetErrors).toBeCalledWith({
+    expect(mockSetErrors).toBeCalledWith([
       ...mockErrors,
-      "ingredientName-4": true,
-      "ingredientAmount-4": true,
-    });
+      { name: true, amount: true },
+    ]);
   });
 
-  it("calls updateIngredients when an ingredient is deleted", () => {
+  it("calls setIngredient and setErrors when an ingredient is deleted", () => {
     fireEvent.press(
       screen.getByAccessibilityHint("Delete sugar from ingredients")
     );
 
-    expect(mockUpdateIngredients).toBeCalledTimes(1);
-    expect(mockUpdateIngredients).toBeCalledWith([
+    expect(mockSetIngredients).toBeCalledTimes(1);
+    expect(mockSetIngredients).toBeCalledWith([
       mockIngredients[0],
       // sugar was the second ingredient, it should be removed
       mockIngredients[2],
       mockIngredients[3],
     ]);
 
-    // it should remove error tracking for the deleted ingredient
-    // TODO: this is definitely a bug
-    //expect(mockSetErrors).toBeCalledTimes(1);
-    //expect(mockSetErrors).toBeCalledWith();
+    expect(mockSetErrors).toBeCalledTimes(1);
+    expect(mockSetErrors).toBeCalledWith([
+      { name: false, amount: false },
+      { name: false, amount: true },
+      { name: true, amount: true },
+    ]);
   });
 
   it("propagates errors from IngredientInput children to the RecipeForm parent", () => {
     // check that errors from ingredient name are propagated
-    fireEvent.changeText(screen.getByDisplayValue("butter"), "");
+    fireEvent.changeText(screen.getByDisplayValue("chocolate chips"), "");
     expect(mockSetErrors).toBeCalledTimes(1);
-    expect(mockSetErrors).toHaveBeenLastCalledWith({
-      ...mockErrors,
-      "ingredientName-3": true,
-    });
+    expect(mockSetErrors).toHaveBeenLastCalledWith([
+      { name: false, amount: false },
+      { name: true, amount: false },
+      { name: true, amount: true }, // name changed from false to true
+      { name: true, amount: true },
+    ]);
 
     // check that errors from ingredient amount are propagated
-    fireEvent.changeText(screen.getByDisplayValue("8"), "eight");
+    fireEvent.changeText(screen.getByDisplayValue("16"), "sixteen");
     expect(mockSetErrors).toBeCalledTimes(2);
-    expect(mockSetErrors).toHaveBeenLastCalledWith({
-      ...mockErrors,
-      "ingredientAmount-2": true,
-    });
+    expect(mockSetErrors).toHaveBeenLastCalledWith([
+      { name: false, amount: false },
+      { name: true, amount: true }, // amount changed from false to true
+      { name: false, amount: true },
+      { name: true, amount: true },
+    ]);
 
     // check that when the errors are fixed, it is propagated to the parent
-    fireEvent.changeText(screen.getByDisplayValue(""), "butter");
+    fireEvent.changeText(screen.getByDisplayValue(""), "chocolate chips");
     expect(mockSetErrors).toBeCalledTimes(3);
-    expect(mockSetErrors).toHaveBeenLastCalledWith({
-      ...mockErrors,
-      "ingredientName-3": false,
-    });
+    expect(mockSetErrors).toHaveBeenLastCalledWith([
+      { name: false, amount: false },
+      { name: true, amount: false },
+      { name: false, amount: true }, // name changed back to false
+      { name: true, amount: true },
+    ]);
 
     // check that errors from ingredient amount are propagated
-    fireEvent.changeText(screen.getByDisplayValue("eight"), "8");
+    fireEvent.changeText(screen.getByDisplayValue("sixteen"), "16");
     expect(mockSetErrors).toBeCalledTimes(4);
-    expect(mockSetErrors).toHaveBeenLastCalledWith({
-      ...mockErrors,
-      "ingredientAmount-2": false,
-    });
+    expect(mockSetErrors).toHaveBeenLastCalledWith([
+      { name: false, amount: false },
+      { name: true, amount: false }, // amount changed back to false
+      { name: false, amount: true },
+      { name: true, amount: true },
+    ]);
   });
 });

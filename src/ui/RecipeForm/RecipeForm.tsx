@@ -2,17 +2,27 @@ import React, { useContext, useState } from "react";
 import { View, ScrollView } from "react-native";
 import { Appbar, Button, Divider } from "react-native-paper";
 
-import type { RecipeBook, Recipe } from "../../core/recipe-book";
-import type { Ingredient } from "../../core/ingredient";
-import type { RecipeErrors } from "../../core/form";
-import type { RecipeFormProps } from "../../Stack";
-import { updateRecipe } from "../../core/recipe-book";
-import { blankRecipe, getInitialErrors } from "../../core/form";
-import { AppContext, AppContextType } from "../../AppContext";
 import { RecipeYieldInput } from "./RecipeYieldInput";
 import { RecipeNameInput } from "./RecipeNameInput";
 import { RecipeNotesInput } from "./RecipeNotesInput";
 import { IngredientFormSection } from "./IngredientFormSection";
+
+import { type RecipeFormProps } from "../../Stack";
+import { AppContext } from "../../AppContext";
+
+import {
+  type RecipeBook,
+  type Recipe,
+  updateRecipe,
+  getBlankRecipe,
+} from "../../core/recipe-book";
+import type { Ingredient } from "../../core/ingredient";
+import {
+  type RecipeErrors,
+  type IngredientErrors,
+  getInitialErrors,
+  isRecipeValid,
+} from "../../core/recipe-errors";
 
 import { Styles } from "../Styles";
 
@@ -24,7 +34,7 @@ const getInitialRecipe = (
 ): [string, Recipe] => {
   return route.params?.recipeName
     ? [route.params.recipeName, recipes[route.params.recipeName]]
-    : ["", blankRecipe()];
+    : ["", getBlankRecipe()];
 };
 
 const isNewRecipe = (route: RouteProp): boolean => {
@@ -32,23 +42,29 @@ const isNewRecipe = (route: RouteProp): boolean => {
 };
 
 export const RecipeForm = ({ navigation, route }: RecipeFormProps) => {
-  const context: AppContextType = useContext(AppContext);
+  const { recipes, saveRecipes } = useContext(AppContext);
   const [initialRecipeName, initialRecipe]: [string, Recipe] = getInitialRecipe(
     route,
-    context.recipes
+    recipes
   );
 
   const [recipeName, setRecipeName] = useState<string>(initialRecipeName);
   const [recipe, setRecipe] = useState<Recipe>(initialRecipe);
   const [errors, setErrors] = useState<RecipeErrors>(
-    getInitialErrors(initialRecipe, isNewRecipe(route))
+    getInitialErrors(isNewRecipe(route), recipe.ingredients.length)
   );
 
-  /* Callbacks passed to form children to update various parts of the recipe */
-  const updateRecipeYieldAmount = (newAmount: string) => {
+  /* Callbacks passed to recipe name input component */
+  const updateRecipeNameError = (hasError: boolean) => {
+    setErrors({ ...errors, name: hasError });
+  };
+  /* End of callbacks passed to recipe name input component */
+
+  /* Callbacks passed to recipe yield input component */
+  const updateRecipeYieldAmount = (newAmount: number) => {
     setRecipe({
       ...recipe,
-      yield: { ...recipe.yield, amount: Number(newAmount) },
+      yield: { ...recipe.yield, amount: newAmount },
     });
   };
 
@@ -59,32 +75,34 @@ export const RecipeForm = ({ navigation, route }: RecipeFormProps) => {
     });
   };
 
-  const updateIngredients = (newIngredients: Ingredient[]) => {
-    setRecipe({ ...recipe, ingredients: newIngredients });
-  };
-  /* End of callbacks to update recipe */
-
-  /* Callbacks passed to form children to update form errors */
-  const updateRecipeNameError = (hasError: boolean) => {
-    setErrors({ ...errors, name: hasError });
-  };
-
   const updateRecipeYieldAmountError = (hasError: boolean) => {
-    setErrors({ ...errors, yieldAmount: hasError });
+    setErrors({
+      ...errors,
+      yield: { ...errors.yield, amount: hasError },
+    });
   };
 
   const updateRecipeYieldUnitsError = (hasError: boolean) => {
-    setErrors({ ...errors, yieldUnits: hasError });
+    setErrors({
+      ...errors,
+      yield: { ...errors.yield, units: hasError },
+    });
   };
-  /* End of callbacks to update form errors */
+  /* End of callbacks passed to recipe yield input component */
+
+  /* Callbacks passed to ingredient input components */
+  const updateIngredients = (newIngredients: Ingredient[]) => {
+    setRecipe({ ...recipe, ingredients: newIngredients });
+  };
+
+  const updateIngredientErrors = (ingredientErrors: IngredientErrors[]) => {
+    setErrors({ ...errors, ingredients: ingredientErrors });
+  };
+  /* End of callbacks passed to ingredient input components */
 
   const saveRecipe = () => {
-    const newRecipeBook: RecipeBook = updateRecipe(
-      context.recipes,
-      recipe,
-      recipeName
-    );
-    context.saveRecipes(newRecipeBook);
+    const newRecipeBook: RecipeBook = updateRecipe(recipes, recipe, recipeName);
+    saveRecipes(newRecipeBook);
     navigation.goBack();
   };
 
@@ -103,30 +121,22 @@ export const RecipeForm = ({ navigation, route }: RecipeFormProps) => {
         <View>
           <RecipeNameInput
             initialName={initialRecipeName}
-            parentFunctions={{
-              updateValue: setRecipeName,
-              updateErrors: updateRecipeNameError,
-            }}
+            setName={setRecipeName}
+            setErrors={updateRecipeNameError}
           />
           <RecipeYieldInput
             recipeYield={recipe.yield}
-            // These props are really messy but I can't find a cleaner way to do this
-            // "parent" functions (for yield amount, yield units, resp.) are the functions that help manage the parent's state
-            parentAmountFunctions={{
-              updateValue: updateRecipeYieldAmount,
-              updateErrors: updateRecipeYieldAmountError,
-            }}
-            parentUnitFunctions={{
-              updateValue: updateRecipeYieldUnits,
-              updateErrors: updateRecipeYieldUnitsError,
-            }}
+            setYieldAmount={updateRecipeYieldAmount}
+            setYieldUnits={updateRecipeYieldUnits}
+            setYieldAmountErrors={updateRecipeYieldAmountError}
+            setYieldUnitsErrors={updateRecipeYieldUnitsError}
           />
           <Divider />
           <IngredientFormSection
             ingredients={recipe.ingredients}
-            updateIngredients={updateIngredients}
-            errors={errors}
-            setErrors={setErrors}
+            setIngredients={updateIngredients}
+            ingredientErrors={errors.ingredients}
+            setErrors={updateIngredientErrors}
           />
           <Divider />
           <RecipeNotesInput recipe={recipe} setRecipe={setRecipe} />
@@ -134,7 +144,7 @@ export const RecipeForm = ({ navigation, route }: RecipeFormProps) => {
         <View>
           <Button
             mode="contained"
-            disabled={Object.values(errors).some((value) => value === true)}
+            disabled={!isRecipeValid(errors)}
             onPress={() => saveRecipe()}
             accessibilityHint="Save recipe"
           >

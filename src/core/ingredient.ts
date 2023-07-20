@@ -55,7 +55,7 @@ export const updateIngredient = (
 ): Ingredient[] => {
   return [
     ...ingredients.slice(0, index),
-    ingredient,
+    { ...ingredient },
     ...ingredients.slice(index + 1),
   ];
 };

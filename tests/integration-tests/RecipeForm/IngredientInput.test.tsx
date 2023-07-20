@@ -3,11 +3,11 @@ import { render, screen, fireEvent } from "@testing-library/react-native";
 import { PaperProvider } from "react-native-paper";
 
 import { IngredientInput } from "../../../src/ui/RecipeForm/IngredientInput";
-import type { Ingredient } from "../../../src/core/ingredient";
+import { type Ingredient } from "../../../src/core/ingredient";
 
 describe("IngredientInput", () => {
   const mockDeleteIngredient = jest.fn();
-  const mockUpdateIngredient = jest.fn();
+  const mockSetIngredient = jest.fn();
   const mockSetIngredientNameError = jest.fn();
   const mockSetIngredientAmountError = jest.fn();
 
@@ -23,7 +23,7 @@ describe("IngredientInput", () => {
         <IngredientInput
           ingredient={ingredient}
           deleteIngredient={mockDeleteIngredient}
-          updateIngredient={mockUpdateIngredient}
+          setIngredient={mockSetIngredient}
           setIngredientNameError={mockSetIngredientNameError}
           setIngredientAmountError={mockSetIngredientAmountError}
         />
@@ -49,8 +49,8 @@ describe("IngredientInput", () => {
     expect(screen.queryByDisplayValue("milk")).toBe(null);
     screen.getByDisplayValue("MILK");
 
-    expect(mockUpdateIngredient).toBeCalledTimes(1);
-    expect(mockUpdateIngredient).toBeCalledWith({
+    expect(mockSetIngredient).toBeCalledTimes(1);
+    expect(mockSetIngredient).toBeCalledWith({
       name: "MILK",
       amount: 1.5,
       units: "oz",
@@ -65,8 +65,8 @@ describe("IngredientInput", () => {
     expect(screen.queryByDisplayValue("1.5")).toBe(null);
     screen.getByDisplayValue("3");
 
-    expect(mockUpdateIngredient).toBeCalledTimes(1);
-    expect(mockUpdateIngredient).toBeCalledWith({
+    expect(mockSetIngredient).toBeCalledTimes(1);
+    expect(mockSetIngredient).toBeCalledWith({
       name: "milk",
       amount: 3,
       units: "oz",
@@ -96,8 +96,8 @@ describe("IngredientInput", () => {
     // Therefore, we can't do this: expect(screen.getByDisplayValue("mL")).toBeVisible();
     // because the display value won't change until the parent's state is updated
     // We can only test whether the callbacks are called
-    expect(mockUpdateIngredient).toBeCalledTimes(1);
-    expect(mockUpdateIngredient).toBeCalledWith({
+    expect(mockSetIngredient).toBeCalledTimes(1);
+    expect(mockSetIngredient).toBeCalledWith({
       name: "milk",
       amount: 1.5,
       units: "mL",
@@ -131,7 +131,7 @@ describe("IngredientInput", () => {
 
     // until this point, updateIngredient shouldn't have been called, bc the
     // change should only propagate to the parent if the new value is valid
-    expect(mockUpdateIngredient).toBeCalledTimes(0);
+    expect(mockSetIngredient).toBeCalledTimes(0);
 
     // all other strings are valid
     oldErrorMessage = expectedErrorMessage;
@@ -142,7 +142,7 @@ describe("IngredientInput", () => {
     expect(mockSetIngredientNameError).toHaveBeenLastCalledWith(false);
 
     // now, we should see a call to updateIngredient, since the last change was valid
-    expect(mockUpdateIngredient).toBeCalledTimes(1);
+    expect(mockSetIngredient).toBeCalledTimes(1);
   });
 
   it("shows an error message when the ingredient amount is invalid", () => {
@@ -186,7 +186,7 @@ describe("IngredientInput", () => {
 
     // until this point, updateIngredient shouldn't have been called, bc the
     // change should only propagate to the parent if the new value is valid
-    expect(mockUpdateIngredient).toBeCalledTimes(0);
+    expect(mockSetIngredient).toBeCalledTimes(0);
 
     // only positive numbers are valid
     oldErrorMessage = expectedErrorMessage;
@@ -197,7 +197,7 @@ describe("IngredientInput", () => {
     expect(mockSetIngredientAmountError).toHaveBeenLastCalledWith(false);
 
     // now, we should see a call to updateIngredient, since the last change was valid
-    expect(mockUpdateIngredient).toBeCalledTimes(1);
+    expect(mockSetIngredient).toBeCalledTimes(1);
   });
 
   it("fires the deleteIngredient callback when the X is pressed", () => {

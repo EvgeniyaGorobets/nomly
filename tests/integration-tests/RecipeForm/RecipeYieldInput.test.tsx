@@ -5,9 +5,9 @@ import { PaperProvider } from "react-native-paper";
 import { RecipeYieldInput } from "../../../src/ui/RecipeForm/RecipeYieldInput";
 
 describe("RecipeYieldInput", () => {
-  const mockUpdateYieldAmount = jest.fn();
-  const mockUpdateYieldAmountErrors = jest.fn();
-  const mockUpdateYieldUnits = jest.fn();
+  const mockSetYieldAmount = jest.fn();
+  const mockSetYieldAmountErrors = jest.fn();
+  const mockSetYieldUnits = jest.fn();
   const mockUpdateYieldUnitsErrors = jest.fn();
 
   beforeEach(() => {
@@ -15,14 +15,10 @@ describe("RecipeYieldInput", () => {
       <PaperProvider>
         <RecipeYieldInput
           recipeYield={{ amount: 12, units: "cookies" }}
-          parentAmountFunctions={{
-            updateValue: mockUpdateYieldAmount,
-            updateErrors: mockUpdateYieldAmountErrors,
-          }}
-          parentUnitFunctions={{
-            updateValue: mockUpdateYieldUnits,
-            updateErrors: mockUpdateYieldUnitsErrors,
-          }}
+          setYieldAmount={mockSetYieldAmount}
+          setYieldUnits={mockSetYieldUnits}
+          setYieldAmountErrors={mockSetYieldAmountErrors}
+          setYieldUnitsErrors={mockUpdateYieldUnitsErrors}
         />
       </PaperProvider>
     );
@@ -45,8 +41,8 @@ describe("RecipeYieldInput", () => {
     expect(screen.queryByDisplayValue("12")).toBe(null);
     screen.getByDisplayValue("15");
 
-    expect(mockUpdateYieldAmount).toBeCalledTimes(1);
-    expect(mockUpdateYieldAmount).toBeCalledWith("15");
+    expect(mockSetYieldAmount).toBeCalledTimes(1);
+    expect(mockSetYieldAmount).toBeCalledWith(15);
   });
 
   it("has an enabled text input that lets you change the yield units", () => {
@@ -57,8 +53,8 @@ describe("RecipeYieldInput", () => {
     expect(screen.queryByDisplayValue("cookies")).toBe(null);
     screen.getByDisplayValue("small cookies");
 
-    expect(mockUpdateYieldUnits).toBeCalledTimes(1);
-    expect(mockUpdateYieldUnits).toBeCalledWith("small cookies");
+    expect(mockSetYieldUnits).toBeCalledTimes(1);
+    expect(mockSetYieldUnits).toBeCalledWith("small cookies");
   });
 
   it("shows an error message when the yield amount is invalid", () => {
@@ -70,8 +66,8 @@ describe("RecipeYieldInput", () => {
     expectedErrorMessage = "Recipe yield is required";
     fireEvent.changeText(recipeAmountInput, "");
     expect(screen.getByText(expectedErrorMessage)).toBeVisible();
-    expect(mockUpdateYieldAmountErrors).toBeCalledTimes(1);
-    expect(mockUpdateYieldAmountErrors).toHaveBeenLastCalledWith(true);
+    expect(mockSetYieldAmountErrors).toBeCalledTimes(1);
+    expect(mockSetYieldAmountErrors).toHaveBeenLastCalledWith(true);
 
     // zero is invalid
     oldErrorMessage = expectedErrorMessage;
@@ -79,8 +75,8 @@ describe("RecipeYieldInput", () => {
     fireEvent.changeText(recipeAmountInput, "0");
     expect(screen.queryByText(oldErrorMessage)).toBeNull();
     expect(screen.getByText(expectedErrorMessage)).toBeVisible();
-    expect(mockUpdateYieldAmountErrors).toBeCalledTimes(2);
-    expect(mockUpdateYieldAmountErrors).toHaveBeenLastCalledWith(true);
+    expect(mockSetYieldAmountErrors).toBeCalledTimes(2);
+    expect(mockSetYieldAmountErrors).toHaveBeenLastCalledWith(true);
 
     // words are invalid
     oldErrorMessage = expectedErrorMessage;
@@ -88,8 +84,8 @@ describe("RecipeYieldInput", () => {
     fireEvent.changeText(recipeAmountInput, "three");
     expect(screen.queryByText(oldErrorMessage)).toBeNull();
     expect(screen.getByText(expectedErrorMessage)).toBeVisible();
-    expect(mockUpdateYieldAmountErrors).toBeCalledTimes(3);
-    expect(mockUpdateYieldAmountErrors).toHaveBeenLastCalledWith(true);
+    expect(mockSetYieldAmountErrors).toBeCalledTimes(3);
+    expect(mockSetYieldAmountErrors).toHaveBeenLastCalledWith(true);
 
     // negative numbers are invalid
     oldErrorMessage = expectedErrorMessage;
@@ -97,23 +93,23 @@ describe("RecipeYieldInput", () => {
     fireEvent.changeText(recipeAmountInput, "-1.2");
     expect(screen.queryByText(oldErrorMessage)).toBeNull();
     expect(screen.getByText(expectedErrorMessage)).toBeVisible();
-    expect(mockUpdateYieldAmountErrors).toBeCalledTimes(4);
-    expect(mockUpdateYieldAmountErrors).toHaveBeenLastCalledWith(true);
+    expect(mockSetYieldAmountErrors).toBeCalledTimes(4);
+    expect(mockSetYieldAmountErrors).toHaveBeenLastCalledWith(true);
 
     // until this point, updateYieldAmount shouldn't have been called, bc the
     // change should only propagate to the parent if the new value is valid
-    expect(mockUpdateYieldAmount).toBeCalledTimes(0);
+    expect(mockSetYieldAmount).toBeCalledTimes(0);
 
     // only positive numbers are valid
     oldErrorMessage = expectedErrorMessage;
     fireEvent.changeText(recipeAmountInput, "24");
     // error messages should be removed
     expect(screen.queryByText(oldErrorMessage)).toBeNull();
-    expect(mockUpdateYieldAmountErrors).toBeCalledTimes(5);
-    expect(mockUpdateYieldAmountErrors).toHaveBeenLastCalledWith(false);
+    expect(mockSetYieldAmountErrors).toBeCalledTimes(5);
+    expect(mockSetYieldAmountErrors).toHaveBeenLastCalledWith(false);
 
     // now, we should see a call to updateYieldAmount, since the last change was valid
-    expect(mockUpdateYieldAmount).toBeCalledTimes(1);
+    expect(mockSetYieldAmount).toBeCalledTimes(1);
   });
 
   it("shows an error message when the yield units are invalid", () => {
@@ -140,7 +136,7 @@ describe("RecipeYieldInput", () => {
 
     // until this point, updateYieldUnits shouldn't have been called, bc the
     // change should only propagate to the parent if the new value is valid
-    expect(mockUpdateYieldUnits).toBeCalledTimes(0);
+    expect(mockSetYieldUnits).toBeCalledTimes(0);
 
     // everything else is valid
     oldErrorMessage = expectedErrorMessage;
@@ -151,6 +147,6 @@ describe("RecipeYieldInput", () => {
     expect(mockUpdateYieldUnitsErrors).toHaveBeenLastCalledWith(false);
 
     // now, we should see a call to updateYieldUnits, since the last change was valid
-    expect(mockUpdateYieldUnits).toBeCalledTimes(1);
+    expect(mockSetYieldUnits).toBeCalledTimes(1);
   });
 });

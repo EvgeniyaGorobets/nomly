@@ -8,58 +8,72 @@ import {
   validateRecipeYieldAmount,
   validateRecipeYieldUnits,
 } from "../../core/recipe-yield";
-import { onInputChange, ParentStateFunctions } from "../../core/form";
 import type { Yield } from "../../core/recipe-yield";
 
 type RecipeYieldProps = {
   recipeYield: Yield;
-  parentAmountFunctions: ParentStateFunctions;
-  parentUnitFunctions: ParentStateFunctions;
+  setYieldAmount: (newAmount: number) => void;
+  setYieldUnits: (newUnits: string) => void;
+  setYieldAmountErrors: (hasErr: boolean) => void;
+  setYieldUnitsErrors: (hasErr: boolean) => void;
 };
 
 export const RecipeYieldInput = ({
   recipeYield,
-  parentAmountFunctions,
-  parentUnitFunctions,
+  setYieldAmount,
+  setYieldUnits,
+  setYieldAmountErrors,
+  setYieldUnitsErrors,
 }: RecipeYieldProps) => {
+  /* State and callbacks for yield amount input */
   const [amount, setAmount] = useState<string>(recipeYield.amount.toString());
   const [isAmountDirty, setAmountDirty] = useState<boolean>(false);
   const [amountErrorMsg, setAmountErrorMsg] = useState<string>("");
 
   const isAmountInvalid = () => isAmountDirty && amountErrorMsg !== "";
-  const onAmountFocus = () => {
+
+  const onChangeAmount = (newAmount: string) => {
+    // Update local state
+    setAmount(newAmount);
     if (!isAmountDirty) {
       setAmountDirty(true);
     }
-  };
-  const onChangeAmount = (newAmount: string) => {
-    onAmountFocus(); // temporarily firing it here because onFocus() doesn't work with RNTL
-    onInputChange(
-      newAmount,
-      validateRecipeYieldAmount,
-      { setInput: setAmount, setErrorMsg: setAmountErrorMsg },
-      parentAmountFunctions
-    );
-  };
 
+    // Update error state locally and in parent
+    const errorMessage: string = validateRecipeYieldAmount(newAmount);
+    setAmountErrorMsg(errorMessage);
+    setYieldAmountErrors(errorMessage !== "");
+
+    // Update parent state only if input is valid
+    if (errorMessage === "") {
+      setYieldAmount(Number(newAmount));
+    }
+  };
+  /* End of yield amount */
+
+  /* State and callbacks for yield units input */
   const [units, setUnits] = useState<string>(recipeYield.units);
   const [isUnitsDirty, setUnitsDirty] = useState<boolean>(false);
   const [unitsErrorMsg, setUnitsErrorMsg] = useState<string>("");
 
   const isUnitsInvalid = () => isUnitsDirty && unitsErrorMsg !== "";
-  const onUnitsFocus = () => {
+
+  const onChangeUnits = (newUnits: string) => {
+    // Update local state
+    setUnits(newUnits);
     if (!isUnitsDirty) {
       setUnitsDirty(true);
     }
-  };
-  const onChangeUnits = (newUnits: string) => {
-    onUnitsFocus(); // temporarily firing it here because onFocus() doesn't work with RNTL
-    onInputChange(
-      newUnits,
-      validateRecipeYieldUnits,
-      { setInput: setUnits, setErrorMsg: setUnitsErrorMsg },
-      parentUnitFunctions
-    );
+
+    // Update error state locally and in parent
+    const errorMessage: string = validateRecipeYieldUnits(newUnits);
+    setUnitsErrorMsg(errorMessage);
+    setYieldUnitsErrors(errorMessage !== "");
+
+    // Update parent state only if input is valid
+    if (errorMessage === "") {
+      setYieldUnits(newUnits);
+    }
   };
 
   const showErrorText = () => isAmountInvalid() || isUnitsInvalid();
@@ -93,7 +107,6 @@ export const RecipeYieldInput = ({
           keyboardType="numeric"
           mode="outlined"
           textAlign="center"
-          onFocus={onAmountFocus}
           style={{ width: "29%", marginHorizontal: 5 }}
           accessibilityHint="Recipe yield amount input"
         />
@@ -103,7 +116,6 @@ export const RecipeYieldInput = ({
           onChangeText={onChangeUnits}
           mode="outlined"
           textAlign="center"
-          onFocus={onUnitsFocus}
           style={{ width: "33%" }}
           accessibilityHint="Recipe yield units input"
         />

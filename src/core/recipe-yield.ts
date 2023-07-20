@@ -7,6 +7,8 @@ export type Yield = {
   units: string;
 };
 
+/* ---- FUNCTIONS ---- */
+
 /**
  * Checks whether the recipe yield amount is a valid number. If it isn't,
  * returns an error message describing the error. If it is, returns an

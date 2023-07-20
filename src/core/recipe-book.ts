@@ -15,6 +15,18 @@ export type RecipeBook = { [key: string]: Recipe };
 /* ---- FUNCTIONS --- */
 
 /**
+ * Get a blank Recipe data structure with all values pre-filled
+ * @returns A new blank recipe with no ingredients or notes
+ */
+export const getBlankRecipe = (): Recipe => {
+  return {
+    yield: { amount: 1, units: "servings" },
+    ingredients: [],
+    notes: "",
+  };
+};
+
+/**
  * Updates the given recipe book with a new or updated recipe
  * @param recipeBook The recipe book in which the recipe is stored
  * @param newRecipe The new version of the recipe (or the new recipe)

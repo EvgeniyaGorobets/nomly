@@ -4,35 +4,63 @@ import { Button, Text } from "react-native-paper";
 
 import { IngredientInput } from "./IngredientInput";
 
-import type { RecipeErrors } from "../../core/form";
 import {
+  type IngredientErrors,
+  addIngredientToErrors,
+  deleteIngredientFromErrors,
+  updateIngredientErrors,
+} from "../../core/recipe-errors";
+import {
+  type Ingredient,
   addIngredient,
   deleteIngredient,
   updateIngredient,
 } from "../../core/ingredient";
-import type { Ingredient } from "../../core/ingredient";
 
 type IngredientSectionProps = {
-  ingredients: Array<Ingredient>;
-  updateIngredients: (newIngredients: Array<Ingredient>) => void;
-  errors: RecipeErrors;
-  setErrors: (newErrors: RecipeErrors) => void;
+  ingredients: Ingredient[];
+  setIngredients: (newIngredients: Array<Ingredient>) => void;
+  ingredientErrors: IngredientErrors[];
+  setErrors: (ingredientErrors: IngredientErrors[]) => void;
 };
 
 export const IngredientFormSection = ({
   ingredients,
-  updateIngredients,
-  errors,
+  setIngredients,
+  ingredientErrors,
   setErrors,
 }: IngredientSectionProps) => {
   const addNewIngredient = () => {
-    // new ingredient by default has an error so we must disable the SAVE button
-    setErrors({
-      ...errors,
-      [`ingredientName-${ingredients.length}`]: true,
-      [`ingredientAmount-${ingredients.length}`]: true,
-    });
-    updateIngredients(addIngredient(ingredients));
+    setErrors(addIngredientToErrors(ingredientErrors));
+    setIngredients(addIngredient(ingredients));
+  };
+
+  const deleteIngredientAtIndex = (index: number) => {
+    setErrors(deleteIngredientFromErrors(ingredientErrors, index));
+    setIngredients(deleteIngredient(ingredients, index));
+  };
+
+  const updateIngredientAtIndex = (
+    index: number,
+    newIngredient: Ingredient
+  ) => {
+    setIngredients(updateIngredient(ingredients, index, newIngredient));
+  };
+
+  const updateIngredientNameError = (index: number, hasErr: boolean) => {
+    const newErrors: IngredientErrors = {
+      ...ingredientErrors[index],
+      name: hasErr,
+    };
+    setErrors(updateIngredientErrors(ingredientErrors, index, newErrors));
+  };
+
+  const updateIngredientAmountError = (index: number, hasErr: boolean) => {
+    const newErrors: IngredientErrors = {
+      ...ingredientErrors[index],
+      amount: hasErr,
+    };
+    setErrors(updateIngredientErrors(ingredientErrors, index, newErrors));
   };
 
   return (
@@ -42,17 +70,15 @@ export const IngredientFormSection = ({
         <IngredientInput
           key={i}
           ingredient={ingredient}
-          deleteIngredient={() =>
-            updateIngredients(deleteIngredient(ingredients, i))
+          deleteIngredient={() => deleteIngredientAtIndex(i)}
+          setIngredient={(ingredient: Ingredient) =>
+            updateIngredientAtIndex(i, ingredient)
           }
-          updateIngredient={(ingredient: Ingredient) => {
-            updateIngredients(updateIngredient(ingredients, i, ingredient));
-          }}
           setIngredientNameError={(hasErr: boolean) =>
-            setErrors({ ...errors, [`ingredientName-${i}`]: hasErr })
+            updateIngredientNameError(i, hasErr)
           }
           setIngredientAmountError={(hasErr: boolean) =>
-            setErrors({ ...errors, [`ingredientAmount-${i}`]: hasErr })
+            updateIngredientAmountError(i, hasErr)
           }
         />
       ))}

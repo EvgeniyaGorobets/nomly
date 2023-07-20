@@ -7,8 +7,8 @@ import { AppContext } from "../../../src";
 import type { RecipeBook } from "../../../src";
 
 describe("RecipeNameInput", () => {
-  const mockUpdateRecipeName = jest.fn();
-  const mockUpdateRecipeNameErrors = jest.fn();
+  const mockSetName = jest.fn();
+  const mockSetErrors = jest.fn();
 
   beforeEach(() => {
     const recipeBook: RecipeBook = {
@@ -38,10 +38,8 @@ describe("RecipeNameInput", () => {
         <PaperProvider>
           <RecipeNameInput
             initialName="Quinoa Broccoli Casserole"
-            parentFunctions={{
-              updateValue: mockUpdateRecipeName,
-              updateErrors: mockUpdateRecipeNameErrors,
-            }}
+            setName={mockSetName}
+            setErrors={mockSetErrors}
           />
         </PaperProvider>
       </AppContext.Provider>
@@ -66,10 +64,8 @@ describe("RecipeNameInput", () => {
     expect(screen.queryByDisplayValue("Quinoa Broccoli Casserole")).toBe(null);
     screen.getByDisplayValue("Cheesy Quinoa Broccoli Casserole");
 
-    expect(mockUpdateRecipeName).toBeCalledTimes(1);
-    expect(mockUpdateRecipeName).toBeCalledWith(
-      "Cheesy Quinoa Broccoli Casserole"
-    );
+    expect(mockSetName).toBeCalledTimes(1);
+    expect(mockSetName).toBeCalledWith("Cheesy Quinoa Broccoli Casserole");
   });
 
   it("shows an error message when the recipe name is changed to an empty string", () => {
@@ -79,16 +75,16 @@ describe("RecipeNameInput", () => {
 
     fireEvent.changeText(recipeNameInput, "");
     expect(screen.getByText("Recipe name cannot be empty")).toBeVisible();
-    expect(mockUpdateRecipeName).toBeCalledTimes(0);
-    expect(mockUpdateRecipeNameErrors).toBeCalledTimes(1);
-    expect(mockUpdateRecipeNameErrors).toHaveBeenLastCalledWith(true);
+    expect(mockSetName).toBeCalledTimes(0);
+    expect(mockSetErrors).toBeCalledTimes(1);
+    expect(mockSetErrors).toHaveBeenLastCalledWith(true);
 
     // Check that the error message is removed once the recipe name is no longer an empty string
     fireEvent.changeText(recipeNameInput, "Quinoa");
     expect(screen.queryByText("Recipe name cannot be empty")).toBe(null);
-    expect(mockUpdateRecipeName).toBeCalledTimes(1);
-    expect(mockUpdateRecipeNameErrors).toBeCalledTimes(2);
-    expect(mockUpdateRecipeNameErrors).toHaveBeenLastCalledWith(false);
+    expect(mockSetName).toBeCalledTimes(1);
+    expect(mockSetErrors).toBeCalledTimes(2);
+    expect(mockSetErrors).toHaveBeenLastCalledWith(false);
   });
 
   it("shows an error message when the recipe name is too long", () => {
@@ -103,9 +99,9 @@ describe("RecipeNameInput", () => {
     expect(
       screen.getByText("Recipe name cannot be longer than 100 characters")
     ).toBeVisible();
-    expect(mockUpdateRecipeName).toBeCalledTimes(0);
-    expect(mockUpdateRecipeNameErrors).toBeCalledTimes(1);
-    expect(mockUpdateRecipeNameErrors).toHaveBeenLastCalledWith(true);
+    expect(mockSetName).toBeCalledTimes(0);
+    expect(mockSetErrors).toBeCalledTimes(1);
+    expect(mockSetErrors).toHaveBeenLastCalledWith(true);
 
     // Check that the error message is removed once the recipe name is shortened to be <100 chars
     fireEvent.changeText(
@@ -115,9 +111,9 @@ describe("RecipeNameInput", () => {
     expect(
       screen.queryByText("Recipe name cannot be longer than 100 characters")
     ).toBe(null);
-    expect(mockUpdateRecipeName).toBeCalledTimes(1);
-    expect(mockUpdateRecipeNameErrors).toBeCalledTimes(2);
-    expect(mockUpdateRecipeNameErrors).toHaveBeenLastCalledWith(false);
+    expect(mockSetName).toBeCalledTimes(1);
+    expect(mockSetErrors).toBeCalledTimes(2);
+    expect(mockSetErrors).toHaveBeenLastCalledWith(false);
   });
 
   it("shows an error message when the recipe name is a duplicate of an existing recipe", () => {
@@ -129,17 +125,17 @@ describe("RecipeNameInput", () => {
     expect(
       screen.getByText("A recipe with this name already exists")
     ).toBeVisible();
-    expect(mockUpdateRecipeName).toBeCalledTimes(0);
-    expect(mockUpdateRecipeNameErrors).toBeCalledTimes(1);
-    expect(mockUpdateRecipeNameErrors).toHaveBeenLastCalledWith(true);
+    expect(mockSetName).toBeCalledTimes(0);
+    expect(mockSetErrors).toBeCalledTimes(1);
+    expect(mockSetErrors).toHaveBeenLastCalledWith(true);
 
     // Check that the error message is removed once the recipe name is no longer a duplicate
     fireEvent.changeText(recipeNameInput, "Quinoa Broccoli Casserole");
     expect(screen.queryByText("A recipe with this name already exists")).toBe(
       null
     );
-    expect(mockUpdateRecipeName).toBeCalledTimes(1);
-    expect(mockUpdateRecipeNameErrors).toBeCalledTimes(2);
-    expect(mockUpdateRecipeNameErrors).toHaveBeenLastCalledWith(false);
+    expect(mockSetName).toBeCalledTimes(1);
+    expect(mockSetErrors).toBeCalledTimes(2);
+    expect(mockSetErrors).toHaveBeenLastCalledWith(false);
   });
 });

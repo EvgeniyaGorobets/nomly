@@ -11,12 +11,11 @@ import {
   validateIngredientName,
   validateIngredientAmount,
 } from "../../core/ingredient";
-import { onInputChange } from "../../core/form";
 
 type IngredientInputProps = {
   ingredient: Ingredient;
   deleteIngredient: () => void;
-  updateIngredient: (ingredient: Ingredient) => void;
+  setIngredient: (ingredient: Ingredient) => void;
   setIngredientNameError: (hasErr: boolean) => void;
   setIngredientAmountError: (hasErr: boolean) => void;
 };
@@ -24,43 +23,37 @@ type IngredientInputProps = {
 export const IngredientInput: React.FC<IngredientInputProps> = ({
   ingredient,
   deleteIngredient,
-  updateIngredient,
+  setIngredient,
   setIngredientNameError,
   setIngredientAmountError,
 }) => {
-  // Variables and functions to keep track of ingredient name
+  /* State and callbacs for the ingredient name input */
   const [ingredientName, setIngredientName] = useState<string>(ingredient.name);
   const [isNameDirty, setNameDirty] = useState<boolean>(false);
   const [nameErrorMsg, setNameErrorMsg] = useState<string>("");
 
-  const [showDropDown, setShowDropDown] = useState(false);
-
   const isNameInvalid = () => isNameDirty && nameErrorMsg !== "";
 
-  const updateName = (newName: string) => {
-    updateIngredient({
-      ...ingredient,
-      name: newName,
-    });
-  };
-
-  const onNameFocus = () => {
+  const onChangeName = (newName: string) => {
+    // Update local state
+    setIngredientName(newName);
     if (!isNameDirty) {
       setNameDirty(true);
     }
-  };
 
-  const onChangeName = (newName: string) => {
-    onNameFocus(); // temporarily firing it here because onFocus() doesn't work with RNTL
-    onInputChange(
-      newName,
-      validateIngredientName,
-      { setInput: setIngredientName, setErrorMsg: setNameErrorMsg },
-      { updateValue: updateName, updateErrors: setIngredientNameError }
-    );
-  };
+    // Update error state locally and in parent
+    const errorMessage: string = validateIngredientName(newName);
+    setNameErrorMsg(errorMessage);
+    setIngredientNameError(errorMessage !== "");
 
-  // variables and functions to keep track of ingredient amount
+    // Update parent state only if input is valid
+    if (errorMessage === "") {
+      setIngredient({ ...ingredient, name: newName });
+    }
+  };
+  /* End of ingredient name */
+
+  /* State and callbacs for the ingredient amount input */
   const [ingredientAmount, setIngredientAmount] = useState<string>(
     ingredient.amount.toString()
   );
@@ -69,36 +62,32 @@ export const IngredientInput: React.FC<IngredientInputProps> = ({
 
   const isAmountInvalid = () => isAmountDirty && amountErrorMsg !== "";
 
-  const updateAmount = (newAmount: string) => {
-    updateIngredient({
-      ...ingredient,
-      amount: Number(newAmount),
-    });
-  };
-
-  const onAmountFocus = () => {
+  const onChangeAmount = (newAmount: string) => {
+    // Update local state
+    setIngredientAmount(newAmount);
     if (!isAmountDirty) {
       setAmountDirty(true);
     }
-  };
 
-  const onChangeAmount = (newAmount: string) => {
-    onAmountFocus(); // temporarily firing it here because onFocus() doesn't work with RNTL
-    onInputChange(
-      newAmount,
-      validateIngredientAmount,
-      { setInput: setIngredientAmount, setErrorMsg: setAmountErrorMsg },
-      { updateValue: updateAmount, updateErrors: setIngredientAmountError }
-    );
-  };
+    // Update error state locally and in parent
+    const errorMessage: string = validateIngredientAmount(newAmount);
+    setAmountErrorMsg(errorMessage);
+    setIngredientAmountError(errorMessage !== "");
 
-  // Function to keep track of ingredient units
+    // Update parent state only if input is valid
+    if (errorMessage === "") {
+      setIngredient({ ...ingredient, amount: Number(newAmount) });
+    }
+  };
+  /* End of ingredient amount */
+
+  /* State and callbacks for the ingredient units dropdown */
+  const [showDropDown, setShowDropDown] = useState(false);
+
   const updateUnits = (newUnits: Unit) => {
-    updateIngredient({
-      ...ingredient,
-      units: newUnits,
-    });
+    setIngredient({ ...ingredient, units: newUnits });
   };
+  /* End of ingredient units */
 
   return (
     <View style={{ ...Styles.row, marginVertical: 10 }}>
@@ -129,7 +118,6 @@ export const IngredientInput: React.FC<IngredientInputProps> = ({
             onChangeText={onChangeName}
             mode="outlined"
             placeholder="Ingredient name"
-            onFocus={onNameFocus}
             style={{ width: "100%" }}
           />
         </View>
@@ -142,7 +130,6 @@ export const IngredientInput: React.FC<IngredientInputProps> = ({
               keyboardType="numeric"
               mode="outlined"
               textAlign="right"
-              onFocus={onAmountFocus}
             />
           </View>
           <View style={{ flexGrow: 1 }}>

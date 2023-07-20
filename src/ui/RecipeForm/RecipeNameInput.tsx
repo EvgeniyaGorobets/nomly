@@ -2,39 +2,42 @@ import React, { useContext, useState } from "react";
 import { View } from "react-native";
 import { TextInput, HelperText } from "react-native-paper";
 
-import { AppContext, AppContextType } from "../../AppContext";
+import { AppContext } from "../../AppContext";
 import { validateRecipeName } from "../../core/recipe-book";
-import { onInputChange, ParentStateFunctions } from "../../core/form";
 
 type RecipeNameProps = {
   initialName: string;
-  parentFunctions: ParentStateFunctions;
+  setName: (newName: string) => void;
+  setErrors: (hasErr: boolean) => void;
 };
 
 export const RecipeNameInput = ({
   initialName,
-  parentFunctions,
+  setName,
+  setErrors,
 }: RecipeNameProps) => {
-  const context: AppContextType = useContext(AppContext);
+  const { recipes } = useContext(AppContext);
 
   const [recipeName, setRecipeName] = useState<string>(initialName);
   const [isDirty, setDirty] = useState<boolean>(false);
   const [errorMsg, setErrorMsg] = useState<string>("");
 
-  const onFocus = () => {
+  const onChangeText = (newName: string) => {
+    // Update local state
+    setRecipeName(newName);
     if (!isDirty) {
       setDirty(true);
     }
-  };
 
-  const onChangeText = (newName: string) => {
-    onFocus(); // temporarily firing it here because onFocus() doesn't work with RNTL
-    onInputChange(
-      newName,
-      (text: string) => validateRecipeName(initialName, text, context.recipes),
-      { setInput: setRecipeName, setErrorMsg: setErrorMsg },
-      parentFunctions
-    );
+    // Update error state locally and in parent
+    const errorMessage = validateRecipeName(initialName, newName, recipes);
+    setErrorMsg(errorMessage);
+    setErrors(errorMessage !== "");
+
+    // Update parent state only if input is valid
+    if (errorMessage === "") {
+      setName(newName);
+    }
   };
 
   const showErrorText = () => isDirty && errorMsg !== "";
@@ -47,7 +50,6 @@ export const RecipeNameInput = ({
         label="Recipe Name"
         onChangeText={onChangeText}
         mode="outlined"
-        onFocus={onFocus}
         accessibilityHint="Recipe name input"
       />
       {showErrorText() && (
