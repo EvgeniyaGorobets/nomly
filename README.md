@@ -1,9 +1,24 @@
 # NativeBase TypeScript Expo Template
 
-The official NativeBase TypeScript template for [Expo](https://docs.expo.io/)
+NativeBase Typescript Expo app
 
-## Usage
+## Dev
 
-```sh
-expo init my-app --template @native-base/expo-template-typescript
+To nuke and reinstall everything:
+
 ```
+rm -rf package-lock.json node_modules/
+npm install --registry=https://registry.npmjs.org/
+```
+
+`npx expo start` to run the app
+
+## Build
+
+- `eas login`
+- `eas build -p android --profile {preview/production}`
+
+## Notes
+
+- HelperText doesn't work in tests unless its rendering is conditional. The visible prop gets changed but the opacity remains zero
+- onFocus doesn't fire with RNTL onPress()
