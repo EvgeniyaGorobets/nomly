@@ -21,7 +21,7 @@ export const Home = ({ navigation }: HomeScreenProps) => {
 
   return (
     <View style={Styles.screen}>
-      <Appbar.Header>
+      <Appbar.Header style={{ ...Styles.row, justifyContent: "space-between" }}>
         <Logo />
         <MainMenu openDeleteRecipesModal={() => setModalOpen(true)} />
       </Appbar.Header>

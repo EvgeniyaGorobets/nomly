@@ -14,11 +14,12 @@ export const Logo = () => {
   // need to set a new key on Image to force it to rerender
   // https://stackoverflow.com/questions/50186932/react-native-cant-rerender-image-after-state-change
   return (
-    <View></View>
-    //<Image
-    //  key={context.prefs.darkMode}
-    //  source={logo}
-    // alt="nomly logo"  // need higher version of react for alt; might come back to this
-    ///>
+    <View>
+      <Image
+        key={String(context.prefs.darkMode)}
+        source={logo}
+        style={{ width: 120, height: 30, marginHorizontal: 10 }}
+      />
+    </View>
   );
 };
