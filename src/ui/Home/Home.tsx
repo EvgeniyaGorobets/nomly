@@ -1,13 +1,12 @@
 import React, { useContext, useRef, useState } from "react";
-import { View, ScrollView, Text } from "react-native";
-import { Appbar, FAB, List } from "react-native-paper";
+import { View, ScrollView } from "react-native";
+import { Appbar, FAB, List, Searchbar } from "react-native-paper";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
 
 import type { HomeScreenProps } from "../../Stack";
 import { AppContext, AppContextType } from "../../AppContext";
 import { RecipeActionSheet } from "./RecipeActionSheet";
 import { MainMenu } from "./MainMenu";
-import { SearchBar } from "./SearchBar";
 import { Logo } from "./Logo";
 import { DeleteRecipesModal } from "./DeleteRecipesModal";
 import { AlertList } from "./AlertList";
@@ -30,8 +29,14 @@ export const Home = ({ navigation }: HomeScreenProps) => {
         isOpen={isModalOpen}
         closeModal={() => setModalOpen(false)}
       />
-      <SearchBar query={searchQuery} setQuery={setSearchQuery} />
-      <ScrollView>
+      <View style={{ ...Styles.content, marginBottom: 0 }}>
+        <Searchbar
+          placeholder="Search"
+          onChangeText={setSearchQuery}
+          value={searchQuery}
+        />
+      </View>
+      <ScrollView style={Styles.content}>
         {Object.keys(context.recipes)
           .filter((recipeName: string) =>
             recipeName.toLowerCase().includes(searchQuery.toLowerCase())
@@ -45,6 +50,7 @@ export const Home = ({ navigation }: HomeScreenProps) => {
               onPress={() => {
                 navigation.navigate("Recipe", { recipeName: recipeName });
               }}
+              titleStyle={{ fontSize: 18 }}
             />
           ))}
       </ScrollView>
