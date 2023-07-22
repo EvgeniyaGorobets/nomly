@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { ScrollView, View } from "react-native";
 import { Appbar, Divider, List, Text } from "react-native-paper";
 
@@ -23,6 +23,11 @@ export const RecipeView = ({ navigation, route }: RecipeScreenProps) => {
   const [ingredients, setIngredients] = useState<Ingredient[]>(
     recipe.ingredients
   );
+
+  // If the original recipe changes, update the state
+  useEffect(() => {
+    setIngredients(recipe.ingredients);
+  }, [recipe.ingredients]);
 
   const updateIngredients = (newYield: number) => {
     setIngredients(
