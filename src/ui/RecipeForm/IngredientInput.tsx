@@ -147,16 +147,17 @@ export const IngredientInput: React.FC<IngredientInputProps> = ({
             />
           </View>
         </View>
-      </View>
-      <View>
-        {(isNameInvalid() || isAmountInvalid()) && (
-          <HelperText
-            type="error"
-            visible={isNameInvalid() || isAmountInvalid()}
-          >
-            {[nameErrorMsg, amountErrorMsg].join("\n").trim()}
-          </HelperText>
-        )}
+        <View style={Styles.row}>
+          {(isNameInvalid() || isAmountInvalid()) && (
+            <HelperText
+              type="error"
+              visible={isNameInvalid() || isAmountInvalid()}
+              style={{ paddingLeft: 0 }}
+            >
+              {[nameErrorMsg, amountErrorMsg].join("\n").trim()}
+            </HelperText>
+          )}
+        </View>
       </View>
     </View>
   );
