@@ -1,7 +1,7 @@
 import React from "react";
 
-import { RecipeBook } from "./core/recipe";
-import { AppAlert } from "./core/alert";
+import type { RecipeBook } from "./core/recipe-book";
+import type { AppAlert } from "./core/alert";
 
 export type Preferences = {
   fractionMode: boolean;
