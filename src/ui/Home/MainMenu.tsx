@@ -9,15 +9,16 @@ import {
   IconButton,
 } from "react-native-paper";
 
-import { AppContext, AppContextType } from "../../AppContext";
 import { Styles } from "../Styles";
+import { AppContext } from "../../AppContext";
+
 import { exportRecipeBook, importRecipeBook } from "../../core/backup";
-import type { RecipeBook } from "../../core/recipe";
+import type { RecipeBook } from "../../core/recipe-book";
 import type { AppAlert } from "../../core/alert";
 
 const PrefsMenuItemStyle: ViewStyle = {
   ...Styles.row,
-  justifyContent: "space-around",
+  justifyContent: "flex-start",
   alignItems: "center",
 };
 
@@ -26,7 +27,8 @@ export const MainMenu = ({
 }: {
   openDeleteRecipesModal: () => void;
 }) => {
-  const context: AppContextType = useContext(AppContext);
+  const { alerts, setAlerts, recipes, saveRecipes, prefs, togglePreference } =
+    useContext(AppContext);
   const [isVisible, setVisibility] = useState<boolean>(false);
   const toggleVisiblity = () => {
     setVisibility(!isVisible);
@@ -43,7 +45,7 @@ export const MainMenu = ({
         title: "Recipe import failed",
         description: `${err}`,
       };
-      context.setAlerts([...context.alerts, alert]);
+      setAlerts([...alerts, alert]);
     }
 
     if (recipeBook === null) {
@@ -52,24 +54,24 @@ export const MainMenu = ({
         title: "Recipe import cancelled",
         description: "No file was selected by the user.",
       };
-      context.setAlerts([...context.alerts, alert]);
+      setAlerts([...alerts, alert]);
     } else if (recipeBook !== undefined) {
       // if recipe book isn't null or undefined, then save it
-      // context.saveRecipes is wrapped in its own try/catch block, so we don't need to check for promise rejections again
-      context.saveRecipes(recipeBook as RecipeBook);
+      // saveRecipes is wrapped in its own try/catch block, so we don't need to check for promise rejections again
+      saveRecipes(recipeBook as RecipeBook);
     }
   };
 
   const tryToExportRecipes = async (): Promise<void> => {
     try {
-      await exportRecipeBook(context.recipes);
+      await exportRecipeBook(recipes);
     } catch (err) {
       const alert: AppAlert = {
         status: "error",
         title: "Recipe book download failed",
         description: `${err}`,
       };
-      context.setAlerts([...context.alerts, alert]);
+      setAlerts([...alerts, alert]);
     }
   };
 
@@ -87,7 +89,7 @@ export const MainMenu = ({
         }
         anchorPosition="bottom"
       >
-        <Text variant="titleMedium">Recipe Book</Text>
+        <Menu.Item title="Recipe Book" titleStyle={{ fontSize: 20 }} />
         <Menu.Item
           title="Download recipes"
           leadingIcon="download"
@@ -100,52 +102,53 @@ export const MainMenu = ({
         />
         <Menu.Item
           title="Delete all recipes"
-          leadingIcon="upload"
+          leadingIcon="delete-outline"
           onPress={openDeleteRecipesModal}
         />
         <Divider />
-        <Text variant="titleMedium">Preferences</Text>
-        <Menu.Item
-          title={
-            <View style={PrefsMenuItemStyle}>
-              <IconButton icon="white-balance-sunny" />
-              <Switch
-                value={context.prefs.darkMode}
-                onValueChange={() =>
-                  context.togglePreference("darkMode", !context.prefs.darkMode)
-                }
-                aria-label={
-                  context.prefs.darkMode
-                    ? "switch to dark mode"
-                    : "switch to light mode"
-                }
-              />
-              <IconButton icon="weather-night" />
-            </View>
-          }
-        />
-        <Menu.Item
-          title={
-            <View style={PrefsMenuItemStyle}>
-              <Text variant="bodyMedium">0.75</Text>
-              <Switch
-                value={context.prefs.fractionMode}
-                onValueChange={() =>
-                  context.togglePreference(
-                    "fractionMode",
-                    !context.prefs.fractionMode
-                  )
-                }
-                aria-label={
-                  context.prefs.fractionMode
-                    ? "switch to decimal mode"
-                    : "switch to fraction mode"
-                }
-              />
-              <Text variant="bodyMedium">¾</Text>
-            </View>
-          }
-        />
+        <Menu.Item title="Preferences" titleStyle={{ fontSize: 20 }} />
+        <View style={PrefsMenuItemStyle}>
+          <IconButton
+            icon="white-balance-sunny"
+            style={{ width: 50, alignItems: "center" }}
+          />
+          <View style={{ width: 50 }}>
+            <Switch
+              value={prefs.darkMode}
+              onValueChange={() =>
+                togglePreference("darkMode", !prefs.darkMode)
+              }
+              aria-label={
+                prefs.darkMode ? "switch to dark mode" : "switch to light mode"
+              }
+            />
+          </View>
+          <IconButton
+            icon="weather-night"
+            style={{ width: 50, alignItems: "center" }}
+          />
+        </View>
+        <View style={PrefsMenuItemStyle}>
+          <View style={{ width: 50, alignItems: "center", margin: 6 }}>
+            <Text variant="bodyMedium">0.75</Text>
+          </View>
+          <View style={{ width: 50 }}>
+            <Switch
+              value={prefs.fractionMode}
+              onValueChange={() =>
+                togglePreference("fractionMode", !prefs.fractionMode)
+              }
+              aria-label={
+                prefs.fractionMode
+                  ? "switch to decimal mode"
+                  : "switch to fraction mode"
+              }
+            />
+          </View>
+          <View style={{ width: 50, alignItems: "center", margin: 6 }}>
+            <Text variant="bodyLarge">¾</Text>
+          </View>
+        </View>
       </Menu>
     </View>
   );
