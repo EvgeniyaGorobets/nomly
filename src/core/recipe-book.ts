@@ -30,15 +30,24 @@ export const getBlankRecipe = (): Recipe => {
  * Updates the given recipe book with a new or updated recipe
  * @param recipeBook The recipe book in which the recipe is stored
  * @param newRecipe The new version of the recipe (or the new recipe)
- * @param recipeName The name of the recipe
+ * @param oldRecipeName The name of the recipe before it was edited
+ * (will be the empty string for new recipes)
+ * @param newRecipeName The new name of the recipe (may be the same
+ * as oldRecipeName)
  * @returns A copy of the recipe book, with the new or updated recipe
  */
 export const updateRecipe = (
   recipeBook: RecipeBook,
   newRecipe: Recipe,
-  recipeName: string
+  oldRecipeName: string,
+  newRecipeName: string
 ): RecipeBook => {
-  return { ...deepCopy(recipeBook), [recipeName]: newRecipe };
+  const newRecipeBook: RecipeBook = deepCopy(recipeBook);
+  if (oldRecipeName) {
+    delete newRecipeBook[oldRecipeName];
+  }
+  newRecipeBook[newRecipeName] = newRecipe;
+  return newRecipeBook;
 };
 
 /**

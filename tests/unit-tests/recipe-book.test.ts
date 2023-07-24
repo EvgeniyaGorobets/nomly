@@ -91,7 +91,8 @@ describe("deleteRecipe", () => {
 });
 
 describe("updateRecipe", () => {
-  it("returns a copy of the recipe book with the updated recipe", () => {
+  it("returns a copy of the recipe book with the updated recipe when a recipe changes", () => {
+    const recipeName: string = "Quinoa Broccoli Casserole";
     const originalRecipe: Recipe = {
       yield: { amount: 4, units: "servings" },
       ingredients: [
@@ -100,9 +101,7 @@ describe("updateRecipe", () => {
       ],
       notes: "Mix broccoli and quinoa in a pan and bake.",
     };
-    const recipeBook: RecipeBook = {
-      "Quinoa Broccoli Casserole": originalRecipe,
-    };
+    const recipeBook: RecipeBook = { [recipeName]: originalRecipe };
 
     const updatedRecipe: Recipe = {
       yield: { amount: 3, units: "servings" },
@@ -115,22 +114,19 @@ describe("updateRecipe", () => {
     const newRecipeBook = updateRecipe(
       recipeBook,
       updatedRecipe,
-      "Quinoa Broccoli Casserole"
+      recipeName,
+      recipeName
     );
 
     // the old recipe book should be unchanged
-    expect(recipeBook["Quinoa Broccoli Casserole"]).toStrictEqual(
-      originalRecipe
-    );
+    expect(recipeBook[recipeName]).toStrictEqual(originalRecipe);
 
     // the new recipe book should have the new recipe
-    expect(newRecipeBook["Quinoa Broccoli Casserole"]).toStrictEqual(
-      updatedRecipe
-    );
+    expect(newRecipeBook[recipeName]).toStrictEqual(updatedRecipe);
   });
 
-  it("returns a copy of the recipe book with the new recipe", () => {
-    const recipeBook: RecipeBook = {};
+  it("returns a copy of the recipe book with the new recipe when a recipe is added", () => {
+    const recipeName = "Quinoa Broccoli Casserole";
     const newRecipe: Recipe = {
       yield: { amount: 4, units: "servings" },
       ingredients: [
@@ -139,20 +135,42 @@ describe("updateRecipe", () => {
       ],
       notes: "Mix broccoli and quinoa in a pan and bake.",
     };
+    const recipeBook: RecipeBook = {};
 
-    const newRecipeBook = updateRecipe(
-      recipeBook,
-      newRecipe,
-      "Quinoa Broccoli Casserole"
-    );
+    const newRecipeBook = updateRecipe(recipeBook, newRecipe, "", recipeName);
 
     // the old recipe book should be unchanged
     expect(recipeBook).toStrictEqual({});
 
-    // the new recipe book should have the new recipe
-    expect(newRecipeBook).toStrictEqual({
-      "Quinoa Broccoli Casserole": newRecipe,
-    });
+    // the new recipe book should have only the new recipe name
+    expect(newRecipeBook).toStrictEqual({ [recipeName]: newRecipe });
+  });
+
+  it("returns a copy of the recipe book with the new recipe name when the recipe name changes", () => {
+    const oldRecipeName = "Quinoa Broccoli Casserole";
+    const recipe: Recipe = {
+      yield: { amount: 4, units: "servings" },
+      ingredients: [
+        { name: "broccoli", amount: 16, units: "oz" },
+        { name: "quinoa", amount: 1, units: "cups" },
+      ],
+      notes: "Mix broccoli and quinoa in a pan and bake.",
+    };
+    const recipeBook: RecipeBook = { [oldRecipeName]: recipe };
+
+    const newRecipeName = "Cheesy Quinoa Broccoli Casserole";
+    const newRecipeBook = updateRecipe(
+      recipeBook,
+      recipe,
+      oldRecipeName,
+      newRecipeName
+    );
+
+    // the old recipe book should have the old name
+    expect(recipeBook).toStrictEqual({ [oldRecipeName]: recipe });
+
+    // the new recipe book should have the new name
+    expect(newRecipeBook).toStrictEqual({ [newRecipeName]: recipe });
   });
 });
 

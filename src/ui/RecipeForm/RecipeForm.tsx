@@ -101,8 +101,14 @@ export const RecipeForm = ({ navigation, route }: RecipeFormProps) => {
   /* End of callbacks passed to ingredient input components */
 
   const saveRecipe = () => {
-    const newRecipeBook: RecipeBook = updateRecipe(recipes, recipe, recipeName);
+    const newRecipeBook: RecipeBook = updateRecipe(
+      recipes,
+      recipe,
+      initialRecipeName,
+      recipeName
+    );
     saveRecipes(newRecipeBook);
+    // TODO: consider going to a new screen instead of going back
     navigation.goBack();
   };
 
