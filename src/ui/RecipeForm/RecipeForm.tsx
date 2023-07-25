@@ -62,41 +62,57 @@ export const RecipeForm = ({ navigation, route }: RecipeFormProps) => {
 
   /* Callbacks passed to recipe yield input component */
   const updateRecipeYieldAmount = (newAmount: number) => {
-    setRecipe({
-      ...recipe,
-      yield: { ...recipe.yield, amount: newAmount },
+    setRecipe((prevRecipe: Recipe) => {
+      return {
+        ...prevRecipe,
+        yield: { ...prevRecipe.yield, amount: newAmount },
+      };
     });
   };
 
   const updateRecipeYieldUnits = (newUnits: string) => {
-    setRecipe({
-      ...recipe,
-      yield: { ...recipe.yield, units: newUnits },
+    setRecipe((prevRecipe: Recipe) => {
+      return {
+        ...prevRecipe,
+        yield: { ...prevRecipe.yield, units: newUnits },
+      };
     });
   };
 
   const updateRecipeYieldAmountError = (hasError: boolean) => {
-    setErrors({
-      ...errors,
-      yield: { ...errors.yield, amount: hasError },
+    setErrors((prevErrors: RecipeErrors) => {
+      return {
+        ...prevErrors,
+        yield: { ...prevErrors.yield, amount: hasError },
+      };
     });
   };
 
   const updateRecipeYieldUnitsError = (hasError: boolean) => {
-    setErrors({
-      ...errors,
-      yield: { ...errors.yield, units: hasError },
+    setErrors((prevErrors: RecipeErrors) => {
+      return {
+        ...prevErrors,
+        yield: { ...prevErrors.yield, units: hasError },
+      };
     });
   };
   /* End of callbacks passed to recipe yield input component */
 
   /* Callbacks passed to ingredient input components */
-  const updateIngredients = (newIngredients: Ingredient[]) => {
-    setRecipe({ ...recipe, ingredients: newIngredients });
+  const updateIngredients = (
+    callback: (prevIngredients: Ingredient[]) => Ingredient[]
+  ) => {
+    setRecipe((prevRecipe: Recipe) => {
+      return { ...prevRecipe, ingredients: callback(prevRecipe.ingredients) };
+    });
   };
 
-  const updateIngredientErrors = (ingredientErrors: IngredientErrors[]) => {
-    setErrors({ ...errors, ingredients: ingredientErrors });
+  const updateIngredientErrors = (
+    callback: (prevErrors: IngredientErrors[]) => IngredientErrors[]
+  ) => {
+    setErrors((prevErrors: RecipeErrors) => {
+      return { ...prevErrors, ingredients: callback(prevErrors.ingredients) };
+    });
   };
   /* End of callbacks passed to ingredient input components */
 
@@ -141,7 +157,6 @@ export const RecipeForm = ({ navigation, route }: RecipeFormProps) => {
           <IngredientFormSection
             ingredients={recipe.ingredients}
             setIngredients={updateIngredients}
-            ingredientErrors={errors.ingredients}
             setErrors={updateIngredientErrors}
           />
           <Divider />

@@ -5,6 +5,8 @@ import { PaperProvider } from "react-native-paper";
 import { RecipeForm } from "../../../src/ui/RecipeForm/RecipeForm";
 import { AppContext } from "../../../src";
 import type { RecipeBook } from "../../../src";
+import { deepCopy } from "../../../src/core/utils";
+import { Unit } from "../../../src/core/ingredient";
 
 describe("RecipeForm", () => {
   const recipeBook: RecipeBook = {
@@ -69,6 +71,8 @@ describe("RecipeForm", () => {
   });
 
   describe("Edit an existing recipe", () => {
+    const recipeName: string = "Quinoa Broccoli Casserole";
+
     beforeEach(() => {
       // render an existing recipe from the recipe book
       render(
@@ -80,7 +84,7 @@ describe("RecipeForm", () => {
                 key: "form",
                 name: "Form",
                 path: "",
-                params: { recipeName: "Quinoa Broccoli Casserole" },
+                params: { recipeName: recipeName },
               }}
             />
           </PaperProvider>
@@ -88,132 +92,267 @@ describe("RecipeForm", () => {
       );
     });
 
-    it("shows the correct recipe name, yield, ingredients, and notes", () => {
-      // name
-      screen.getByDisplayValue("Quinoa Broccoli Casserole");
+    describe("renders the recipe correctly initially", () => {
+      it("shows the correct recipe name, yield, ingredients, and notes", () => {
+        // name
+        screen.getByDisplayValue("Quinoa Broccoli Casserole");
 
-      // yield
-      screen.getByDisplayValue("4");
-      screen.getByDisplayValue("servings");
+        // yield
+        screen.getByDisplayValue("4");
+        screen.getByDisplayValue("servings");
 
-      // ingredients
-      screen.getByDisplayValue("broccoli");
-      screen.getByDisplayValue("16");
-      screen.getByDisplayValue("oz");
+        // ingredients
+        screen.getByDisplayValue("broccoli");
+        screen.getByDisplayValue("16");
+        screen.getByDisplayValue("oz");
 
-      screen.getByDisplayValue("quinoa");
-      screen.getByDisplayValue("1");
-      screen.getByDisplayValue("cups");
+        screen.getByDisplayValue("quinoa");
+        screen.getByDisplayValue("1");
+        screen.getByDisplayValue("cups");
 
-      // notes
-      screen.getByDisplayValue("Mix broccoli and quinoa in a pan and bake.");
-    });
-
-    it("has an enabled SAVE button when initially rendering an existing recipe", () => {
-      expect(screen.getByText("SAVE")).toBeEnabled();
-    });
-
-    it("disables the SAVE button when there is an error in the recipe name", () => {
-      fireEvent.changeText(
-        screen.getByDisplayValue("Quinoa Broccoli Casserole"),
-        "Chocolate Chip Cookies" // this recipe name already exists, so it is invalid
-      );
-      expect(screen.getByText("SAVE")).toBeDisabled();
-
-      // Check that the SAVE button is reenabled once the recipe name is fixed
-      fireEvent.changeText(
-        screen.getByDisplayValue("Chocolate Chip Cookies"),
-        "Quinoa Broccoli Casserole"
-      );
-      expect(screen.getByText("SAVE")).toBeEnabled();
-    });
-
-    it("disables the SAVE button when there is an error in the recipe yield amount", () => {
-      fireEvent.changeText(screen.getByDisplayValue("4"), "0");
-      expect(screen.getByText("SAVE")).toBeDisabled();
-
-      // Check that the SAVE button is reenabled once the recipe yield amount is fixed
-      fireEvent.changeText(screen.getByDisplayValue("0"), "4");
-      expect(screen.getByText("SAVE")).toBeEnabled();
-    });
-
-    it("disables the SAVE button when there is an error in the recipe yield units", () => {
-      fireEvent.changeText(screen.getByDisplayValue("servings"), "");
-      expect(screen.getByText("SAVE")).toBeDisabled();
-
-      // Check that the SAVE button is reenabled once the recipe yield units are fixed
-      fireEvent.changeText(screen.getByDisplayValue(""), "servings");
-      expect(screen.getByText("SAVE")).toBeEnabled();
-    });
-
-    it("disables the SAVE button when there is an error in an ingredient name", () => {
-      fireEvent.changeText(screen.getByDisplayValue("quinoa"), "");
-      expect(screen.getByText("SAVE")).toBeDisabled();
-
-      // Check that the SAVE button is reenabled once the ingredient name is fixed
-      fireEvent.changeText(screen.getByDisplayValue(""), "quinoa");
-      expect(screen.getByText("SAVE")).toBeEnabled();
-    });
-
-    it("disables the SAVE button when there is an error in the ingredient amount", () => {
-      fireEvent.changeText(screen.getByDisplayValue("16"), "sixteen");
-      expect(screen.getByText("SAVE")).toBeDisabled();
-
-      // Check that the SAVE button is reenabled once the ingredient amount is fixed
-      fireEvent.changeText(screen.getByDisplayValue("sixteen"), "16");
-      expect(screen.getByText("SAVE")).toBeEnabled();
-    });
-
-    it("fixing one error in the recipe does not reenable the SAVE button if another error is still present", () => {
-      // Create an error in the recipe name
-      fireEvent.changeText(
-        screen.getByDisplayValue("Quinoa Broccoli Casserole"),
-        ""
-      );
-
-      // Create an error in an ingredient amount
-      fireEvent.changeText(screen.getByDisplayValue("16"), "sixteen");
-
-      // The SAVE button should be disabled, since there are two errors
-      expect(screen.getByText("SAVE")).toBeDisabled();
-
-      // Fix the recipe name
-      fireEvent.changeText(
-        screen.getByDisplayValue(""),
-        "Quinoa Broccoli Casserole"
-      );
-
-      // The SAVE button should still be disabled, since there is still an error in an ingredient
-      expect(screen.getByText("SAVE")).toBeDisabled();
-
-      // Create an error in the yield units
-      fireEvent.changeText(screen.getByDisplayValue("servings"), "");
-
-      // Fix the error in the ingredient
-      fireEvent.changeText(screen.getByDisplayValue("sixteen"), "16");
-
-      // Still, the SAVE button should be disabled, since now there is an error in the yield
-      expect(screen.getByText("SAVE")).toBeDisabled();
-    });
-
-    it("saves the updated recipe when the SAVE button is pressed and goes back to the previous screen", () => {
-      const newNotes: string = "blah blah blah";
-      fireEvent.changeText(
-        screen.getByDisplayValue("Mix broccoli and quinoa in a pan and bake."),
-        newNotes
-      );
-
-      fireEvent.press(screen.getByText("SAVE"));
-      expect(mockSaveRecipes).toBeCalledTimes(1);
-      expect(mockSaveRecipes).toBeCalledWith({
-        ...recipeBook,
-        "Quinoa Broccoli Casserole": {
-          ...recipeBook["Quinoa Broccoli Casserole"],
-          notes: newNotes, // the recipe book should have the new notes
-        },
+        // notes
+        screen.getByDisplayValue("Mix broccoli and quinoa in a pan and bake.");
       });
 
-      expect(mockNavigationProp.goBack).toBeCalledTimes(1);
+      it("has an enabled SAVE button when initially rendering an existing recipe", () => {
+        expect(screen.getByText("SAVE")).toBeEnabled();
+      });
+    });
+
+    describe("disables the SAVE button when the recipe has errors", () => {
+      it("disables the SAVE button when there is an error in the recipe name", () => {
+        fireEvent.changeText(
+          screen.getByDisplayValue("Quinoa Broccoli Casserole"),
+          "Chocolate Chip Cookies" // this recipe name already exists, so it is invalid
+        );
+        expect(screen.getByText("SAVE")).toBeDisabled();
+
+        // Check that the SAVE button is reenabled once the recipe name is fixed
+        fireEvent.changeText(
+          screen.getByDisplayValue("Chocolate Chip Cookies"),
+          "Quinoa Broccoli Casserole"
+        );
+        expect(screen.getByText("SAVE")).toBeEnabled();
+      });
+
+      it("disables the SAVE button when there is an error in the recipe yield amount", () => {
+        fireEvent.changeText(screen.getByDisplayValue("4"), "0");
+        expect(screen.getByText("SAVE")).toBeDisabled();
+
+        // Check that the SAVE button is reenabled once the recipe yield amount is fixed
+        fireEvent.changeText(screen.getByDisplayValue("0"), "4");
+        expect(screen.getByText("SAVE")).toBeEnabled();
+      });
+
+      it("disables the SAVE button when there is an error in the recipe yield units", () => {
+        fireEvent.changeText(screen.getByDisplayValue("servings"), "");
+        expect(screen.getByText("SAVE")).toBeDisabled();
+
+        // Check that the SAVE button is reenabled once the recipe yield units are fixed
+        fireEvent.changeText(screen.getByDisplayValue(""), "servings");
+        expect(screen.getByText("SAVE")).toBeEnabled();
+      });
+
+      it("disables the SAVE button when there is an error in an ingredient name", () => {
+        fireEvent.changeText(screen.getByDisplayValue("quinoa"), "");
+        expect(screen.getByText("SAVE")).toBeDisabled();
+
+        // Check that the SAVE button is reenabled once the ingredient name is fixed
+        fireEvent.changeText(screen.getByDisplayValue(""), "quinoa");
+        expect(screen.getByText("SAVE")).toBeEnabled();
+      });
+
+      it("disables the SAVE button when there is an error in the ingredient amount", () => {
+        fireEvent.changeText(screen.getByDisplayValue("16"), "sixteen");
+        expect(screen.getByText("SAVE")).toBeDisabled();
+
+        // Check that the SAVE button is reenabled once the ingredient amount is fixed
+        fireEvent.changeText(screen.getByDisplayValue("sixteen"), "16");
+        expect(screen.getByText("SAVE")).toBeEnabled();
+      });
+
+      it("fixing one error in the recipe does not reenable the SAVE button if another error is still present", () => {
+        // Create an error in the recipe name
+        fireEvent.changeText(
+          screen.getByDisplayValue("Quinoa Broccoli Casserole"),
+          ""
+        );
+
+        // Create an error in an ingredient amount
+        fireEvent.changeText(screen.getByDisplayValue("16"), "sixteen");
+
+        // The SAVE button should be disabled, since there are two errors
+        expect(screen.getByText("SAVE")).toBeDisabled();
+
+        // Fix the recipe name
+        fireEvent.changeText(
+          screen.getByDisplayValue(""),
+          "Quinoa Broccoli Casserole"
+        );
+
+        // The SAVE button should still be disabled, since there is still an error in an ingredient
+        expect(screen.getByText("SAVE")).toBeDisabled();
+
+        // Create an error in the yield units
+        fireEvent.changeText(screen.getByDisplayValue("servings"), "");
+
+        // Fix the error in the ingredient
+        fireEvent.changeText(screen.getByDisplayValue("sixteen"), "16");
+
+        // Still, the SAVE button should be disabled, since now there is an error in the yield
+        expect(screen.getByText("SAVE")).toBeDisabled();
+      });
+    });
+
+    describe("saves changes to the recipe and navigates back to the previous screen", () => {
+      it("saves changes to recipe name", () => {
+        const newRecipeName: string = "Cheesy Quinoa Broccoli Casserole";
+
+        fireEvent.changeText(
+          screen.getByDisplayValue(recipeName),
+          newRecipeName
+        );
+        fireEvent.press(screen.getByText("SAVE"));
+
+        expect(mockSaveRecipes).toBeCalledTimes(1);
+
+        const newRecipeBook = deepCopy(recipeBook);
+        delete newRecipeBook[recipeName];
+        newRecipeBook[newRecipeName] = recipeBook[recipeName];
+        expect(mockSaveRecipes).toBeCalledWith(newRecipeBook);
+
+        expect(mockNavigationProp.goBack).toBeCalledTimes(1);
+      });
+
+      it("saves changes to recipe yield", () => {
+        const oldYieldAmount: string = "4";
+        const newYieldAmount: string = "6";
+        const oldYieldUnits: string = "servings";
+        const newYieldUnits: string = "portions";
+
+        fireEvent.changeText(
+          screen.getByDisplayValue(oldYieldAmount),
+          newYieldAmount
+        );
+        fireEvent.changeText(
+          screen.getByDisplayValue(oldYieldUnits),
+          newYieldUnits
+        );
+        fireEvent.press(screen.getByText("SAVE"));
+
+        expect(mockSaveRecipes).toBeCalledTimes(1);
+        expect(mockSaveRecipes).toBeCalledWith({
+          ...recipeBook,
+          [recipeName]: {
+            ...recipeBook[recipeName],
+            yield: {
+              amount: Number(newYieldAmount),
+              units: newYieldUnits,
+            },
+          },
+        });
+        expect(mockNavigationProp.goBack).toBeCalledTimes(1);
+      });
+
+      it("saves changes to existing recipe ingredients", () => {
+        const oldIngredientName: string = "broccoli";
+        const newIngredientName: string = "broccoli florets";
+        fireEvent.changeText(
+          screen.getByDisplayValue(oldIngredientName),
+          newIngredientName
+        );
+
+        const oldIngredientAmount: string = "16";
+        const newIngredientAmount: string = "12";
+        fireEvent.changeText(
+          screen.getByDisplayValue(oldIngredientAmount),
+          newIngredientAmount
+        );
+
+        const oldIngredientUnits: Unit = "oz";
+        const newIngredientUnits: Unit = "cups";
+        fireEvent.press(screen.getByDisplayValue(oldIngredientUnits));
+        fireEvent.press(screen.getByText(newIngredientUnits));
+
+        fireEvent.press(screen.getByText("SAVE"));
+
+        expect(mockSaveRecipes).toBeCalledTimes(1);
+        expect(mockSaveRecipes).toBeCalledWith({
+          ...recipeBook,
+          [recipeName]: {
+            ...recipeBook[recipeName],
+            ingredients: [
+              {
+                // this ingredient should have all three fields updated
+                name: newIngredientName,
+                amount: Number(newIngredientAmount),
+                units: newIngredientUnits,
+              },
+              { name: "quinoa", amount: 1, units: "cups" },
+            ],
+          },
+        });
+        expect(mockNavigationProp.goBack).toBeCalledTimes(1);
+      });
+
+      it("saves deleted ingredients", () => {
+        fireEvent.press(screen.getByA11yHint("Delete quinoa from ingredients"));
+        fireEvent.press(screen.getByText("SAVE"));
+
+        expect(mockSaveRecipes).toBeCalledTimes(1);
+        expect(mockSaveRecipes).toBeCalledWith({
+          ...recipeBook,
+          [recipeName]: {
+            ...recipeBook[recipeName],
+            // there should only be one ingredient left
+            ingredients: [{ name: "broccoli", amount: 16, units: "oz" }],
+          },
+        });
+        expect(mockNavigationProp.goBack).toBeCalledTimes(1);
+      });
+
+      it("saves new ingredients", () => {
+        fireEvent.press(screen.getByText("Add Ingredient"));
+        fireEvent.changeText(screen.getByDisplayValue(""), "cheese");
+        fireEvent.changeText(screen.getByDisplayValue("0"), "3");
+        fireEvent.press(screen.getByText("SAVE"));
+
+        expect(mockSaveRecipes).toBeCalledTimes(1);
+        expect(mockSaveRecipes).toBeCalledWith({
+          ...recipeBook,
+          [recipeName]: {
+            ...recipeBook[recipeName],
+            // the new ingredient should be saved
+            ingredients: [
+              ...recipeBook[recipeName].ingredients,
+              { name: "cheese", amount: 3, units: "cups" },
+            ],
+          },
+        });
+        expect(mockNavigationProp.goBack).toBeCalledTimes(1);
+      });
+
+      it("saves changes to the recipe notes", () => {
+        const newNotes: string = "blah blah blah";
+        fireEvent.changeText(
+          screen.getByDisplayValue(
+            "Mix broccoli and quinoa in a pan and bake."
+          ),
+          newNotes
+        );
+
+        fireEvent.press(screen.getByText("SAVE"));
+        expect(mockSaveRecipes).toBeCalledTimes(1);
+        expect(mockSaveRecipes).toBeCalledWith({
+          ...recipeBook,
+          "Quinoa Broccoli Casserole": {
+            ...recipeBook["Quinoa Broccoli Casserole"],
+            notes: newNotes, // the recipe book should have the new notes
+          },
+        });
+
+        expect(mockNavigationProp.goBack).toBeCalledTimes(1);
+      });
     });
 
     it("doesn't save changes to the recipe if you go back without hitting SAVE", () => {

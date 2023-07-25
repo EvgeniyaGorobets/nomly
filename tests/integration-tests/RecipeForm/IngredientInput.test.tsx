@@ -4,28 +4,26 @@ import { PaperProvider } from "react-native-paper";
 
 import { IngredientInput } from "../../../src/ui/RecipeForm/IngredientInput";
 import { type Ingredient } from "../../../src/core/ingredient";
+import { IngredientErrors } from "../../../src/core/recipe-errors";
 
 describe("IngredientInput", () => {
+  const ingredient: Ingredient = {
+    name: "milk",
+    amount: 1.5,
+    units: "oz",
+  };
   const mockDeleteIngredient = jest.fn();
   const mockSetIngredient = jest.fn();
-  const mockSetIngredientNameError = jest.fn();
-  const mockSetIngredientAmountError = jest.fn();
+  const mockSetIngredientError = jest.fn();
 
   beforeEach(() => {
-    const ingredient: Ingredient = {
-      name: "milk",
-      amount: 1.5,
-      units: "oz",
-    };
-
     render(
       <PaperProvider>
         <IngredientInput
           ingredient={ingredient}
           deleteIngredient={mockDeleteIngredient}
           setIngredient={mockSetIngredient}
-          setIngredientNameError={mockSetIngredientNameError}
-          setIngredientAmountError={mockSetIngredientAmountError}
+          setIngredientError={mockSetIngredientError}
         />
       </PaperProvider>
     );
@@ -35,175 +33,281 @@ describe("IngredientInput", () => {
     jest.clearAllMocks();
   });
 
-  it("initially renders with the correct name, amount, and units", () => {
-    screen.getByDisplayValue("milk");
-    screen.getByDisplayValue("1.5");
-    screen.getByDisplayValue("oz");
-  });
+  describe("lets you update the ingredient properties", () => {
+    it("lets you change the ingredient name", () => {
+      const ingredientNameInput = screen.getByDisplayValue(ingredient.name);
+      expect(ingredientNameInput).toBeEnabled();
 
-  it("has an enabled text input that lets you change the ingredient name", () => {
-    const ingredientNameInput = screen.getByDisplayValue("milk");
-    expect(ingredientNameInput).toBeEnabled();
+      fireEvent.changeText(ingredientNameInput, "MILK");
+      expect(screen.queryByDisplayValue(ingredient.name)).toBeNull();
+      expect(screen.getByDisplayValue("MILK")).toBeVisible();
 
-    fireEvent.changeText(ingredientNameInput, "MILK");
-    expect(screen.queryByDisplayValue("milk")).toBe(null);
-    screen.getByDisplayValue("MILK");
+      expect(mockSetIngredient).toBeCalledTimes(1);
+      const callback = mockSetIngredient.mock.calls[0][0];
+      expect(callback(ingredient)).toStrictEqual({
+        ...ingredient,
+        name: "MILK",
+      });
+    });
 
-    expect(mockSetIngredient).toBeCalledTimes(1);
-    expect(mockSetIngredient).toBeCalledWith({
-      name: "MILK",
-      amount: 1.5,
-      units: "oz",
+    it("lets you change the ingredient amount", () => {
+      const ingredientAmountInput = screen.getByDisplayValue(
+        String(ingredient.amount)
+      );
+      expect(ingredientAmountInput).toBeEnabled();
+
+      fireEvent.changeText(ingredientAmountInput, "3");
+      expect(screen.queryByDisplayValue(String(ingredient.amount))).toBeNull();
+      expect(screen.getByDisplayValue("3")).toBeVisible();
+
+      expect(mockSetIngredient).toBeCalledTimes(1);
+      const callback = mockSetIngredient.mock.calls[0][0];
+      expect(callback(ingredient)).toStrictEqual({
+        ...ingredient,
+        amount: 3,
+      });
+    });
+
+    it("lets you change the ingredient units", () => {
+      const ingredientUnitsDropdown = screen.getByDisplayValue(
+        ingredient.units
+      );
+      expect(ingredientUnitsDropdown).toBeEnabled();
+
+      // Initially, the dropdown menu shouldn't be visible
+      expect(screen.queryByText("cups")).toBeNull();
+      expect(screen.queryByText("mL")).toBeNull();
+
+      // once you press on the dropdown, the menu should become visible
+      fireEvent.press(ingredientUnitsDropdown);
+      screen.getByText("cups");
+      screen.getByText("tbsp");
+
+      // after you select an option, the menu should become invisible again
+      fireEvent.press(screen.getByText("mL"));
+      // NOTE -- for ingredient amount and ingredient name, the state of the input text is managed
+      // locally within the component, and changes are only propagated up to the parent if the entered value is valid
+      // However, for the dropdown, since all selected values are guaranteed to be valid, the state
+      // of the dropdown input is managed by the parent
+      // Therefore, we can't do this: expect(screen.getByDisplayValue("mL")).toBeVisible();
+      // because the display value won't change until the parent's state is updated
+      // We can only test whether the callbacks are called
+      expect(mockSetIngredient).toBeCalledTimes(1);
+      const callback = mockSetIngredient.mock.calls[0][0];
+      expect(callback(ingredient)).toStrictEqual({
+        ...ingredient,
+        units: "mL",
+      });
     });
   });
 
-  it("has an enabled text input that lets you change the ingredient amount", () => {
-    const ingredientAmountInput = screen.getByDisplayValue("1.5");
-    expect(ingredientAmountInput).toBeEnabled();
+  describe("shows errors in the ingredient name", () => {
+    const originalErrors: IngredientErrors = { name: false, amount: false };
+    const expectedErrors: IngredientErrors = { name: true, amount: false };
 
-    fireEvent.changeText(ingredientAmountInput, "3");
-    expect(screen.queryByDisplayValue("1.5")).toBe(null);
-    screen.getByDisplayValue("3");
+    it("shows an error message when the ingredient name is an empty string and updates the ingredient errors", () => {
+      const ingredientNameInput = screen.getByDisplayValue(ingredient.name);
+      fireEvent.changeText(ingredientNameInput, "");
 
-    expect(mockSetIngredient).toBeCalledTimes(1);
-    expect(mockSetIngredient).toBeCalledWith({
-      name: "milk",
-      amount: 3,
-      units: "oz",
+      const expectedErrorMessage = "Ingredient name cannot be empty";
+      expect(screen.getByText(expectedErrorMessage)).toBeVisible();
+      expect(mockSetIngredientError).toBeCalledTimes(1);
+      expect(mockSetIngredient).toBeCalledTimes(0);
+
+      const callback = mockSetIngredientError.mock.calls[0][0];
+      expect(callback(originalErrors)).toStrictEqual(expectedErrors);
+    });
+
+    it("shows an error message when the ingredient name is too long and updates the ingredient errors", () => {
+      const ingredientNameInput = screen.getByDisplayValue(ingredient.name);
+      fireEvent.changeText(
+        ingredientNameInput,
+        "super long ingredient name that is longer than 50 characters"
+      );
+
+      const expectedErrorMessage =
+        "Ingredient name cannot be longer than 50 characters";
+      expect(screen.getByText(expectedErrorMessage)).toBeVisible();
+      expect(mockSetIngredientError).toBeCalledTimes(1);
+      expect(mockSetIngredient).toBeCalledTimes(0);
+
+      const callback = mockSetIngredientError.mock.calls[0][0];
+      expect(callback(originalErrors)).toStrictEqual(expectedErrors);
     });
   });
 
-  // NOTE -- dropdown functionality doesn't work in tests
-  it("has an enabled dropdown that let you change the units", () => {
-    const ingredientUnitsDropdown = screen.getByDisplayValue("oz");
-    expect(ingredientUnitsDropdown).toBeEnabled();
+  describe("shows errors in the ingredient amount", () => {
+    const originalErrors: IngredientErrors = { name: false, amount: false };
+    const expectedErrors: IngredientErrors = { name: false, amount: true };
 
-    // Initially, the dropdown menu shouldn't be visible
-    expect(screen.queryByText("cups")).toBeNull();
-    expect(screen.queryByText("mL")).toBeNull();
+    it("shows an error message when the ingredient amount is an empty string and updates the ingredient errors", () => {
+      const ingredientAmountInput = screen.getByDisplayValue(
+        String(ingredient.amount)
+      );
+      fireEvent.changeText(ingredientAmountInput, "");
 
-    // once you press on the dropdown, the menu should become visible
-    fireEvent.press(ingredientUnitsDropdown);
-    screen.getByText("cups");
-    const mLDropdownOption = screen.getByText("mL");
+      const expectedErrorMessage = "Ingredient amount is required";
+      expect(screen.getByText(expectedErrorMessage)).toBeVisible();
+      expect(mockSetIngredientError).toBeCalledTimes(1);
+      expect(mockSetIngredient).toBeCalledTimes(0);
 
-    // after you select an option, the menu should become invisible again
-    fireEvent.press(mLDropdownOption);
-    // NOTE -- for ingredient amount and ingredient name, the state of the input text is managed
-    // locally within the component, and changes are only propagated up to the parent if the entered value is valid
-    // However, for the dropdown, since all selected values are guaranteed to be valid, the state
-    // of the dropdown input is managed by the parent
-    // Therefore, we can't do this: expect(screen.getByDisplayValue("mL")).toBeVisible();
-    // because the display value won't change until the parent's state is updated
-    // We can only test whether the callbacks are called
-    expect(mockSetIngredient).toBeCalledTimes(1);
-    expect(mockSetIngredient).toBeCalledWith({
-      name: "milk",
-      amount: 1.5,
-      units: "mL",
+      const callback = mockSetIngredientError.mock.calls[0][0];
+      expect(callback(originalErrors)).toStrictEqual(expectedErrors);
+    });
+
+    it("shows an error message when the ingredient amount has words and updates the ingredient errors", () => {
+      const ingredientAmountInput = screen.getByDisplayValue(
+        String(ingredient.amount)
+      );
+      fireEvent.changeText(ingredientAmountInput, "three");
+
+      const expectedErrorMessage = "Ingredient amount must be a number";
+      expect(screen.getByText(expectedErrorMessage)).toBeVisible();
+      expect(mockSetIngredientError).toBeCalledTimes(1);
+      expect(mockSetIngredient).toBeCalledTimes(0);
+
+      const callback = mockSetIngredientError.mock.calls[0][0];
+      expect(callback(originalErrors)).toStrictEqual(expectedErrors);
+    });
+
+    it("shows an error message when the ingredient amount is zero and updates the ingredient errors", () => {
+      const ingredientAmountInput = screen.getByDisplayValue(
+        String(ingredient.amount)
+      );
+      fireEvent.changeText(ingredientAmountInput, "0");
+
+      const expectedErrorMessage =
+        "Ingredient amount must be greater than zero";
+      expect(screen.getByText(expectedErrorMessage)).toBeVisible();
+      expect(mockSetIngredientError).toBeCalledTimes(1);
+      expect(mockSetIngredient).toBeCalledTimes(0);
+
+      const callback = mockSetIngredientError.mock.calls[0][0];
+      expect(callback(originalErrors)).toStrictEqual(expectedErrors);
+    });
+
+    it("shows an error message when the ingredient amount is negative and updates the ingredient errors", () => {
+      const ingredientAmountInput = screen.getByDisplayValue(
+        String(ingredient.amount)
+      );
+      fireEvent.changeText(ingredientAmountInput, "-1.2");
+
+      const expectedErrorMessage =
+        "Ingredient amount must be greater than zero";
+      expect(screen.getByText(expectedErrorMessage)).toBeVisible();
+      expect(mockSetIngredientError).toBeCalledTimes(1);
+      expect(mockSetIngredient).toBeCalledTimes(0);
+
+      const callback = mockSetIngredientError.mock.calls[0][0];
+      expect(callback(originalErrors)).toStrictEqual(expectedErrors);
     });
   });
 
-  it("shows an error message when the ingredient name is invalid", () => {
-    const ingredientNameInput = screen.getByDisplayValue("milk");
-    let oldErrorMessage: string;
-    let expectedErrorMessage: string;
+  describe("removes old error messages", () => {
+    it("removes name errors once the name is fixed", () => {
+      const ingredientNameInput = screen.getByDisplayValue(ingredient.name);
+      fireEvent.changeText(ingredientNameInput, "");
+      fireEvent.changeText(ingredientNameInput, "milk");
 
-    // empty string is invalid
-    expectedErrorMessage = "Ingredient name cannot be empty";
-    fireEvent.changeText(ingredientNameInput, "");
-    expect(screen.getByText(expectedErrorMessage)).toBeVisible();
-    expect(mockSetIngredientNameError).toBeCalledTimes(1);
-    expect(mockSetIngredientNameError).toHaveBeenLastCalledWith(true);
+      const errorMessage = "Ingredient name is required";
+      expect(screen.queryByText(errorMessage)).toBeNull();
 
-    // strings longer than 50 chars are invalid
-    oldErrorMessage = expectedErrorMessage;
-    expectedErrorMessage =
-      "Ingredient name cannot be longer than 50 characters";
-    fireEvent.changeText(
-      ingredientNameInput,
-      "super long ingredient name that is longer than 50 characters"
-    );
-    expect(screen.queryByText(oldErrorMessage)).toBeNull();
-    expect(screen.getByText(expectedErrorMessage)).toBeVisible();
-    expect(mockSetIngredientNameError).toBeCalledTimes(2);
-    expect(mockSetIngredientNameError).toHaveBeenLastCalledWith(true);
+      expect(mockSetIngredientError).toBeCalledTimes(2);
+      const firstCallback = mockSetIngredientError.mock.calls[0][0];
+      const secondCallback = mockSetIngredientError.mock.calls[1][0];
 
-    // until this point, updateIngredient shouldn't have been called, bc the
-    // change should only propagate to the parent if the new value is valid
-    expect(mockSetIngredient).toBeCalledTimes(0);
+      const originalErrors: IngredientErrors = { name: false, amount: true };
+      const intermediateErrors: IngredientErrors = { name: true, amount: true };
+      expect(firstCallback(originalErrors)).toStrictEqual(intermediateErrors);
+      expect(secondCallback(intermediateErrors)).toStrictEqual(originalErrors);
 
-    // all other strings are valid
-    oldErrorMessage = expectedErrorMessage;
-    fireEvent.changeText(ingredientNameInput, "m1Lk");
-    // error messages should be removed
-    expect(screen.queryByText(oldErrorMessage)).toBeNull();
-    expect(mockSetIngredientNameError).toBeCalledTimes(3);
-    expect(mockSetIngredientNameError).toHaveBeenLastCalledWith(false);
+      expect(mockSetIngredient).toBeCalledTimes(1);
+    });
 
-    // now, we should see a call to updateIngredient, since the last change was valid
-    expect(mockSetIngredient).toBeCalledTimes(1);
+    it("removes amount errors once the amount is fixed", () => {
+      const ingredientAmountInput = screen.getByDisplayValue(
+        String(ingredient.amount)
+      );
+      fireEvent.changeText(ingredientAmountInput, "");
+      fireEvent.changeText(ingredientAmountInput, "2");
+
+      const errorMessage = "Ingredient amount is required";
+      expect(screen.queryByText(errorMessage)).toBeNull();
+
+      expect(mockSetIngredientError).toBeCalledTimes(2);
+      const firstCallback = mockSetIngredientError.mock.calls[0][0];
+      const secondCallback = mockSetIngredientError.mock.calls[1][0];
+
+      const originalErrors: IngredientErrors = { name: true, amount: false };
+      const intermediateErrors: IngredientErrors = { name: true, amount: true };
+      expect(firstCallback(originalErrors)).toStrictEqual(intermediateErrors);
+      expect(secondCallback(intermediateErrors)).toStrictEqual(originalErrors);
+
+      expect(mockSetIngredient).toBeCalledTimes(1);
+    });
+
+    it("removes old error messages if a new error occurs in the name", () => {
+      const ingredientNameInput = screen.getByDisplayValue(ingredient.name);
+
+      fireEvent.changeText(ingredientNameInput, "");
+      const firstError = "Ingredient name is required";
+
+      fireEvent.changeText(
+        ingredientNameInput,
+        "super super super long ingredient name that is clearly invalid"
+      );
+      const secondError = "Ingredient name cannot be longer than 50 characters";
+
+      expect(screen.queryByText(firstError)).toBeNull();
+      expect(screen.getByText(secondError)).toBeVisible();
+
+      expect(mockSetIngredientError).toBeCalledTimes(2);
+      const firstCallback = mockSetIngredientError.mock.calls[0][0];
+      const secondCallback = mockSetIngredientError.mock.calls[1][0];
+
+      const originalErrors: IngredientErrors = { name: false, amount: true };
+      const expectedErrors: IngredientErrors = { name: true, amount: true };
+      expect(firstCallback(originalErrors)).toStrictEqual(expectedErrors);
+      // name errors should still be true after the second callback
+      expect(secondCallback(expectedErrors)).toStrictEqual(expectedErrors);
+
+      expect(mockSetIngredient).toBeCalledTimes(0);
+    });
+
+    it("removes old error messages if a new error occurs in the amount", () => {
+      const ingredientAmountInput = screen.getByDisplayValue(
+        String(ingredient.amount)
+      );
+
+      fireEvent.changeText(ingredientAmountInput, "");
+      const firstError = "Ingredient amount is required";
+
+      fireEvent.changeText(ingredientAmountInput, "0");
+      const secondError = "Ingredient amount must be greater than zero";
+
+      expect(screen.queryByText(firstError)).toBeNull();
+      expect(screen.getByText(secondError)).toBeVisible();
+
+      expect(mockSetIngredientError).toBeCalledTimes(2);
+      const firstCallback = mockSetIngredientError.mock.calls[0][0];
+      const secondCallback = mockSetIngredientError.mock.calls[1][0];
+
+      const originalErrors: IngredientErrors = { name: true, amount: false };
+      const expectedErrors: IngredientErrors = { name: true, amount: true };
+      expect(firstCallback(originalErrors)).toStrictEqual(expectedErrors);
+      // amount errors should still be true after the second callback
+      expect(secondCallback(expectedErrors)).toStrictEqual(expectedErrors);
+
+      expect(mockSetIngredient).toBeCalledTimes(0);
+    });
   });
 
-  it("shows an error message when the ingredient amount is invalid", () => {
-    const ingredientAmountInput = screen.getByDisplayValue("1.5");
-    let oldErrorMessage: string;
-    let expectedErrorMessage: string;
-
-    // empty string is invalid
-    expectedErrorMessage = "Ingredient amount is required";
-    fireEvent.changeText(ingredientAmountInput, "");
-    expect(screen.getByText(expectedErrorMessage)).toBeVisible();
-    expect(mockSetIngredientAmountError).toBeCalledTimes(1);
-    expect(mockSetIngredientAmountError).toHaveBeenLastCalledWith(true);
-
-    // zero is invalid
-    oldErrorMessage = expectedErrorMessage;
-    expectedErrorMessage = "Ingredient amount must be greater than zero";
-    fireEvent.changeText(ingredientAmountInput, "0");
-    expect(screen.queryByText(oldErrorMessage)).toBeNull();
-    expect(screen.getByText(expectedErrorMessage)).toBeVisible();
-    expect(mockSetIngredientAmountError).toBeCalledTimes(2);
-    expect(mockSetIngredientAmountError).toHaveBeenLastCalledWith(true);
-
-    // words are invalid
-    oldErrorMessage = expectedErrorMessage;
-    expectedErrorMessage = "Ingredient amount must be a number";
-    fireEvent.changeText(ingredientAmountInput, "three");
-    expect(screen.queryByText(oldErrorMessage)).toBeNull();
-    expect(screen.getByText(expectedErrorMessage)).toBeVisible();
-    expect(mockSetIngredientAmountError).toBeCalledTimes(3);
-    expect(mockSetIngredientAmountError).toHaveBeenLastCalledWith(true);
-
-    // negative numbers are invalid
-    oldErrorMessage = expectedErrorMessage;
-    expectedErrorMessage = "Ingredient amount must be greater than zero";
-    fireEvent.changeText(ingredientAmountInput, "-1.2");
-    expect(screen.queryByText(oldErrorMessage)).toBeNull();
-    expect(screen.getByText(expectedErrorMessage)).toBeVisible();
-    expect(mockSetIngredientAmountError).toBeCalledTimes(4);
-    expect(mockSetIngredientAmountError).toHaveBeenLastCalledWith(true);
-
-    // until this point, updateIngredient shouldn't have been called, bc the
-    // change should only propagate to the parent if the new value is valid
-    expect(mockSetIngredient).toBeCalledTimes(0);
-
-    // only positive numbers are valid
-    oldErrorMessage = expectedErrorMessage;
-    fireEvent.changeText(ingredientAmountInput, "2");
-    // error messages should be removed
-    expect(screen.queryByText(oldErrorMessage)).toBeNull();
-    expect(mockSetIngredientAmountError).toBeCalledTimes(5);
-    expect(mockSetIngredientAmountError).toHaveBeenLastCalledWith(false);
-
-    // now, we should see a call to updateIngredient, since the last change was valid
-    expect(mockSetIngredient).toBeCalledTimes(1);
-  });
-
-  it("fires the deleteIngredient callback when the X is pressed", () => {
-    fireEvent.press(
-      screen.getByAccessibilityHint("Delete milk from ingredients")
-    );
-    expect(mockDeleteIngredient).toBeCalledTimes(1);
+  describe("deletes ingredients", () => {
+    it("fires the deleteIngredient callback when the X is pressed", () => {
+      fireEvent.press(
+        screen.getByAccessibilityHint("Delete milk from ingredients")
+      );
+      expect(mockDeleteIngredient).toBeCalledTimes(1);
+    });
   });
 });

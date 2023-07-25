@@ -5,30 +5,31 @@ import DropDown from "react-native-paper-dropdown";
 
 import { Styles } from "../Styles";
 
-import type { Unit, Ingredient } from "../../core/ingredient";
+import { type Ingredient, type Unit } from "../../core/ingredient";
 import {
   UNITS,
   validateIngredientName,
   validateIngredientAmount,
 } from "../../core/ingredient";
+import { IngredientErrors } from "../../core/recipe-errors";
 
 type IngredientInputProps = {
   ingredient: Ingredient;
   deleteIngredient: () => void;
-  setIngredient: (ingredient: Ingredient) => void;
-  setIngredientNameError: (hasErr: boolean) => void;
-  setIngredientAmountError: (hasErr: boolean) => void;
+  setIngredient: (callback: (prevIngredient: Ingredient) => Ingredient) => void;
+  setIngredientError: (
+    callback: (prevErrors: IngredientErrors) => IngredientErrors
+  ) => void;
 };
 
 export const IngredientInput: React.FC<IngredientInputProps> = ({
   ingredient,
   deleteIngredient,
   setIngredient,
-  setIngredientNameError,
-  setIngredientAmountError,
+  setIngredientError,
 }) => {
   /* State and callbacs for the ingredient name input */
-  const [ingredientName, setIngredientName] = useState<string>(ingredient.name);
+  const [name, setName] = useState<string>(ingredient.name);
   const [isNameDirty, setNameDirty] = useState<boolean>(false);
   const [nameErrorMsg, setNameErrorMsg] = useState<string>("");
 
@@ -36,7 +37,7 @@ export const IngredientInput: React.FC<IngredientInputProps> = ({
 
   const onChangeName = (newName: string) => {
     // Update local state
-    setIngredientName(newName);
+    setName(newName);
     if (!isNameDirty) {
       setNameDirty(true);
     }
@@ -44,19 +45,21 @@ export const IngredientInput: React.FC<IngredientInputProps> = ({
     // Update error state locally and in parent
     const errorMessage: string = validateIngredientName(newName);
     setNameErrorMsg(errorMessage);
-    setIngredientNameError(errorMessage !== "");
+    setIngredientError((prevErrors: IngredientErrors) => {
+      return { ...prevErrors, name: errorMessage !== "" };
+    });
 
     // Update parent state only if input is valid
     if (errorMessage === "") {
-      setIngredient({ ...ingredient, name: newName });
+      setIngredient((prevIngredient: Ingredient) => {
+        return { ...prevIngredient, name: newName };
+      });
     }
   };
   /* End of ingredient name */
 
-  /* State and callbacs for the ingredient amount input */
-  const [ingredientAmount, setIngredientAmount] = useState<string>(
-    ingredient.amount.toString()
-  );
+  /* State and callbacks for the ingredient amount input */
+  const [amount, setAmount] = useState<string>(ingredient.amount.toString());
   const [isAmountDirty, setAmountDirty] = useState<boolean>(false);
   const [amountErrorMsg, setAmountErrorMsg] = useState<string>("");
 
@@ -64,7 +67,7 @@ export const IngredientInput: React.FC<IngredientInputProps> = ({
 
   const onChangeAmount = (newAmount: string) => {
     // Update local state
-    setIngredientAmount(newAmount);
+    setAmount(newAmount);
     if (!isAmountDirty) {
       setAmountDirty(true);
     }
@@ -72,11 +75,15 @@ export const IngredientInput: React.FC<IngredientInputProps> = ({
     // Update error state locally and in parent
     const errorMessage: string = validateIngredientAmount(newAmount);
     setAmountErrorMsg(errorMessage);
-    setIngredientAmountError(errorMessage !== "");
+    setIngredientError((prevErrors: IngredientErrors) => {
+      return { ...prevErrors, amount: errorMessage !== "" };
+    });
 
     // Update parent state only if input is valid
     if (errorMessage === "") {
-      setIngredient({ ...ingredient, amount: Number(newAmount) });
+      setIngredient((prevIngredient: Ingredient) => {
+        return { ...prevIngredient, amount: Number(newAmount) };
+      });
     }
   };
   /* End of ingredient amount */
@@ -84,8 +91,10 @@ export const IngredientInput: React.FC<IngredientInputProps> = ({
   /* State and callbacks for the ingredient units dropdown */
   const [showDropDown, setShowDropDown] = useState(false);
 
-  const updateUnits = (newUnits: Unit) => {
-    setIngredient({ ...ingredient, units: newUnits });
+  const onChangeUnits = (newUnits: Unit) => {
+    setIngredient((prevIngredient: Ingredient) => {
+      return { ...prevIngredient, units: newUnits };
+    });
   };
   /* End of ingredient units */
 
@@ -114,7 +123,7 @@ export const IngredientInput: React.FC<IngredientInputProps> = ({
         <View style={{ ...Styles.row, marginBottom: 5 }}>
           <TextInput
             label="Ingredient Name"
-            value={ingredientName}
+            value={name}
             onChangeText={onChangeName}
             mode="outlined"
             placeholder="Ingredient name"
@@ -125,7 +134,7 @@ export const IngredientInput: React.FC<IngredientInputProps> = ({
           <View style={{ width: "40%", marginRight: 5 }}>
             <TextInput
               label="Amount"
-              value={ingredientAmount}
+              value={amount}
               onChangeText={onChangeAmount}
               keyboardType="numeric"
               mode="outlined"
@@ -140,7 +149,7 @@ export const IngredientInput: React.FC<IngredientInputProps> = ({
               showDropDown={() => setShowDropDown(true)}
               onDismiss={() => setShowDropDown(false)}
               value={ingredient.units}
-              setValue={(_value: Unit) => updateUnits(_value)}
+              setValue={(_value: Unit) => onChangeUnits(_value)}
               list={UNITS.map((unit: Unit) => {
                 return { label: unit, value: unit };
               })}

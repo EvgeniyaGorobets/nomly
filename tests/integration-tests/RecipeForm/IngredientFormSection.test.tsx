@@ -28,7 +28,6 @@ describe("IngredientFormSection", () => {
         <IngredientFormSection
           ingredients={mockIngredients}
           setIngredients={mockSetIngredients}
-          ingredientErrors={mockErrors}
           setErrors={mockSetErrors}
         />
       </PaperProvider>
@@ -65,13 +64,15 @@ describe("IngredientFormSection", () => {
     fireEvent.press(screen.getByAccessibilityHint("Add ingredient"));
 
     expect(mockSetIngredients).toBeCalledTimes(1);
-    expect(mockSetIngredients).toBeCalledWith([
+    const setIngredientsCallback = mockSetIngredients.mock.calls[0][0];
+    expect(setIngredientsCallback(mockIngredients)).toStrictEqual([
       ...mockIngredients,
       { name: "", amount: 0, units: "cups" },
     ]);
 
     expect(mockSetErrors).toBeCalledTimes(1);
-    expect(mockSetErrors).toBeCalledWith([
+    const setErrorsCallback = mockSetErrors.mock.calls[0][0];
+    expect(setErrorsCallback(mockErrors)).toStrictEqual([
       ...mockErrors,
       { name: true, amount: true },
     ]);
@@ -83,7 +84,8 @@ describe("IngredientFormSection", () => {
     );
 
     expect(mockSetIngredients).toBeCalledTimes(1);
-    expect(mockSetIngredients).toBeCalledWith([
+    const setIngredientsCallback = mockSetIngredients.mock.calls[0][0];
+    expect(setIngredientsCallback(mockIngredients)).toStrictEqual([
       mockIngredients[0],
       // sugar was the second ingredient, it should be removed
       mockIngredients[2],
@@ -91,52 +93,68 @@ describe("IngredientFormSection", () => {
     ]);
 
     expect(mockSetErrors).toBeCalledTimes(1);
-    expect(mockSetErrors).toBeCalledWith([
+    const setErrorsCallback = mockSetErrors.mock.calls[0][0];
+    expect(setErrorsCallback(mockErrors)).toStrictEqual([
       { name: false, amount: false },
+      // errors for sugar were removed
       { name: false, amount: true },
       { name: true, amount: true },
     ]);
   });
 
   it("propagates errors from IngredientInput children to the RecipeForm parent", () => {
+    let setErrorsCallback;
+    let oldErrors: IngredientErrors[] = mockErrors;
+    let newErrors: IngredientErrors[];
+
     // check that errors from ingredient name are propagated
     fireEvent.changeText(screen.getByDisplayValue("chocolate chips"), "");
     expect(mockSetErrors).toBeCalledTimes(1);
-    expect(mockSetErrors).toHaveBeenLastCalledWith([
-      { name: false, amount: false },
-      { name: true, amount: false },
+    setErrorsCallback = mockSetErrors.mock.calls[0][0];
+    newErrors = [
+      oldErrors[0],
+      oldErrors[1],
       { name: true, amount: true }, // name changed from false to true
-      { name: true, amount: true },
-    ]);
+      oldErrors[3],
+    ];
+    expect(setErrorsCallback(oldErrors)).toStrictEqual(newErrors);
 
     // check that errors from ingredient amount are propagated
     fireEvent.changeText(screen.getByDisplayValue("16"), "sixteen");
     expect(mockSetErrors).toBeCalledTimes(2);
-    expect(mockSetErrors).toHaveBeenLastCalledWith([
-      { name: false, amount: false },
+    setErrorsCallback = mockSetErrors.mock.calls[1][0];
+    oldErrors = newErrors;
+    newErrors = [
+      oldErrors[0],
       { name: true, amount: true }, // amount changed from false to true
-      { name: false, amount: true },
-      { name: true, amount: true },
-    ]);
+      oldErrors[2],
+      oldErrors[3],
+    ];
+    expect(setErrorsCallback(oldErrors)).toStrictEqual(newErrors);
 
     // check that when the errors are fixed, it is propagated to the parent
     fireEvent.changeText(screen.getByDisplayValue(""), "chocolate chips");
     expect(mockSetErrors).toBeCalledTimes(3);
-    expect(mockSetErrors).toHaveBeenLastCalledWith([
-      { name: false, amount: false },
-      { name: true, amount: false },
+    setErrorsCallback = mockSetErrors.mock.calls[2][0];
+    oldErrors = newErrors;
+    newErrors = [
+      oldErrors[0],
+      oldErrors[1],
       { name: false, amount: true }, // name changed back to false
-      { name: true, amount: true },
-    ]);
+      oldErrors[3],
+    ];
+    expect(setErrorsCallback(oldErrors)).toStrictEqual(newErrors);
 
-    // check that errors from ingredient amount are propagated
     fireEvent.changeText(screen.getByDisplayValue("sixteen"), "16");
     expect(mockSetErrors).toBeCalledTimes(4);
-    expect(mockSetErrors).toHaveBeenLastCalledWith([
-      { name: false, amount: false },
+    setErrorsCallback = mockSetErrors.mock.calls[3][0];
+    oldErrors = newErrors;
+    newErrors = [
+      oldErrors[0],
       { name: true, amount: false }, // amount changed back to false
-      { name: false, amount: true },
-      { name: true, amount: true },
-    ]);
+      oldErrors[2],
+      oldErrors[3],
+    ];
+    expect(setErrorsCallback(oldErrors)).toStrictEqual(newErrors);
   });
 });

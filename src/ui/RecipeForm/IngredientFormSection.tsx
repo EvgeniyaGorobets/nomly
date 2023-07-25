@@ -19,48 +19,55 @@ import {
 
 type IngredientSectionProps = {
   ingredients: Ingredient[];
-  setIngredients: (newIngredients: Array<Ingredient>) => void;
-  ingredientErrors: IngredientErrors[];
-  setErrors: (ingredientErrors: IngredientErrors[]) => void;
+  setIngredients: (
+    callback: (prevIngredients: Ingredient[]) => Ingredient[]
+  ) => void;
+  setErrors: (
+    callback: (prevErrors: IngredientErrors[]) => IngredientErrors[]
+  ) => void;
 };
 
 export const IngredientFormSection = ({
   ingredients,
   setIngredients,
-  ingredientErrors,
   setErrors,
 }: IngredientSectionProps) => {
   const addNewIngredient = () => {
-    setErrors(addIngredientToErrors(ingredientErrors));
-    setIngredients(addIngredient(ingredients));
+    setErrors((prevErrors: IngredientErrors[]) =>
+      addIngredientToErrors(prevErrors)
+    );
+    setIngredients((prevIngredients: Ingredient[]) =>
+      addIngredient(prevIngredients)
+    );
   };
 
   const deleteIngredientAtIndex = (index: number) => {
-    setErrors(deleteIngredientFromErrors(ingredientErrors, index));
-    setIngredients(deleteIngredient(ingredients, index));
+    setErrors((prevErrors: IngredientErrors[]) =>
+      deleteIngredientFromErrors(prevErrors, index)
+    );
+    setIngredients((prevIngredients: Ingredient[]) =>
+      deleteIngredient(prevIngredients, index)
+    );
   };
 
   const updateIngredientAtIndex = (
     index: number,
-    newIngredient: Ingredient
+    callback: (prevIngredient: Ingredient) => Ingredient
   ) => {
-    setIngredients(updateIngredient(ingredients, index, newIngredient));
+    setIngredients((prevIngredients: Ingredient[]) => {
+      const newIngredient: Ingredient = callback(prevIngredients[index]);
+      return updateIngredient(prevIngredients, index, newIngredient);
+    });
   };
 
-  const updateIngredientNameError = (index: number, hasErr: boolean) => {
-    const newErrors: IngredientErrors = {
-      ...ingredientErrors[index],
-      name: hasErr,
-    };
-    setErrors(updateIngredientErrors(ingredientErrors, index, newErrors));
-  };
-
-  const updateIngredientAmountError = (index: number, hasErr: boolean) => {
-    const newErrors: IngredientErrors = {
-      ...ingredientErrors[index],
-      amount: hasErr,
-    };
-    setErrors(updateIngredientErrors(ingredientErrors, index, newErrors));
+  const updateIngredientError = (
+    index: number,
+    callback: (prevErrors: IngredientErrors) => IngredientErrors
+  ) => {
+    setErrors((prevErrors: IngredientErrors[]) => {
+      const newErrors: IngredientErrors = callback(prevErrors[index]);
+      return updateIngredientErrors(prevErrors, index, newErrors);
+    });
   };
 
   return (
@@ -71,15 +78,8 @@ export const IngredientFormSection = ({
           key={i}
           ingredient={ingredient}
           deleteIngredient={() => deleteIngredientAtIndex(i)}
-          setIngredient={(ingredient: Ingredient) =>
-            updateIngredientAtIndex(i, ingredient)
-          }
-          setIngredientNameError={(hasErr: boolean) =>
-            updateIngredientNameError(i, hasErr)
-          }
-          setIngredientAmountError={(hasErr: boolean) =>
-            updateIngredientAmountError(i, hasErr)
-          }
+          setIngredient={(callback) => updateIngredientAtIndex(i, callback)}
+          setIngredientError={(callback) => updateIngredientError(i, callback)}
         />
       ))}
       <Button
