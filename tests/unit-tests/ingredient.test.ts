@@ -43,16 +43,22 @@ describe("deleteIngredient", () => {
 
     // The new copy should only have two ingredients
     expect(newIngredients.length).toBe(2);
-    expect(newIngredients[0]).toStrictEqual({
-      name: "milk",
-      amount: 250,
-      units: "mL",
-    });
-    expect(newIngredients[1]).toStrictEqual({
-      name: "butter",
-      amount: 0.5,
-      units: "cups",
-    });
+    expect(newIngredients).toStrictEqual([
+      {
+        name: "milk",
+        amount: 250,
+        units: "mL",
+      },
+      {
+        name: "butter",
+        amount: 0.5,
+        units: "cups",
+      },
+    ]);
+
+    // Changing the new copy should not affect the old copy
+    newIngredients[0].name = "half and half";
+    expect(ingredients[0].name).toBe("milk");
   });
 });
 
@@ -84,6 +90,10 @@ describe("updateIngredient", () => {
       amount: 100,
       units: "g",
     });
+
+    // Changing the new copy should not affect the old copy
+    newIngredients[0].name = "half and half";
+    expect(ingredients[0].name).toBe("milk");
   });
 });
 

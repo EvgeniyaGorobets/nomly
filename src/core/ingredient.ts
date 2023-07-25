@@ -1,4 +1,4 @@
-import { isNumeric } from "./utils";
+import { deepCopy, isNumeric } from "./utils";
 
 /* -- TYPES --*/
 
@@ -38,7 +38,10 @@ export const deleteIngredient = (
   ingredients: Ingredient[],
   index: number
 ): Ingredient[] => {
-  return [...ingredients.slice(0, index), ...ingredients.slice(index + 1)];
+  return [
+    ...deepCopy(ingredients.slice(0, index)),
+    ...deepCopy(ingredients.slice(index + 1)),
+  ];
 };
 
 /**
@@ -54,9 +57,9 @@ export const updateIngredient = (
   ingredient: Ingredient
 ): Ingredient[] => {
   return [
-    ...ingredients.slice(0, index),
+    ...deepCopy(ingredients.slice(0, index)),
     { ...ingredient },
-    ...ingredients.slice(index + 1),
+    ...deepCopy(ingredients.slice(index + 1)),
   ];
 };
 
