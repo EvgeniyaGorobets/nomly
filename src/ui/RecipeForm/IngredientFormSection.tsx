@@ -75,7 +75,7 @@ export const IngredientFormSection = ({
       <Text variant="headlineSmall">Ingredients</Text>
       {ingredients.map((ingredient: Ingredient, i: number) => (
         <IngredientInput
-          key={i}
+          key={ingredient.id}
           ingredient={ingredient}
           deleteIngredient={() => deleteIngredientAtIndex(i)}
           setIngredient={(callback) => updateIngredientAtIndex(i, callback)}

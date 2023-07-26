@@ -8,6 +8,7 @@ import { IngredientErrors } from "../../../src/core/recipe-errors";
 
 describe("IngredientInput", () => {
   const ingredient: Ingredient = {
+    id: "1",
     name: "milk",
     amount: 1.5,
     units: "oz",

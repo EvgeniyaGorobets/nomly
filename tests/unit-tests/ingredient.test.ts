@@ -7,21 +7,24 @@ import {
   validateIngredientName,
 } from "../../src/core/ingredient";
 
+jest.mock("uuid", () => ({ v4: () => "2" }));
+
 describe("addIngredient", () => {
   it("returns a copy of ingredients with a new, blank ingredient appended to the end", () => {
     const ingredients: Ingredient[] = [
-      { name: "milk", amount: 250, units: "mL" },
+      { id: "1", name: "milk", amount: 250, units: "mL" },
     ];
     const newIngredients = addIngredient(ingredients);
 
     // The old copy should be unchanged
     expect(ingredients).toStrictEqual([
-      { name: "milk", amount: 250, units: "mL" },
+      { id: "1", name: "milk", amount: 250, units: "mL" },
     ]);
 
     // The new copy should have a blank ingredient at the end
     expect(newIngredients.length).toBe(2);
     expect(newIngredients[1]).toStrictEqual({
+      id: "2",
       name: "",
       amount: 0,
       units: "cups",
@@ -32,9 +35,9 @@ describe("addIngredient", () => {
 describe("deleteIngredient", () => {
   it("returns a copy of ingredients with the ingredient at the given index removed", () => {
     const ingredients: Ingredient[] = [
-      { name: "milk", amount: 250, units: "mL" },
-      { name: "flour", amount: 1, units: "cups" },
-      { name: "butter", amount: 0.5, units: "cups" },
+      { id: "1", name: "milk", amount: 250, units: "mL" },
+      { id: "2", name: "flour", amount: 1, units: "cups" },
+      { id: "3", name: "butter", amount: 0.5, units: "cups" },
     ];
     const newIngredients = deleteIngredient(ingredients, 1);
 
@@ -45,11 +48,13 @@ describe("deleteIngredient", () => {
     expect(newIngredients.length).toBe(2);
     expect(newIngredients).toStrictEqual([
       {
+        id: "1",
         name: "milk",
         amount: 250,
         units: "mL",
       },
       {
+        id: "3",
         name: "butter",
         amount: 0.5,
         units: "cups",
@@ -65,11 +70,12 @@ describe("deleteIngredient", () => {
 describe("updateIngredient", () => {
   it("returns a copy of ingredients with the ingredient at the given index updated", () => {
     const ingredients: Ingredient[] = [
-      { name: "milk", amount: 250, units: "mL" },
-      { name: "flour", amount: 1, units: "cups" },
-      { name: "butter", amount: 0.5, units: "cups" },
+      { id: "1", name: "milk", amount: 250, units: "mL" },
+      { id: "2", name: "flour", amount: 1, units: "cups" },
+      { id: "3", name: "butter", amount: 0.5, units: "cups" },
     ];
     const updatedIngredient: Ingredient = {
+      id: "2",
       name: "flour",
       amount: 100,
       units: "g",
@@ -78,6 +84,7 @@ describe("updateIngredient", () => {
 
     // The old copy should be unchanged
     expect(ingredients[1]).toStrictEqual({
+      id: "2",
       name: "flour",
       amount: 1,
       units: "cups",
@@ -86,6 +93,7 @@ describe("updateIngredient", () => {
     // The new copy should have the updated ingredient
     expect(newIngredients.length).toBe(3);
     expect(newIngredients[1]).toStrictEqual({
+      id: "2",
       name: "flour",
       amount: 100,
       units: "g",

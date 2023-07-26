@@ -6,12 +6,14 @@ import { IngredientFormSection } from "../../../src/ui/RecipeForm/IngredientForm
 import { type Ingredient } from "../../../src/core/ingredient";
 import { type IngredientErrors } from "../../../src/core/recipe-errors";
 
+jest.mock("uuid", () => ({ v4: () => "5" }));
+
 describe("IngredientFormSection", () => {
   const mockIngredients: Ingredient[] = [
-    { name: "flour", amount: 2, units: "cups" },
-    { name: "sugar", amount: 16, units: "tbsp" },
-    { name: "chocolate chips", amount: 8, units: "oz" },
-    { name: "butter", amount: 100, units: "g" },
+    { id: "1", name: "flour", amount: 2, units: "cups" },
+    { id: "2", name: "sugar", amount: 16, units: "tbsp" },
+    { id: "3", name: "chocolate chips", amount: 8, units: "oz" },
+    { id: "4", name: "butter", amount: 100, units: "g" },
   ];
   const mockErrors: IngredientErrors[] = [
     { name: false, amount: false },
@@ -67,7 +69,7 @@ describe("IngredientFormSection", () => {
     const setIngredientsCallback = mockSetIngredients.mock.calls[0][0];
     expect(setIngredientsCallback(mockIngredients)).toStrictEqual([
       ...mockIngredients,
-      { name: "", amount: 0, units: "cups" },
+      { id: "5", name: "", amount: 0, units: "cups" },
     ]);
 
     expect(mockSetErrors).toBeCalledTimes(1);
