@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { View } from "react-native";
 import {
-  Divider,
   HelperText,
   SegmentedButtons,
   Text,
@@ -60,7 +59,7 @@ export const AdjustableYield = ({
   };
 
   return (
-    <View style={{ paddingVertical: 10 }}>
+    <View style={{ marginBottom: 15 }}>
       <View
         style={{
           ...Styles.row,
@@ -122,7 +121,6 @@ export const AdjustableYield = ({
           </HelperText>
         )}
       </View>
-      <Divider />
     </View>
   );
 };

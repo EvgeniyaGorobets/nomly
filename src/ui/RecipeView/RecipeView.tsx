@@ -55,10 +55,11 @@ export const RecipeView = ({ navigation, route }: RecipeScreenProps) => {
           originalYield={recipe.yield}
           updateIngredients={updateIngredients}
         />
-        <View>
+        <Divider />
+        <View style={{ marginVertical: 10 }}>
           <Text variant="headlineSmall">Ingredients</Text>
-          <View>
-            <View>
+          <View style={Styles.row}>
+            <View style={{ ...Styles.column, paddingRight: 5, flex: 1 }}>
               {ingredients.map((ingredient: Ingredient, i: number) => (
                 <List.Item
                   key={i}
@@ -66,7 +67,7 @@ export const RecipeView = ({ navigation, route }: RecipeScreenProps) => {
                 />
               ))}
             </View>
-            <View>
+            <View style={{ ...Styles.column, flex: 3 }}>
               {ingredients.map((ingredient: Ingredient, i: number) => (
                 <List.Item key={i} title={ingredient.name} />
               ))}
@@ -74,7 +75,7 @@ export const RecipeView = ({ navigation, route }: RecipeScreenProps) => {
           </View>
         </View>
         <Divider />
-        <View>
+        <View style={{ marginVertical: 10 }}>
           <Text variant="headlineSmall">Notes</Text>
           <Text variant="bodyLarge">{recipe.notes}</Text>
         </View>
