@@ -22,9 +22,10 @@ export const DefaultTheme = merge(CombinedLightTheme, {
     primary: "#4ecca3", // or try "#6cd4b2"
     onPrimary: "#f9f9fa",
     primaryContainer: "#6cd4b2",
-    onPrimaryContainer: "#c2f5e4", // this is too dark, needs more contrast
+    onPrimaryContainer: "#f9f9fa",
     secondaryContainer: "#89f5d2",
-    surfaceVariant: "#e6f7f0",
+    surfaceVariant: "#f9f9fa",
+    surface: "#edfcf6",
     error: "#ef4444",
   },
 });

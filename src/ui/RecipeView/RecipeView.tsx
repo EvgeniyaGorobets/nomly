@@ -47,6 +47,7 @@ export const RecipeView = ({ navigation, route }: RecipeScreenProps) => {
               recipeName: route.params.recipeName,
             });
           }}
+          style={{ marginLeft: 0 }}
         />
         <RecipeMenu recipeName={route.params.recipeName} nav={navigation} />
       </Appbar.Header>

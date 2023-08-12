@@ -7,6 +7,7 @@ import {
   Text,
   Divider,
   IconButton,
+  useTheme,
 } from "react-native-paper";
 
 import { Styles } from "../Styles";
@@ -27,6 +28,8 @@ export const MainMenu = ({
 }: {
   openDeleteRecipesModal: () => void;
 }) => {
+  const theme = useTheme();
+
   const { alerts, setAlerts, recipes, saveRecipes, prefs, togglePreference } =
     useContext(AppContext);
   const [isVisible, setVisibility] = useState<boolean>(false);
@@ -88,6 +91,7 @@ export const MainMenu = ({
           />
         }
         anchorPosition="bottom"
+        contentStyle={{ backgroundColor: theme.colors.surfaceVariant }}
       >
         <Menu.Item title="Recipe Book" titleStyle={{ fontSize: 20 }} />
         <Menu.Item

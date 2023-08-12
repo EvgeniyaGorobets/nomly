@@ -1,5 +1,5 @@
 import React, { useContext, useState } from "react";
-import { Menu, IconButton } from "react-native-paper";
+import { Appbar, Menu, useTheme } from "react-native-paper";
 
 import { AppContext } from "../../AppContext";
 import { type RecipeScreenProps } from "../../Stack";
@@ -11,6 +11,8 @@ type RecipeMenuProps = {
 };
 
 export const RecipeMenu = ({ recipeName, nav }: RecipeMenuProps) => {
+  const theme = useTheme();
+
   const [isVisible, setVisibility] = useState<boolean>(false);
   const toggleVisiblity = () => {
     setVisibility(!isVisible);
@@ -31,13 +33,15 @@ export const RecipeMenu = ({ recipeName, nav }: RecipeMenuProps) => {
       visible={isVisible}
       onDismiss={toggleVisiblity}
       anchor={
-        <IconButton
+        <Appbar.Action
           icon="dots-vertical"
           onPress={toggleVisiblity}
           accessibilityHint="Open recipe menu"
+          style={{ marginLeft: 0 }}
         />
       }
       anchorPosition="bottom"
+      contentStyle={{ backgroundColor: theme.colors.surfaceVariant }}
     >
       <Menu.Item
         title="Clone recipe"
