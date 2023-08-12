@@ -67,7 +67,7 @@ export const AdjustableYield = ({
           marginBottom: 10,
         }}
       >
-        <Text variant="titleMedium" style={{ width: "50%", paddingBottom: 3 }}>
+        <Text variant="titleLarge" style={{ width: "50%", paddingBottom: 3 }}>
           Recipe Yield:
         </Text>
         <TextInput
@@ -76,16 +76,17 @@ export const AdjustableYield = ({
           error={isInvalid}
           onChangeText={onYieldChange}
           textAlign="center"
-          mode="flat"
+          mode="outlined"
           style={{
             textAlign: "center",
             width: "15%",
             marginRight: 15,
-            fontSize: 18,
+            fontSize: 20,
             height: 33,
           }}
+          outlineStyle={{ borderWidth: isCustomizable ? 1 : 0 }}
         />
-        <Text variant="titleMedium" style={{ paddingBottom: 3 }}>
+        <Text variant="titleLarge" style={{ paddingBottom: 3 }}>
           {originalYield.units}
         </Text>
       </View>
