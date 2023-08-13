@@ -59,18 +59,23 @@ export const RecipeView = ({ navigation, route }: RecipeScreenProps) => {
         <Divider />
         <View style={{ marginVertical: 10 }}>
           <Text variant="headlineSmall">Ingredients</Text>
-          <View style={Styles.row}>
+          <View style={{ ...Styles.row, paddingTop: 5 }}>
             <View style={{ ...Styles.column, paddingRight: 5, flex: 1 }}>
               {ingredients.map((ingredient: Ingredient, i: number) => (
                 <List.Item
                   key={i}
                   title={formatIngredientAmount(ingredient, prefs.fractionMode)}
+                  style={{ paddingVertical: 5 }}
                 />
               ))}
             </View>
             <View style={{ ...Styles.column, flex: 3 }}>
               {ingredients.map((ingredient: Ingredient, i: number) => (
-                <List.Item key={i} title={ingredient.name} />
+                <List.Item
+                  key={i}
+                  title={ingredient.name}
+                  style={{ paddingVertical: 5 }}
+                />
               ))}
             </View>
           </View>
