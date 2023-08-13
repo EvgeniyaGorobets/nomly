@@ -1,6 +1,6 @@
 import React, { useContext, useState } from "react";
 import { View, ScrollView } from "react-native";
-import { Appbar, Button, Divider } from "react-native-paper";
+import { Appbar, Button, Divider, useTheme } from "react-native-paper";
 
 import { RecipeYieldInput } from "./RecipeYieldInput";
 import { RecipeNameInput } from "./RecipeNameInput";
@@ -42,6 +42,7 @@ const isNewRecipe = (route: RouteProp): boolean => {
 };
 
 export const RecipeForm = ({ navigation, route }: RecipeFormProps) => {
+  const theme = useTheme();
   const { recipes, saveRecipes } = useContext(AppContext);
   const [initialRecipeName, initialRecipe]: [string, Recipe] = getInitialRecipe(
     route,
@@ -168,6 +169,7 @@ export const RecipeForm = ({ navigation, route }: RecipeFormProps) => {
             disabled={!isRecipeValid(errors)}
             onPress={() => saveRecipe()}
             accessibilityHint="Save recipe"
+            labelStyle={{ ...theme.fonts.titleLarge, fontWeight: "800" }}
           >
             SAVE
           </Button>

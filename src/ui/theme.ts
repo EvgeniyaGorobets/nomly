@@ -27,7 +27,7 @@ const fonts = {
 
 export const DefaultTheme = merge(CombinedLightTheme, {
   colors: {
-    primary: "#4ecca3", // or try "#6cd4b2"
+    primary: "#6cd4b2",
     onPrimary: "#f9f9fa",
     primaryContainer: "#6cd4b2",
     onPrimaryContainer: "#f9f9fa",

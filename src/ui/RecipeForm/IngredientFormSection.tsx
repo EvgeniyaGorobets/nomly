@@ -84,11 +84,11 @@ export const IngredientFormSection = ({
       ))}
       <Button
         icon="plus"
-        mode="contained-tonal"
+        mode="outlined"
         onPress={addNewIngredient}
         accessibilityHint="Add ingredient"
       >
-        <Text variant="bodyLarge">Add Ingredient</Text>
+        Add Ingredient
       </Button>
     </View>
   );
