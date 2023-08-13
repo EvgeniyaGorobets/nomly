@@ -12,8 +12,8 @@ describe("cloneRecipe", () => {
     const originalRecipe: Recipe = {
       yield: { amount: 4, units: "servings" },
       ingredients: [
-        { name: "broccoli", amount: 16, units: "oz" },
-        { name: "quinoa", amount: 1, units: "cups" },
+        { id: "1", name: "broccoli", amount: 16, units: "oz" },
+        { id: "2", name: "quinoa", amount: 1, units: "cups" },
       ],
       notes: "Mix broccoli and quinoa in a pan and bake.",
     };
@@ -52,18 +52,18 @@ describe("deleteRecipe", () => {
       "Quinoa Broccoli Casserole": {
         yield: { amount: 4, units: "servings" },
         ingredients: [
-          { name: "broccoli", amount: 16, units: "oz" },
-          { name: "quinoa", amount: 1, units: "cups" },
+          { id: "1", name: "broccoli", amount: 16, units: "oz" },
+          { id: "2", name: "quinoa", amount: 1, units: "cups" },
         ],
         notes: "Mix broccoli and quinoa in a pan and bake.",
       },
       "Chocolate Chip Cookies": {
         yield: { amount: 12, units: "cookies" },
         ingredients: [
-          { name: "flour", amount: 2, units: "cups" },
-          { name: "sugar", amount: 16, units: "tbsp" },
-          { name: "chocolate chips", amount: 8, units: "oz" },
-          { name: "butter", amount: 100, units: "g" },
+          { id: "3", name: "flour", amount: 2, units: "cups" },
+          { id: "4", name: "sugar", amount: 16, units: "tbsp" },
+          { id: "5", name: "chocolate chips", amount: 8, units: "oz" },
+          { id: "6", name: "butter", amount: 100, units: "g" },
         ],
         notes: "Mix dry and wet ingredients. Roll into balls and bake.",
       },
@@ -96,8 +96,8 @@ describe("updateRecipe", () => {
     const originalRecipe: Recipe = {
       yield: { amount: 4, units: "servings" },
       ingredients: [
-        { name: "broccoli", amount: 16, units: "oz" },
-        { name: "quinoa", amount: 1, units: "cups" },
+        { id: "1", name: "broccoli", amount: 16, units: "oz" },
+        { id: "2", name: "quinoa", amount: 1, units: "cups" },
       ],
       notes: "Mix broccoli and quinoa in a pan and bake.",
     };
@@ -106,8 +106,8 @@ describe("updateRecipe", () => {
     const updatedRecipe: Recipe = {
       yield: { amount: 3, units: "servings" },
       ingredients: [
-        { name: "broccoli", amount: 400, units: "g" },
-        { name: "quinoa", amount: 0.5, units: "cups" },
+        { id: "1", name: "broccoli", amount: 400, units: "g" },
+        { id: "2", name: "quinoa", amount: 0.5, units: "cups" },
       ],
       notes: "blah blah blah",
     };
@@ -130,8 +130,8 @@ describe("updateRecipe", () => {
     const newRecipe: Recipe = {
       yield: { amount: 4, units: "servings" },
       ingredients: [
-        { name: "broccoli", amount: 16, units: "oz" },
-        { name: "quinoa", amount: 1, units: "cups" },
+        { id: "1", name: "broccoli", amount: 16, units: "oz" },
+        { id: "2", name: "quinoa", amount: 1, units: "cups" },
       ],
       notes: "Mix broccoli and quinoa in a pan and bake.",
     };
@@ -151,8 +151,8 @@ describe("updateRecipe", () => {
     const recipe: Recipe = {
       yield: { amount: 4, units: "servings" },
       ingredients: [
-        { name: "broccoli", amount: 16, units: "oz" },
-        { name: "quinoa", amount: 1, units: "cups" },
+        { id: "1", name: "broccoli", amount: 16, units: "oz" },
+        { id: "2", name: "quinoa", amount: 1, units: "cups" },
       ],
       notes: "Mix broccoli and quinoa in a pan and bake.",
     };
