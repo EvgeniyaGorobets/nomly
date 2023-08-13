@@ -1,32 +1,36 @@
 import React, { useContext } from "react";
 import { View } from "react-native";
 import { List } from "react-native-paper";
+import { type Style } from "react-native-paper/lib/typescript/src/components/List/utils";
 import { useNavigation } from "@react-navigation/native";
-import BottomSheet from "@gorhom/bottom-sheet";
-import { Style } from "react-native-paper/lib/typescript/src/components/List/utils";
+import { BottomSheetModal } from "@gorhom/bottom-sheet";
+import { type BottomSheetModalMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
 
 import { AppContext, AppContextType } from "../../AppContext";
 import type { HomeScreenProps } from "../../Stack";
-import { deleteRecipe, cloneRecipe } from "../../core/recipe";
+import { deleteRecipe, cloneRecipe } from "../../core/recipe-book";
 
 type NavigationProp = HomeScreenProps["navigation"];
 
 type RecipeActionProps = {
   recipeName: string;
-  isOpen: boolean;
-  onClose: () => void;
+  innerRef: React.RefObject<BottomSheetModalMethods>;
 };
 
 export const RecipeActionSheet: React.FC<RecipeActionProps> = ({
   recipeName,
-  isOpen,
-  onClose,
+  innerRef,
 }) => {
   const context: AppContextType = useContext(AppContext);
   const navigation = useNavigation<NavigationProp>();
 
   return (
-    <BottomSheet index={0} snapPoints={["25%"]}>
+    <BottomSheetModal
+      index={0}
+      snapPoints={["25%"]}
+      enablePanDownToClose={true}
+      ref={innerRef}
+    >
       <View>
         <List.Item
           title="Edit Recipe"
@@ -34,8 +38,8 @@ export const RecipeActionSheet: React.FC<RecipeActionProps> = ({
             <List.Icon {...props} icon="pencil" />
           )}
           onPress={() => {
+            innerRef.current?.dismiss();
             navigation.navigate("Form", { recipeName: recipeName });
-            onClose();
           }}
         />
         <List.Item
@@ -44,8 +48,8 @@ export const RecipeActionSheet: React.FC<RecipeActionProps> = ({
             <List.Icon {...props} icon="content-copy" />
           )}
           onPress={() => {
+            innerRef.current?.dismiss();
             context.saveRecipes(cloneRecipe(context.recipes, recipeName));
-            onClose();
           }}
         />
         <List.Item
@@ -54,11 +58,11 @@ export const RecipeActionSheet: React.FC<RecipeActionProps> = ({
             <List.Icon {...props} icon="delete-outline" />
           )}
           onPress={() => {
+            innerRef.current?.dismiss();
             context.saveRecipes(deleteRecipe(context.recipes, recipeName));
-            onClose();
           }}
         />
       </View>
-    </BottomSheet>
+    </BottomSheetModal>
   );
 };

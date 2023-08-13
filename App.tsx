@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { PaperProvider } from "react-native-paper";
 import { NavigationContainer } from "@react-navigation/native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 import {
   Home,
@@ -95,29 +96,31 @@ export default function App() {
   }, []);
 
   return (
-    <SafeAreaProvider>
-      <AppContext.Provider
-        value={{
-          recipes: recipeBook,
-          saveRecipes: saveRecipes,
-          prefs: preferences,
-          togglePreference,
-          alerts: alerts,
-          setAlerts: setAlerts,
-        }}
-      >
-        <PaperProvider theme={theme}>
-          <NavigationContainer theme={theme}>
-            <Stack.Navigator
-              screenOptions={{ headerShown: false, animation: "none" }}
-            >
-              <Stack.Screen name="Home" component={Home} />
-              <Stack.Screen name="Form" component={RecipeForm} />
-              <Stack.Screen name="Recipe" component={RecipeView} />
-            </Stack.Navigator>
-          </NavigationContainer>
-        </PaperProvider>
-      </AppContext.Provider>
-    </SafeAreaProvider>
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <SafeAreaProvider>
+        <AppContext.Provider
+          value={{
+            recipes: recipeBook,
+            saveRecipes: saveRecipes,
+            prefs: preferences,
+            togglePreference,
+            alerts: alerts,
+            setAlerts: setAlerts,
+          }}
+        >
+          <PaperProvider theme={theme}>
+            <NavigationContainer theme={theme}>
+              <Stack.Navigator
+                screenOptions={{ headerShown: false, animation: "none" }}
+              >
+                <Stack.Screen name="Home" component={Home} />
+                <Stack.Screen name="Form" component={RecipeForm} />
+                <Stack.Screen name="Recipe" component={RecipeView} />
+              </Stack.Navigator>
+            </NavigationContainer>
+          </PaperProvider>
+        </AppContext.Provider>
+      </SafeAreaProvider>
+    </GestureHandlerRootView>
   );
 }
