@@ -17,6 +17,14 @@ const { LightTheme, DarkTheme } = adaptNavigationTheme({
 const CombinedLightTheme = merge(MD3LightTheme, LightTheme);
 const CombinedDarkTheme = merge(MD3DarkTheme, DarkTheme);
 
+const fonts = {
+  titleMedium: {
+    fontFamily: "sans-serif",
+    fontSize: 20,
+    fontWeight: "300",
+  },
+};
+
 export const DefaultTheme = merge(CombinedLightTheme, {
   colors: {
     primary: "#4ecca3", // or try "#6cd4b2"
@@ -29,17 +37,14 @@ export const DefaultTheme = merge(CombinedLightTheme, {
     error: "#ef4444",
     outline: "#bfbfbf",
   },
+  fonts: fonts,
 });
 
 export const DarkModeTheme = merge(CombinedDarkTheme, {
   colors: {
     background: "#1f2022",
   },
-  fonts: {
-    titleMedium: {
-      fontSize: 20,
-    },
-  },
+  fonts: fonts,
 });
 
 // extend the theme

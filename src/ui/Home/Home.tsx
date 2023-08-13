@@ -78,7 +78,7 @@ export const Home = ({ navigation }: HomeScreenProps) => {
                 onPress={() => {
                   navigation.navigate("Recipe", { recipeName: recipeName });
                 }}
-                titleStyle={{ fontSize: 18 }}
+                titleStyle={theme.fonts.titleMedium}
               />
             ))}
         </ScrollView>
