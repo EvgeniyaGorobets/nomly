@@ -6,7 +6,7 @@ import { deepCopy } from "./utils";
 
 export type Recipe = {
   yield: Yield;
-  ingredients: Array<Ingredient>;
+  ingredients: Ingredient[];
   notes: string;
 };
 
@@ -82,9 +82,13 @@ export const cloneRecipe = (
   recipeBook: RecipeBook,
   recipeName: string
 ): RecipeBook => {
+  let newRecipeName: string = recipeName;
+  while (newRecipeName in recipeBook) {
+    newRecipeName = newRecipeName + " (Copy)";
+  }
   return {
     ...deepCopy(recipeBook),
-    [`${recipeName} (Copy)`]: deepCopy(recipeBook[recipeName]),
+    [newRecipeName]: deepCopy(recipeBook[recipeName]),
   };
 };
 

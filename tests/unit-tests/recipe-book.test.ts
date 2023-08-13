@@ -44,6 +44,31 @@ describe("cloneRecipe", () => {
       "cups";
     expect(originalRecipe.ingredients[0].units).toBe("oz");
   });
+
+  it("can clone a recipe multiple times", () => {
+    const originalRecipe: Recipe = {
+      yield: { amount: 4, units: "servings" },
+      ingredients: [
+        { id: "1", name: "broccoli", amount: 16, units: "oz" },
+        { id: "2", name: "quinoa", amount: 1, units: "cups" },
+      ],
+      notes: "Mix broccoli and quinoa in a pan and bake.",
+    };
+    const recipeBook: RecipeBook = {
+      Casserole: originalRecipe,
+    };
+
+    const oneCloneRecipeBook = cloneRecipe(recipeBook, "Casserole");
+    const twoCloneRecipeBook = cloneRecipe(oneCloneRecipeBook, "Casserole");
+    const threeCloneRecipeBook = cloneRecipe(twoCloneRecipeBook, "Casserole");
+
+    expect(Object.keys(threeCloneRecipeBook).sort()).toStrictEqual([
+      "Casserole",
+      "Casserole (Copy)",
+      "Casserole (Copy) (Copy)",
+      "Casserole (Copy) (Copy) (Copy)",
+    ]);
+  });
 });
 
 describe("deleteRecipe", () => {
