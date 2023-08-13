@@ -107,7 +107,10 @@ export const MainMenu = ({
         <Menu.Item
           title="Delete all recipes"
           leadingIcon="delete-outline"
-          onPress={openDeleteRecipesModal}
+          onPress={() => {
+            toggleVisiblity();
+            openDeleteRecipesModal();
+          }}
         />
         <Divider />
         <Menu.Item title="Preferences" titleStyle={{ fontSize: 20 }} />
