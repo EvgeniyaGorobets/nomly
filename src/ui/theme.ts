@@ -27,6 +27,7 @@ export const DefaultTheme = merge(CombinedLightTheme, {
     surfaceVariant: "#f9f9fa",
     surface: "#edfcf6",
     error: "#ef4444",
+    outline: "#bfbfbf",
   },
 });
 

@@ -1,6 +1,6 @@
 import React, { useContext, useRef, useState } from "react";
 import { View, ScrollView } from "react-native";
-import { Appbar, FAB, List, Searchbar } from "react-native-paper";
+import { Appbar, FAB, List, Searchbar, useTheme } from "react-native-paper";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
 
 import type { HomeScreenProps } from "../../Stack";
@@ -13,11 +13,15 @@ import { AlertList } from "./AlertList";
 import { Styles } from "../Styles";
 
 export const Home = ({ navigation }: HomeScreenProps) => {
+  const theme = useTheme();
   const context: AppContextType = useContext(AppContext);
 
   const [selectedRecipe, setSelected] = useState<string>("");
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [isModalOpen, setModalOpen] = useState<boolean>(false);
+  const [searchbarOutlineColor, setSearbarOutlineColor] = useState<string>(
+    theme.colors.outline
+  );
 
   return (
     <View style={Styles.screen}>
@@ -34,6 +38,13 @@ export const Home = ({ navigation }: HomeScreenProps) => {
           placeholder="Search"
           onChangeText={setSearchQuery}
           value={searchQuery}
+          onFocus={() => setSearbarOutlineColor(theme.colors.primary)}
+          onBlur={() => setSearbarOutlineColor(theme.colors.outline)}
+          style={{
+            backgroundColor: theme.colors.surfaceVariant,
+            borderWidth: 1,
+            borderColor: searchbarOutlineColor,
+          }}
         />
       </View>
       <ScrollView style={Styles.content}>
