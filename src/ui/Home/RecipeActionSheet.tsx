@@ -1,6 +1,6 @@
 import React, { useContext } from "react";
 import { View } from "react-native";
-import { List } from "react-native-paper";
+import { List, MD3Theme, useTheme } from "react-native-paper";
 import { type Style } from "react-native-paper/lib/typescript/src/components/List/utils";
 import { useNavigation } from "@react-navigation/native";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
@@ -21,6 +21,7 @@ export const RecipeActionSheet: React.FC<RecipeActionProps> = ({
   recipeName,
   innerRef,
 }) => {
+  const theme: MD3Theme = useTheme();
   const context: AppContextType = useContext(AppContext);
   const navigation = useNavigation<NavigationProp>();
 
@@ -30,6 +31,7 @@ export const RecipeActionSheet: React.FC<RecipeActionProps> = ({
       snapPoints={["25%"]}
       enablePanDownToClose={true}
       ref={innerRef}
+      backgroundStyle={{ backgroundColor: theme.colors.surfaceVariant }}
     >
       <View>
         <List.Item
