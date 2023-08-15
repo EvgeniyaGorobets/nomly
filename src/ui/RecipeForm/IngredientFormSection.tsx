@@ -87,6 +87,7 @@ export const IngredientFormSection = ({
         mode="outlined"
         onPress={addNewIngredient}
         accessibilityHint="Add ingredient"
+        style={{ marginTop: 10 }}
       >
         Add Ingredient
       </Button>
