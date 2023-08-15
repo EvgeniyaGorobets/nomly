@@ -4,7 +4,16 @@ import { deepCopy, isNumeric } from "./utils";
 
 /* -- TYPES --*/
 
-export const UNITS = ["cups", "tbsp", "tsp", "mL", "g", "oz", "N/A"] as const;
+export const UNITS = [
+  "N/A",
+  "cups",
+  "tbsp",
+  "tsp",
+  "mL",
+  "g",
+  "oz",
+  "lbs",
+] as const;
 export type Unit = (typeof UNITS)[number];
 
 export type Ingredient = {
