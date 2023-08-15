@@ -51,7 +51,7 @@ export const RecipeView = ({ navigation, route }: RecipeScreenProps) => {
         />
         <RecipeMenu recipeName={route.params.recipeName} nav={navigation} />
       </Appbar.Header>
-      <ScrollView style={Styles.content}>
+      <ScrollView style={Styles.content} keyboardShouldPersistTaps="handled">
         <AdjustableYield
           originalYield={recipe.yield}
           updateIngredients={updateIngredients}

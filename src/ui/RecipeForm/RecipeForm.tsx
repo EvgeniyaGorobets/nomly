@@ -140,7 +140,7 @@ export const RecipeForm = ({ navigation, route }: RecipeFormProps) => {
           title={isNewRecipe(route) ? "Add Recipe" : "Edit Recipe"}
         />
       </Appbar.Header>
-      <ScrollView style={Styles.content}>
+      <ScrollView style={Styles.content} keyboardShouldPersistTaps="handled">
         <View>
           <RecipeNameInput
             initialName={initialRecipeName}
