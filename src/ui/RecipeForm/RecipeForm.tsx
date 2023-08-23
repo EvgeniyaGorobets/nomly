@@ -1,168 +1,180 @@
-import React, { ReactElement, useContext, useState } from "react";
-import {
-  Button,
-  Center,
-  IconButton,
-  Row,
-  Icon,
-  Input,
-  ScrollView,
-  Column,
-  Heading,
-  FormControl,
-  Text,
-  Pressable,
-} from "native-base";
-import { AntDesign } from "@expo/vector-icons";
+import React, { useContext, useState } from "react";
+import { View, ScrollView } from "react-native";
+import { Appbar, Button, Divider, useTheme } from "react-native-paper";
+
+import { RecipeYieldInput } from "./RecipeYieldInput";
+import { RecipeNameInput } from "./RecipeNameInput";
+import { RecipeNotesInput } from "./RecipeNotesInput";
+import { IngredientFormSection } from "./IngredientFormSection";
+
+import { type RecipeFormProps } from "../../Stack";
+import { AppContext } from "../../AppContext";
 
 import {
-  RecipeBook,
-  addRecipe,
+  type RecipeBook,
+  type Recipe,
   updateRecipe,
-  Recipe,
-} from "../../core/RecipeBook";
-import { AppContext, AppContextType } from "../../AppContext";
+  getBlankRecipe,
+} from "../../core/recipe-book";
+import type { Ingredient } from "../../core/ingredient";
 import {
-  RecipeErrors,
-  PotentialRecipe,
-  PotentialIngredient,
-  PotentialYield,
-  blankRecipe,
-  addIngredient,
-  deleteIngredient,
-  updateIngredient,
-  updateRecipeYield,
-  updateRecipeNotes,
-  validateRecipe,
-  convertFormToRecipe,
-  convertRecipeToForm,
-} from "../../core/form";
-import type { RecipeFormProps } from "../../Stack";
-import { IngredientForm } from "./IngredientForm";
-import { RecipeYieldForm } from "./RecipeYieldForm";
-import { RecipeNameForm } from "./RecipeNameForm";
+  type RecipeErrors,
+  type IngredientErrors,
+  getInitialErrors,
+  isRecipeValid,
+} from "../../core/recipe-errors";
 
-const CloseIcon: ReactElement = <Icon as={AntDesign} name="close" />;
-const PlusIcon: ReactElement = <Icon as={AntDesign} name="plus" />;
+import { Styles } from "../Styles";
 
 type RouteProp = RecipeFormProps["route"];
 
 const getInitialRecipe = (
   route: RouteProp,
   recipes: RecipeBook
-): [string, PotentialRecipe] => {
-  if (route.params?.recipeName) {
-    return [
-      route.params.recipeName,
-      convertRecipeToForm(recipes[route.params.recipeName]),
-    ];
-  } else {
-    return ["", blankRecipe()];
-  }
+): [string, Recipe] => {
+  return route.params?.recipeName
+    ? [route.params.recipeName, recipes[route.params.recipeName]]
+    : ["", getBlankRecipe()];
 };
 
 const isNewRecipe = (route: RouteProp): boolean => {
-  return typeof route.params?.recipeName == undefined;
+  return typeof route.params?.recipeName == "undefined";
 };
 
 export const RecipeForm = ({ navigation, route }: RecipeFormProps) => {
-  const context: AppContextType = useContext(AppContext);
-  const [initialRecipeName, initialRecipe]: [string, PotentialRecipe] =
-    getInitialRecipe(route, context.recipes);
+  const theme = useTheme();
+  const { recipes, saveRecipes } = useContext(AppContext);
+  const [initialRecipeName, initialRecipe]: [string, Recipe] = getInitialRecipe(
+    route,
+    recipes
+  );
 
   const [recipeName, setRecipeName] = useState<string>(initialRecipeName);
-  const [recipe, setRecipe] = useState<PotentialRecipe>(initialRecipe);
-  const [errors, setErrors] = useState<RecipeErrors>({});
+  const [recipe, setRecipe] = useState<Recipe>(initialRecipe);
+  const [errors, setErrors] = useState<RecipeErrors>(
+    getInitialErrors(isNewRecipe(route), recipe.ingredients.length)
+  );
 
-  const tryToSaveRecipe = () => {
-    const errors: RecipeErrors | null = validateRecipe(
-      context.recipes,
+  /* Callbacks passed to recipe name input component */
+  const updateRecipeNameError = (hasError: boolean) => {
+    setErrors({ ...errors, name: hasError });
+  };
+  /* End of callbacks passed to recipe name input component */
+
+  /* Callbacks passed to recipe yield input component */
+  const updateRecipeYieldAmount = (newAmount: number) => {
+    setRecipe((prevRecipe: Recipe) => {
+      return {
+        ...prevRecipe,
+        yield: { ...prevRecipe.yield, amount: newAmount },
+      };
+    });
+  };
+
+  const updateRecipeYieldUnits = (newUnits: string) => {
+    setRecipe((prevRecipe: Recipe) => {
+      return {
+        ...prevRecipe,
+        yield: { ...prevRecipe.yield, units: newUnits },
+      };
+    });
+  };
+
+  const updateRecipeYieldAmountError = (hasError: boolean) => {
+    setErrors((prevErrors: RecipeErrors) => {
+      return {
+        ...prevErrors,
+        yield: { ...prevErrors.yield, amount: hasError },
+      };
+    });
+  };
+
+  const updateRecipeYieldUnitsError = (hasError: boolean) => {
+    setErrors((prevErrors: RecipeErrors) => {
+      return {
+        ...prevErrors,
+        yield: { ...prevErrors.yield, units: hasError },
+      };
+    });
+  };
+  /* End of callbacks passed to recipe yield input component */
+
+  /* Callbacks passed to ingredient input components */
+  const updateIngredients = (
+    callback: (prevIngredients: Ingredient[]) => Ingredient[]
+  ) => {
+    setRecipe((prevRecipe: Recipe) => {
+      return { ...prevRecipe, ingredients: callback(prevRecipe.ingredients) };
+    });
+  };
+
+  const updateIngredientErrors = (
+    callback: (prevErrors: IngredientErrors[]) => IngredientErrors[]
+  ) => {
+    setErrors((prevErrors: RecipeErrors) => {
+      return { ...prevErrors, ingredients: callback(prevErrors.ingredients) };
+    });
+  };
+  /* End of callbacks passed to ingredient input components */
+
+  const saveRecipe = () => {
+    const newRecipeBook: RecipeBook = updateRecipe(
+      recipes,
       recipe,
-      recipeName,
-      isNewRecipe(route)
+      initialRecipeName,
+      recipeName
     );
-    if (errors) {
-      setErrors(errors);
-    } else {
-      const validatedRecipe: Recipe = convertFormToRecipe(recipe);
-      const newRecipeBook: RecipeBook = isNewRecipe(route)
-        ? addRecipe(context.recipes, validatedRecipe, recipeName)
-        : updateRecipe(context.recipes, validatedRecipe, recipeName);
-      context.saveRecipes(newRecipeBook);
-      navigation.goBack();
-    }
+    saveRecipes(newRecipeBook);
+    // TODO: consider going to a new screen instead of going back
+    navigation.goBack();
   };
 
   return (
-    <Center
-      _dark={{ bg: "blueGray.900" }}
-      _light={{ bg: "blueGray.50" }}
-      px={4}
-      flex={1}
-    >
-      <Row w="100%" justifyContent="space-between" my="15px">
-        <Heading>Add Recipe</Heading>
-        <IconButton icon={CloseIcon} onPress={() => navigation.goBack()} />
-      </Row>
-      <ScrollView flex={1} _contentContainerStyle={{ flex: 1 }}>
-        <Column flex={1}>
-          <RecipeNameForm
-            errors={errors}
-            recipeName={recipeName}
-            setRecipeName={setRecipeName}
+    <View style={Styles.screen}>
+      <Appbar.Header>
+        <Appbar.BackAction
+          onPress={() => navigation.goBack()}
+          accessibilityHint="Go back to previous screen"
+        />
+        <Appbar.Content
+          title={isNewRecipe(route) ? "Add Recipe" : "Edit Recipe"}
+        />
+      </Appbar.Header>
+      <ScrollView style={Styles.content} keyboardShouldPersistTaps="handled">
+        <View>
+          <RecipeNameInput
+            initialName={initialRecipeName}
+            setName={setRecipeName}
+            setErrors={updateRecipeNameError}
           />
-          <RecipeYieldForm
-            errors={errors}
+          <RecipeYieldInput
             recipeYield={recipe.yield}
-            setRecipeYield={(newYield: PotentialYield) =>
-              setRecipe(updateRecipeYield(recipe, newYield))
-            }
+            setYieldAmount={updateRecipeYieldAmount}
+            setYieldUnits={updateRecipeYieldUnits}
+            setYieldAmountErrors={updateRecipeYieldAmountError}
+            setYieldUnitsErrors={updateRecipeYieldUnitsError}
           />
-          <Column my="10px">
-            <Heading size="md">Ingredients</Heading>
-            {recipe.ingredients.map(
-              (ingredient: PotentialIngredient, i: number) => (
-                <IngredientForm
-                  key={i}
-                  errors={errors}
-                  index={i}
-                  ingredient={ingredient}
-                  deleteIngredient={() =>
-                    setRecipe(deleteIngredient(recipe, i))
-                  }
-                  updateIngredient={(ingredient: PotentialIngredient) => {
-                    setRecipe(updateIngredient(recipe, i, ingredient));
-                  }}
-                />
-              )
-            )}
-            <Column borderBottomWidth={1} borderColor="gray.300">
-              <Pressable onPress={() => setRecipe(addIngredient(recipe))}>
-                <Row alignItems="center">
-                  {PlusIcon}
-                  <Text>Add Ingredient</Text>
-                </Row>
-              </Pressable>
-            </Column>
-          </Column>
-          <FormControl>
-            <Column>
-              <FormControl.Label>Notes</FormControl.Label>
-              <Input
-                value={recipe.notes}
-                onChangeText={(text: string) =>
-                  setRecipe(updateRecipeNotes(recipe, text))
-                }
-                multiline
-                numberOfLines={8}
-              />
-            </Column>
-          </FormControl>
-        </Column>
-        <Column my="15px">
-          <Button onPress={() => tryToSaveRecipe()}>SAVE</Button>
-        </Column>
+          <Divider />
+          <IngredientFormSection
+            ingredients={recipe.ingredients}
+            setIngredients={updateIngredients}
+            setErrors={updateIngredientErrors}
+          />
+          <Divider />
+          <RecipeNotesInput recipe={recipe} setRecipe={setRecipe} />
+        </View>
+        <View>
+          <Button
+            mode="contained"
+            disabled={!isRecipeValid(errors)}
+            onPress={() => saveRecipe()}
+            accessibilityHint="Save recipe"
+            labelStyle={{ ...theme.fonts.titleLarge, fontWeight: "800" }}
+          >
+            SAVE
+          </Button>
+        </View>
       </ScrollView>
-    </Center>
+    </View>
   );
 };

@@ -1,13 +1,8 @@
 import React, { useEffect, useState } from "react";
-import {
-  Text,
-  HStack,
-  Switch,
-  useColorMode,
-  NativeBaseProvider,
-  extendTheme,
-} from "native-base";
+import { PaperProvider } from "react-native-paper";
 import { NavigationContainer } from "@react-navigation/native";
+import { SafeAreaProvider } from "react-native-safe-area-context";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 import {
   Home,
@@ -16,76 +11,116 @@ import {
   RecipeView,
   Stack,
   AppContext,
+  DefaultTheme,
+  DarkModeTheme,
+  AppAlert,
+  Preferences,
+  defaultPreferences,
 } from "./src";
-import { fetchData, saveData, StorageKeys } from "./src/core/storage";
+import { fetchData, saveData, storage } from "./src/core/storage";
 
-// Define the config
-const config = {
-  useSystemColorMode: false,
-  initialColorMode: "dark",
-};
-
-// extend the theme
-export const theme = extendTheme({ config });
-type MyThemeType = typeof theme;
-declare module "native-base" {
-  interface ICustomTheme extends MyThemeType {}
-}
 export default function App() {
   const [recipeBook, setRecipeBook] = useState<RecipeBook>({});
+  const [preferences, setPreferences] =
+    useState<Preferences>(defaultPreferences);
+  const [alerts, setAlerts] = useState<AppAlert[]>([]);
 
-  // Fetch recipe book from storage the first time the app loads
+  const theme = preferences.darkMode ? DarkModeTheme : DefaultTheme;
+
+  // two functions that simultaneously take care of:
+  // 1. updating the AppContext
+  // 2. persisting it to storage
+  // 3. posting an alert if something goes wrong
+  const saveRecipes = async (recipes: RecipeBook): Promise<void> => {
+    setRecipeBook(recipes);
+    try {
+      await saveData(storage.RECIPES, recipes);
+    } catch (err) {
+      const alert: AppAlert = {
+        status: "error",
+        title: "Failed to save recipe changes to storage",
+        description: `${err}`,
+      };
+      setAlerts([...alerts, alert]);
+    }
+  };
+
+  const togglePreference = async (
+    pref: keyof Preferences,
+    mode: boolean
+  ): Promise<void> => {
+    setPreferences({ ...preferences, [pref]: mode });
+    try {
+      await saveData(storage.PREFS, preferences);
+    } catch (err) {
+      const alert: AppAlert = {
+        status: "error",
+        title: "Failed to save preferences to storage",
+        description: `${err}`,
+      };
+      setAlerts([...alerts, alert]);
+    }
+  };
+
+  // Fetch recipe book and preferences from storage the first time the app loads
   useEffect(() => {
-    console.log("Fetching recipe book");
     (async () => {
-      const recipes: RecipeBook | null = await fetchData(StorageKeys.RECIPES);
-      if (recipes) {
-        setRecipeBook(recipes);
+      try {
+        const recipes: RecipeBook | null = await fetchData(storage.RECIPES);
+        if (recipes) {
+          setRecipeBook(recipes);
+        }
+      } catch (err) {
+        const alert: AppAlert = {
+          status: "error",
+          title: "Failed to fetch recipes from storage",
+          description: `${err}`,
+        };
+        setAlerts([...alerts, alert]);
+      }
+
+      try {
+        const prefs: Preferences | null = await fetchData(storage.PREFS);
+        if (prefs) {
+          setPreferences(prefs);
+        }
+      } catch (err) {
+        const alert: AppAlert = {
+          status: "error",
+          title: "Failed to fetch preferences from storage",
+          description: `${err}`,
+        };
+        setAlerts([...alerts, alert]);
       }
     })();
   }, []);
 
-  // Asynchronously save the recipe book each time it changes
-  useEffect(() => {
-    console.log("Saving recipe book");
-    console.log(recipeBook);
-    saveData(StorageKeys.RECIPES, recipeBook);
-  }, [recipeBook]);
-
   return (
-    <AppContext.Provider
-      value={{
-        recipes: recipeBook,
-        saveRecipes: (recipes: RecipeBook) => setRecipeBook(recipes),
-      }}
-    >
-      <NativeBaseProvider>
-        <NavigationContainer>
-          <Stack.Navigator screenOptions={{ headerShown: false }}>
-            <Stack.Screen name="Home" component={Home} />
-            <Stack.Screen name="Form" component={RecipeForm} />
-            <Stack.Screen name="Recipe" component={RecipeView} />
-          </Stack.Navigator>
-        </NavigationContainer>
-      </NativeBaseProvider>
-    </AppContext.Provider>
-  );
-}
-
-// Color Switch Component
-function ToggleDarkMode() {
-  const { colorMode, toggleColorMode } = useColorMode();
-  return (
-    <HStack space={2} alignItems="center">
-      <Text>Dark</Text>
-      <Switch
-        isChecked={colorMode === "light"}
-        onToggle={toggleColorMode}
-        aria-label={
-          colorMode === "light" ? "switch to dark mode" : "switch to light mode"
-        }
-      />
-      <Text>Light</Text>
-    </HStack>
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <SafeAreaProvider>
+        <AppContext.Provider
+          value={{
+            recipes: recipeBook,
+            saveRecipes: saveRecipes,
+            prefs: preferences,
+            togglePreference,
+            alerts: alerts,
+            setAlerts: setAlerts,
+          }}
+        >
+          <PaperProvider theme={theme}>
+            <NavigationContainer theme={theme}>
+              <Stack.Navigator
+                screenOptions={{ headerShown: false, animation: "none" }}
+              >
+                <Stack.Screen name="Home" component={Home} />
+                <Stack.Screen name="Form" component={RecipeForm} />
+                <Stack.Screen name="Recipe" component={RecipeView} />
+              </Stack.Navigator>
+            </NavigationContainer>
+          </PaperProvider>
+        </AppContext.Provider>
+      </SafeAreaProvider>
+    </GestureHandlerRootView>
   );
 }

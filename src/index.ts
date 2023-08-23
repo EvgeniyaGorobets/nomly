@@ -1,5 +1,13 @@
-export { Home, RecipeForm, RecipeView } from "./ui";
+export {
+  Home,
+  RecipeForm,
+  RecipeView,
+  DefaultTheme,
+  DarkModeTheme,
+} from "./ui";
 export { Stack } from "./Stack";
-export { AppContext } from "./AppContext";
+export { AppContext, defaultPreferences } from "./AppContext";
 
-export type { RecipeBook } from "./core/RecipeBook";
+export type { Preferences } from "./AppContext";
+export type { RecipeBook } from "./core/recipe";
+export type { AppAlert } from "./core/alert";

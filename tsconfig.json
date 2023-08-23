@@ -2,5 +2,7 @@
   "extends": "expo/tsconfig.base",
   "compilerOptions": {
     "strict": true
-  }
+  },
+  "include": ["./jest.setup.ts"],
+  "types": ["node", "jest", "@testing-library/jest-dom"]
 }

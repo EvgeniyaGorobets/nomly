@@ -1,81 +1,98 @@
-import React, { ReactElement, useState } from "react";
+import React, { useContext, useRef, useState } from "react";
+import { View, ScrollView } from "react-native";
+import { Appbar, FAB, List, Searchbar, useTheme } from "react-native-paper";
 import {
-  Center,
-  IconButton,
-  Row,
-  Fab,
-  Icon,
-  ScrollView,
-  Box,
-  Heading,
-  Pressable,
-} from "native-base";
-import { AntDesign } from "@expo/vector-icons";
+  BottomSheetModal,
+  BottomSheetModalProvider,
+} from "@gorhom/bottom-sheet";
 
 import type { HomeScreenProps } from "../../Stack";
 import { AppContext, AppContextType } from "../../AppContext";
 import { RecipeActionSheet } from "./RecipeActionSheet";
-import { SearchBar } from "./SearchBar";
-
-const UploadIcon: ReactElement = <Icon as={AntDesign} name="upload" />;
-
-const PlusIcon: ReactElement = <Icon as={AntDesign} name="plus" />;
+import { MainMenu } from "./MainMenu";
+import { Logo } from "./Logo";
+import { DeleteRecipesModal } from "./DeleteRecipesModal";
+import { AlertList } from "./AlertList";
+import { Styles } from "../Styles";
 
 export const Home = ({ navigation }: HomeScreenProps) => {
-  const [selectedRecipe, setSelected] = useState<string>("");
+  const theme = useTheme();
+  const context: AppContextType = useContext(AppContext);
+
   const [searchQuery, setSearchQuery] = useState<string>("");
+  const [isModalOpen, setModalOpen] = useState<boolean>(false);
+  const [searchbarOutlineColor, setSearbarOutlineColor] = useState<string>(
+    theme.colors.outline
+  );
+
+  const [selectedRecipe, setSelected] = useState<string>("");
+  const recipeActionSheetRef = useRef<BottomSheetModal>(null);
+  const openRecipeActionSheet = (recipeName: string) => {
+    setSelected(recipeName);
+    recipeActionSheetRef.current?.present();
+  };
+  const closeRecipeActionSheet = () => {
+    setSelected("");
+    recipeActionSheetRef.current?.dismiss();
+  };
 
   return (
-    <Center
-      _dark={{ bg: "blueGray.900" }}
-      _light={{ bg: "blueGray.50" }}
-      px={4}
-      flex={1}
-    >
-      <Row w="100%" justifyContent="space-between" my="15px">
-        <Heading>nomly</Heading>
-        <IconButton icon={UploadIcon} />
-      </Row>
-      <SearchBar query={searchQuery} setQuery={setSearchQuery} />
-      <ScrollView flex={1} w="100%" my="10px">
-        <AppContext.Consumer>
-          {(context: AppContextType) =>
-            Object.keys(context.recipes)
-              .filter((recipeName: string) => recipeName.includes(searchQuery))
-              .sort()
-              .map((recipeName: string, i: number) => (
-                <Pressable
-                  key={i}
-                  onLongPress={() => setSelected(recipeName)}
-                  onPress={() => {
-                    navigation.navigate("Recipe", { recipeName: recipeName });
-                  }}
-                >
-                  <Box
-                    w="100%"
-                    padding="10px"
-                    borderBottomWidth={1}
-                    borderColor="gray.300"
-                  >
-                    <Heading size="sm">{recipeName}</Heading>
-                  </Box>
-                </Pressable>
-              ))
-          }
-        </AppContext.Consumer>
-      </ScrollView>
-      <Fab
-        renderInPortal={false}
-        shadow={2}
-        size="sm"
-        icon={PlusIcon}
-        onPress={() => navigation.navigate("Form")}
+    <View style={Styles.screen}>
+      <Appbar.Header style={{ ...Styles.row, justifyContent: "space-between" }}>
+        <Logo />
+        <MainMenu openDeleteRecipesModal={() => setModalOpen(true)} />
+      </Appbar.Header>
+      <DeleteRecipesModal
+        isOpen={isModalOpen}
+        closeModal={() => setModalOpen(false)}
       />
-      <RecipeActionSheet
-        isOpen={selectedRecipe != ""}
-        recipeName={selectedRecipe}
-        onClose={() => setSelected("")}
-      />
-    </Center>
+      <View style={{ ...Styles.content, marginBottom: 0 }}>
+        <Searchbar
+          placeholder="Search"
+          onChangeText={setSearchQuery}
+          value={searchQuery}
+          onFocus={() => setSearbarOutlineColor(theme.colors.primary)}
+          onBlur={() => setSearbarOutlineColor(theme.colors.outline)}
+          style={{
+            backgroundColor: theme.colors.surfaceVariant,
+            borderWidth: 1,
+            borderColor: searchbarOutlineColor,
+          }}
+        />
+      </View>
+      <BottomSheetModalProvider>
+        <ScrollView
+          style={Styles.content}
+          onTouchStart={closeRecipeActionSheet}
+        >
+          {Object.keys(context.recipes)
+            .filter((recipeName: string) =>
+              recipeName.toLowerCase().includes(searchQuery.toLowerCase())
+            )
+            .sort()
+            .map((recipeName: string, i: number) => (
+              <List.Item
+                key={i}
+                title={recipeName}
+                onLongPress={() => openRecipeActionSheet(recipeName)}
+                onPress={() => {
+                  navigation.navigate("Recipe", { recipeName: recipeName });
+                }}
+                titleStyle={theme.fonts.titleMedium}
+              />
+            ))}
+        </ScrollView>
+        <FAB
+          icon="plus"
+          onPress={() => navigation.navigate("Form")}
+          style={Styles.fab}
+        />
+        <AlertList />
+        <RecipeActionSheet
+          recipeName={selectedRecipe}
+          innerRef={recipeActionSheetRef}
+        />
+      </BottomSheetModalProvider>
+    </View>
   );
 };

@@ -4,9 +4,9 @@
     "slug": "nomly",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/nomly_logo_textless.png",
     "splash": {
-      "image": "./assets/splash.png",
+      "image": "./assets/nomly_logo_padded.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
@@ -21,12 +21,18 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
+        "foregroundImage": "./assets/nomly_logo_textless.png",
         "backgroundColor": "#FFFFFF"
-      }
+      },
+      "package": "com.evgeniyagorobets.nomly"
     },
     "web": {
-      "favicon": "./assets/favicon.png"
+      "favicon": "./assets/nomly_logo_textless.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "2d92d7a8-87b8-452f-8ce9-fc8a0f59ea4a"
+      }
     }
   }
 }

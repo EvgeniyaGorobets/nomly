@@ -1,26 +1,46 @@
-'An abstraction on top of the AsyncStorage module'
+"An abstraction on top of the AsyncStorage module";
 
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
-export const saveData = async (key: string, value: object) => {
+export const saveData = async (slot: StorageSlot, value: object | string) => {
   try {
-    const jsonValue = JSON.stringify(value);
-    await AsyncStorage.setItem(key, jsonValue);
+    if (typeof value !== slot.type) {
+      throw TypeError(
+        `${slot.key} expects object of type ${
+          slot.type
+        }, but received object of type ${typeof value}`
+      );
+    }
+    const stringValue =
+      slot.type === "object" ? JSON.stringify(value) : (value as string);
+    // superficial cast as string bc typescript isn't smart enough to realize that I already checked the type of value
+    await AsyncStorage.setItem(slot.key, stringValue);
   } catch (e) {
-    console.log(`Failed to save ${key} with error ${e}`);
+    console.log(`Failed to save ${slot.key} with error:\n ${e}`);
   }
-}
+};
 
-
-export const fetchData = async (key: string) => {
+export const fetchData = async (slot: StorageSlot) => {
   try {
-    const value: string|null = await AsyncStorage.getItem(key);
-    return value != null ? JSON.parse(value) : null;
-  } catch(e) {
-    console.log(`Failed to fetch ${key} with error ${e}`);
+    const value: string | null = await AsyncStorage.getItem(slot.key);
+    return slot.type === "object" && value !== null ? JSON.parse(value) : value;
+  } catch (e) {
+    console.log(`Failed to fetch ${slot.key} with error:\n ${e}`);
   }
-}
+};
 
-export enum StorageKeys {
-  RECIPES = 'recipe-book'
-}
+type StorageSlot = {
+  key: string;
+  type: string;
+};
+
+export const storage: { [key: string]: StorageSlot } = {
+  RECIPES: {
+    key: "recipe-book",
+    type: "object",
+  },
+  PREFS: {
+    key: "preferences",
+    type: "object",
+  },
+};
