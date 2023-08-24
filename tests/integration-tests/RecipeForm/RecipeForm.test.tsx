@@ -318,7 +318,7 @@ describe("RecipeForm", () => {
 
       it("saves new ingredients", () => {
         fireEvent.press(screen.getByText("Add Ingredient"));
-        fireEvent.changeText(screen.getByDisplayValue(""), "cheese");
+        fireEvent.changeText(screen.getByDisplayValue(""), "garlic cloves");
         fireEvent.changeText(screen.getByDisplayValue("0"), "3");
         fireEvent.press(screen.getByText("SAVE"));
 
@@ -330,7 +330,7 @@ describe("RecipeForm", () => {
             // the new ingredient should be saved
             ingredients: [
               ...recipeBook[recipeName].ingredients,
-              { id: "7", name: "cheese", amount: 3, units: "cups" },
+              { id: "7", name: "garlic cloves", amount: 3, units: "ea" },
             ],
           },
         });

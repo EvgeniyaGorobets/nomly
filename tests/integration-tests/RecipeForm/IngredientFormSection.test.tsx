@@ -69,7 +69,7 @@ describe("IngredientFormSection", () => {
     const setIngredientsCallback = mockSetIngredients.mock.calls[0][0];
     expect(setIngredientsCallback(mockIngredients)).toStrictEqual([
       ...mockIngredients,
-      { id: "5", name: "", amount: 0, units: "cups" },
+      { id: "5", name: "", amount: 0, units: "ea" },
     ]);
 
     expect(mockSetErrors).toBeCalledTimes(1);

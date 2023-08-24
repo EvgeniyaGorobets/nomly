@@ -5,7 +5,7 @@ import { deepCopy, isNumeric } from "./utils";
 /* -- TYPES --*/
 
 export const UNITS = [
-  "N/A",
+  "ea",
   "cups",
   "tbsp",
   "tsp",
@@ -35,7 +35,7 @@ export const addIngredient = (ingredients: Ingredient[]): Ingredient[] => {
     id: uuidv4(),
     name: "",
     amount: 0,
-    units: "cups",
+    units: "ea",
   };
 
   return [...ingredients, blankIngredient];

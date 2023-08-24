@@ -27,7 +27,7 @@ describe("addIngredient", () => {
       id: "2",
       name: "",
       amount: 0,
-      units: "cups",
+      units: "ea",
     });
   });
 });
