@@ -7,6 +7,7 @@ NativeBase Typescript Expo app
 To nuke and reinstall everything:
 
 ```
+npm cache clear --force
 rm -rf package-lock.json node_modules/
 npm install --registry=https://registry.npmjs.org/
 ```
