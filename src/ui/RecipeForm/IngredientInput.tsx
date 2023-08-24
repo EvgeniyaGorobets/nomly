@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { View } from "react-native";
 import { HelperText, TextInput, IconButton } from "react-native-paper";
-import DropDown from "react-native-paper-dropdown";
+import DropDown from "@go_robots/react-native-paper-dropdown";
 
 import { Styles } from "../Styles";
 
