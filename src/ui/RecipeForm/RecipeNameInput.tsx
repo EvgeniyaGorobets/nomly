@@ -1,62 +1,59 @@
-import React, { useContext, useState } from "react";
+import React, { useContext } from "react";
+import { type Control, Controller } from "react-hook-form";
 import { View } from "react-native";
 import { TextInput, HelperText } from "react-native-paper";
 
 import { AppContext } from "../../AppContext";
-import { validateRecipeName } from "../../core/recipe-book";
 
-type RecipeNameProps = {
-  initialName: string;
-  setName: (newName: string) => void;
-  setErrors: (hasErr: boolean) => void;
-};
+import type { RecipeForm } from "../../core/form";
 
 export const RecipeNameInput = ({
-  initialName,
-  setName,
-  setErrors,
-}: RecipeNameProps) => {
+  control,
+  initialRecipeName,
+}: {
+  control: Control<RecipeForm>;
+  initialRecipeName: string;
+}) => {
   const { recipes } = useContext(AppContext);
-
-  const [recipeName, setRecipeName] = useState<string>(initialName);
-  const [isDirty, setDirty] = useState<boolean>(false);
-  const [errorMsg, setErrorMsg] = useState<string>("");
-
-  const onChangeText = (newName: string) => {
-    // Update local state
-    setRecipeName(newName);
-    if (!isDirty) {
-      setDirty(true);
-    }
-
-    // Update error state locally and in parent
-    const errorMessage = validateRecipeName(initialName, newName, recipes);
-    setErrorMsg(errorMessage);
-    setErrors(errorMessage !== "");
-
-    // Update parent state only if input is valid
-    if (errorMessage === "") {
-      setName(newName);
-    }
-  };
-
-  const showErrorText = () => isDirty && errorMsg !== "";
 
   return (
     <View style={{ marginBottom: 10 }}>
-      <TextInput
-        value={recipeName}
-        placeholder="Recipe Name"
-        label="Recipe Name"
-        onChangeText={onChangeText}
-        mode="outlined"
-        accessibilityHint="Recipe name input"
-      />
-      {showErrorText() && (
-        <HelperText type="error" visible={showErrorText()}>
-          {errorMsg}
-        </HelperText>
-      )}
+      <Controller
+        name="recipeName"
+        control={control}
+        rules={{
+          required: "Recipe name cannot be empty",
+          maxLength: {
+            value: 100,
+            message: "Recipe name cannot be longer than 100 characters",
+          },
+          validate: (value) =>
+            value == initialRecipeName ||
+            !(value in recipes) ||
+            "A recipe with this name already exists",
+        }}
+        render={({ field, fieldState }) => (
+          <>
+            <TextInput
+              value={field.value}
+              onChangeText={field.onChange}
+              onBlur={field.onBlur}
+              placeholder="Recipe Name"
+              label="Recipe Name"
+              mode="outlined"
+              accessibilityHint="Recipe name input"
+            />
+            {fieldState.isDirty && fieldState.invalid && (
+              <HelperText
+                type="error"
+                visible={fieldState.isDirty && fieldState.invalid}
+              >
+                {fieldState.error?.message}
+              </HelperText>
+            )}
+          </>
+        )}
+      ></Controller>
     </View>
   );
 };

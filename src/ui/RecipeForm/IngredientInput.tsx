@@ -1,102 +1,33 @@
 import React, { useState } from "react";
+import { Controller, Control } from "react-hook-form";
 import { View } from "react-native";
-import { HelperText, TextInput, IconButton } from "react-native-paper";
+import { TextInput, IconButton } from "react-native-paper";
 import DropDown from "@go_robots/react-native-paper-dropdown";
 
 import { Styles } from "../Styles";
+import { IngredientError } from "./IngredientError";
 
-import { type Ingredient, type Unit } from "../../core/ingredient";
-import {
-  UNITS,
-  validateIngredientName,
-  validateIngredientAmount,
-} from "../../core/ingredient";
-import { IngredientErrors } from "../../core/recipe-errors";
+import { type Unit, UNITS } from "../../core/ingredient";
+import type { RecipeForm } from "../../core/form";
 
 type IngredientInputProps = {
-  ingredient: Ingredient;
-  deleteIngredient: () => void;
-  setIngredient: (callback: (prevIngredient: Ingredient) => Ingredient) => void;
-  setIngredientError: (
-    callback: (prevErrors: IngredientErrors) => IngredientErrors
-  ) => void;
+  index: number;
+  control: Control<RecipeForm>;
+  deleteIngredient: (index: number) => void;
 };
 
 export const IngredientInput: React.FC<IngredientInputProps> = ({
-  ingredient,
+  index,
+  control,
   deleteIngredient,
-  setIngredient,
-  setIngredientError,
 }) => {
-  /* State and callbacs for the ingredient name input */
-  const [name, setName] = useState<string>(ingredient.name);
-  const [isNameDirty, setNameDirty] = useState<boolean>(false);
-  const [nameErrorMsg, setNameErrorMsg] = useState<string>("");
-
-  const isNameInvalid = () => isNameDirty && nameErrorMsg !== "";
-
-  const onChangeName = (newName: string) => {
-    // Update local state
-    setName(newName);
-    if (!isNameDirty) {
-      setNameDirty(true);
-    }
-
-    // Update error state locally and in parent
-    const errorMessage: string = validateIngredientName(newName);
-    setNameErrorMsg(errorMessage);
-    setIngredientError((prevErrors: IngredientErrors) => {
-      return { ...prevErrors, name: errorMessage !== "" };
-    });
-
-    // Update parent state only if input is valid
-    if (errorMessage === "") {
-      setIngredient((prevIngredient: Ingredient) => {
-        return { ...prevIngredient, name: newName };
-      });
-    }
-  };
-  /* End of ingredient name */
-
-  /* State and callbacks for the ingredient amount input */
-  const [amount, setAmount] = useState<string>(ingredient.amount.toString());
-  const [isAmountDirty, setAmountDirty] = useState<boolean>(false);
-  const [amountErrorMsg, setAmountErrorMsg] = useState<string>("");
-
-  const isAmountInvalid = () => isAmountDirty && amountErrorMsg !== "";
-
-  const onChangeAmount = (newAmount: string) => {
-    // Update local state
-    setAmount(newAmount);
-    if (!isAmountDirty) {
-      setAmountDirty(true);
-    }
-
-    // Update error state locally and in parent
-    const errorMessage: string = validateIngredientAmount(newAmount);
-    setAmountErrorMsg(errorMessage);
-    setIngredientError((prevErrors: IngredientErrors) => {
-      return { ...prevErrors, amount: errorMessage !== "" };
-    });
-
-    // Update parent state only if input is valid
-    if (errorMessage === "") {
-      setIngredient((prevIngredient: Ingredient) => {
-        return { ...prevIngredient, amount: Number(newAmount) };
-      });
-    }
-  };
-  /* End of ingredient amount */
-
-  /* State and callbacks for the ingredient units dropdown */
   const [showDropDown, setShowDropDown] = useState(false);
-
-  const onChangeUnits = (newUnits: Unit) => {
-    setIngredient((prevIngredient: Ingredient) => {
-      return { ...prevIngredient, units: newUnits };
-    });
+  const dropdownCallbacks = {
+    showDropDown: () => setShowDropDown(true),
+    onDismiss: () => setShowDropDown(false),
   };
-  /* End of ingredient units */
+
+  const deleteSelf = () => deleteIngredient(index);
 
   return (
     <View style={{ ...Styles.row, marginVertical: 10 }}>
@@ -109,9 +40,9 @@ export const IngredientInput: React.FC<IngredientInputProps> = ({
       >
         <IconButton
           icon="close"
-          onPress={deleteIngredient}
+          onPress={deleteSelf}
           style={{ paddingTop: 5 }}
-          accessibilityHint={`Delete ${ingredient.name} from ingredients`}
+          accessibilityHint={`Delete ingredient ${index} from ingredients`}
         />
       </View>
       <View
@@ -121,52 +52,80 @@ export const IngredientInput: React.FC<IngredientInputProps> = ({
         }}
       >
         <View style={{ ...Styles.row, marginBottom: 5 }}>
-          <TextInput
-            label="Ingredient Name"
-            value={name}
-            onChangeText={onChangeName}
-            mode="outlined"
-            placeholder="Ingredient name"
-            style={{ width: "100%" }}
-          />
+          <Controller
+            name={`ingredients.${index}.name`}
+            control={control}
+            rules={{
+              required: "Ingredient name cannot be empty",
+              maxLength: {
+                value: 50,
+                message: "Ingredient name cannot be longer than 50 characters",
+              },
+            }}
+            render={({ field }) => (
+              <TextInput
+                {...field}
+                value={field.value}
+                onChangeText={field.onChange}
+                onBlur={field.onBlur}
+                label="Ingredient Name"
+                mode="outlined"
+                placeholder="Ingredient name"
+                style={{ width: "100%" }}
+              />
+            )}
+          ></Controller>
         </View>
         <View style={Styles.row}>
           <View style={{ width: "40%", marginRight: 5 }}>
-            <TextInput
-              label="Amount"
-              value={amount}
-              onChangeText={onChangeAmount}
-              keyboardType="numeric"
-              mode="outlined"
-              textAlign="right"
-            />
+            <Controller
+              name={`ingredients.${index}.amount`}
+              control={control}
+              rules={{
+                required: "Ingredient amount is required",
+                min: {
+                  value: 0.001,
+                  message: "Ingredient amount must be greater than zero",
+                },
+                pattern: {
+                  value: /^[0-9]*(\.[0-9]+)?$/,
+                  message: "Ingredient amount must be a number",
+                },
+              }}
+              render={({ field }) => (
+                <TextInput
+                  value={field.value}
+                  onChangeText={field.onChange}
+                  onBlur={field.onBlur}
+                  label="Amount"
+                  keyboardType="numeric"
+                  mode="outlined"
+                  textAlign="right"
+                />
+              )}
+            ></Controller>
           </View>
           <View style={{ flexGrow: 1 }}>
-            <DropDown
-              label="Units"
-              mode={"outlined"}
-              visible={showDropDown}
-              showDropDown={() => setShowDropDown(true)}
-              onDismiss={() => setShowDropDown(false)}
-              value={ingredient.units}
-              setValue={(_value: Unit) => onChangeUnits(_value)}
-              list={UNITS.map((unit: Unit) => {
-                return { label: unit, value: unit };
-              })}
-            />
+            <Controller
+              name={`ingredients.${index}.units`}
+              control={control}
+              render={({ field }) => (
+                <DropDown
+                  value={field.value}
+                  setValue={field.onChange}
+                  label="Units"
+                  mode={"outlined"}
+                  visible={showDropDown}
+                  {...dropdownCallbacks}
+                  list={UNITS.map((unit: Unit) => {
+                    return { label: unit, value: unit };
+                  })}
+                />
+              )}
+            ></Controller>
           </View>
         </View>
-        <View style={Styles.row}>
-          {(isNameInvalid() || isAmountInvalid()) && (
-            <HelperText
-              type="error"
-              visible={isNameInvalid() || isAmountInvalid()}
-              style={{ paddingLeft: 0 }}
-            >
-              {[nameErrorMsg, amountErrorMsg].join("\n").trim()}
-            </HelperText>
-          )}
-        </View>
+        <IngredientError control={control} index={index} />
       </View>
     </View>
   );

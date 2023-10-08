@@ -1,82 +1,41 @@
-import React, { useState } from "react";
+import React from "react";
+import {
+  Controller,
+  Control,
+  FieldError,
+  UseFormGetFieldState,
+} from "react-hook-form";
 import { View } from "react-native";
 import { HelperText, TextInput, Text } from "react-native-paper";
 
 import { Styles } from "../Styles";
 
-import {
-  validateRecipeYieldAmount,
-  validateRecipeYieldUnits,
-} from "../../core/recipe-yield";
-import type { Yield } from "../../core/recipe-yield";
+import type { RecipeForm } from "../../core/form";
 
 type RecipeYieldProps = {
-  recipeYield: Yield;
-  setYieldAmount: (newAmount: number) => void;
-  setYieldUnits: (newUnits: string) => void;
-  setYieldAmountErrors: (hasErr: boolean) => void;
-  setYieldUnitsErrors: (hasErr: boolean) => void;
+  control: Control<RecipeForm>;
+  errors:
+    | { amount?: FieldError | undefined; units?: FieldError | undefined }
+    | undefined;
+  getFieldState: UseFormGetFieldState<RecipeForm>;
 };
 
 export const RecipeYieldInput = ({
-  recipeYield,
-  setYieldAmount,
-  setYieldUnits,
-  setYieldAmountErrors,
-  setYieldUnitsErrors,
+  control,
+  errors,
+  getFieldState,
 }: RecipeYieldProps) => {
-  /* State and callbacks for yield amount input */
-  const [amount, setAmount] = useState<string>(recipeYield.amount.toString());
-  const [isAmountDirty, setAmountDirty] = useState<boolean>(false);
-  const [amountErrorMsg, setAmountErrorMsg] = useState<string>("");
-
-  const isAmountInvalid = () => isAmountDirty && amountErrorMsg !== "";
-
-  const onChangeAmount = (newAmount: string) => {
-    // Update local state
-    setAmount(newAmount);
-    if (!isAmountDirty) {
-      setAmountDirty(true);
-    }
-
-    // Update error state locally and in parent
-    const errorMessage: string = validateRecipeYieldAmount(newAmount);
-    setAmountErrorMsg(errorMessage);
-    setYieldAmountErrors(errorMessage !== "");
-
-    // Update parent state only if input is valid
-    if (errorMessage === "") {
-      setYieldAmount(Number(newAmount));
-    }
-  };
-  /* End of yield amount */
-
-  /* State and callbacks for yield units input */
-  const [units, setUnits] = useState<string>(recipeYield.units);
-  const [isUnitsDirty, setUnitsDirty] = useState<boolean>(false);
-  const [unitsErrorMsg, setUnitsErrorMsg] = useState<string>("");
-
-  const isUnitsInvalid = () => isUnitsDirty && unitsErrorMsg !== "";
-
-  const onChangeUnits = (newUnits: string) => {
-    // Update local state
-    setUnits(newUnits);
-    if (!isUnitsDirty) {
-      setUnitsDirty(true);
-    }
-
-    // Update error state locally and in parent
-    const errorMessage: string = validateRecipeYieldUnits(newUnits);
-    setUnitsErrorMsg(errorMessage);
-    setYieldUnitsErrors(errorMessage !== "");
-
-    // Update parent state only if input is valid
-    if (errorMessage === "") {
-      setYieldUnits(newUnits);
-    }
+  const amountHasError = () => {
+    const amountState = getFieldState("yield.amount");
+    return amountState.isDirty && amountState.invalid;
   };
 
-  const showErrorText = () => isAmountInvalid() || isUnitsInvalid();
+  const unitsHaveError = () => {
+    const unitsState = getFieldState("yield.units");
+    return unitsState.isDirty && unitsState.invalid;
+  };
+
+  const showErrorText = () => amountHasError() || unitsHaveError();
 
   return (
     <View style={{ marginBottom: 5 }}>
@@ -100,30 +59,64 @@ export const RecipeYieldInput = ({
             Recipe Yield:
           </Text>
         </View>
-        <TextInput
-          label="Amount"
-          value={amount}
-          onChangeText={onChangeAmount}
-          keyboardType="numeric"
-          mode="outlined"
-          textAlign="center"
-          style={{ width: "29%", marginHorizontal: 5 }}
-          accessibilityHint="Recipe yield amount input"
-        />
-        <TextInput
-          label="Units"
-          value={units}
-          onChangeText={onChangeUnits}
-          mode="outlined"
-          textAlign="center"
-          style={{ width: "33%" }}
-          accessibilityHint="Recipe yield units input"
-        />
+        <Controller
+          name="yield.amount"
+          control={control}
+          rules={{
+            required: "Recipe yield is required",
+            min: {
+              value: 0.001,
+              message: "Recipe yield must be greater than zero",
+            },
+            pattern: {
+              value: /^[0-9]*(\.[0-9]+)?$/,
+              message: "Recipe yield must be a number",
+            },
+          }}
+          render={({ field }) => (
+            <TextInput
+              value={field.value}
+              onChangeText={field.onChange}
+              onBlur={field.onBlur}
+              label="Amount"
+              keyboardType="numeric"
+              mode="outlined"
+              textAlign="center"
+              style={{ width: "29%", marginHorizontal: 5 }}
+              accessibilityHint="Recipe yield amount input"
+            />
+          )}
+        ></Controller>
+        <Controller
+          name="yield.units"
+          control={control}
+          rules={{
+            required: "Recipe yield is required",
+            maxLength: {
+              value: 25,
+              message: "Recipe yield units cannot be longer than 25 characters",
+            },
+          }}
+          render={({ field }) => (
+            <TextInput
+              value={field.value}
+              onChangeText={field.onChange}
+              onBlur={field.onBlur}
+              label="Units"
+              mode="outlined"
+              textAlign="center"
+              style={{ width: "33%" }}
+              accessibilityHint="Recipe yield units input"
+            />
+          )}
+        ></Controller>
       </View>
       <View>
         {showErrorText() && (
           <HelperText type="error" visible={showErrorText()}>
-            {[amountErrorMsg, unitsErrorMsg].join("\n").trim()}
+            {[errors?.amount?.message, errors?.units?.message]
+              .join("\n")
+              .trim()}
           </HelperText>
         )}
       </View>
