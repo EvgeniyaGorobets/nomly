@@ -10,7 +10,7 @@ import { HelperText, TextInput, Text } from "react-native-paper";
 
 import { Styles } from "../Styles";
 
-import type { RecipeForm } from "../../core/form";
+import { type RecipeForm, RecipeRules } from "../../core/form";
 
 type RecipeYieldProps = {
   control: Control<RecipeForm>;
@@ -62,17 +62,7 @@ export const RecipeYieldInput = ({
         <Controller
           name="yield.amount"
           control={control}
-          rules={{
-            required: "Recipe yield is required",
-            min: {
-              value: 0.001,
-              message: "Recipe yield must be greater than zero",
-            },
-            pattern: {
-              value: /^[0-9]*(\.[0-9]+)?$/,
-              message: "Recipe yield must be a number",
-            },
-          }}
+          rules={RecipeRules.yield.amount}
           render={({ field }) => (
             <TextInput
               value={field.value}
@@ -90,13 +80,7 @@ export const RecipeYieldInput = ({
         <Controller
           name="yield.units"
           control={control}
-          rules={{
-            required: "Recipe yield is required",
-            maxLength: {
-              value: 25,
-              message: "Recipe yield units cannot be longer than 25 characters",
-            },
-          }}
+          rules={RecipeRules.yield.units}
           render={({ field }) => (
             <TextInput
               value={field.value}

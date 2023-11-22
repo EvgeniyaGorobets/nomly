@@ -8,7 +8,7 @@ import { Styles } from "../Styles";
 import { IngredientError } from "./IngredientError";
 
 import { type Unit, UNITS } from "../../core/ingredient";
-import type { RecipeForm } from "../../core/form";
+import { type RecipeForm, RecipeRules } from "../../core/form";
 
 type IngredientInputProps = {
   index: number;
@@ -55,13 +55,7 @@ export const IngredientInput: React.FC<IngredientInputProps> = ({
           <Controller
             name={`ingredients.${index}.name`}
             control={control}
-            rules={{
-              required: "Ingredient name cannot be empty",
-              maxLength: {
-                value: 50,
-                message: "Ingredient name cannot be longer than 50 characters",
-              },
-            }}
+            rules={RecipeRules.ingredient.name}
             render={({ field }) => (
               <TextInput
                 {...field}
@@ -81,17 +75,7 @@ export const IngredientInput: React.FC<IngredientInputProps> = ({
             <Controller
               name={`ingredients.${index}.amount`}
               control={control}
-              rules={{
-                required: "Ingredient amount is required",
-                min: {
-                  value: 0.001,
-                  message: "Ingredient amount must be greater than zero",
-                },
-                pattern: {
-                  value: /^[0-9]*(\.[0-9]+)?$/,
-                  message: "Ingredient amount must be a number",
-                },
-              }}
+              rules={RecipeRules.ingredient.amount}
               render={({ field }) => (
                 <TextInput
                   value={field.value}

@@ -5,7 +5,7 @@ import { TextInput, HelperText } from "react-native-paper";
 
 import { AppContext } from "../../AppContext";
 
-import type { RecipeForm } from "../../core/form";
+import { type RecipeForm, RecipeRules } from "../../core/form";
 
 export const RecipeNameInput = ({
   control,
@@ -22,11 +22,7 @@ export const RecipeNameInput = ({
         name="recipeName"
         control={control}
         rules={{
-          required: "Recipe name cannot be empty",
-          maxLength: {
-            value: 100,
-            message: "Recipe name cannot be longer than 100 characters",
-          },
+          ...RecipeRules.name,
           validate: (value) =>
             value == initialRecipeName ||
             !(value in recipes) ||
