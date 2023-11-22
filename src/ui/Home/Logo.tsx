@@ -18,8 +18,10 @@ export const Logo = () => {
       <Image
         key={String(context.prefs.darkMode)}
         source={logo}
-        style={{ width: 120, height: 30, marginHorizontal: 10 }}
+        style={LogoStyle}
       />
     </View>
   );
 };
+
+const LogoStyle = { width: 120, height: 30, marginHorizontal: 10 };

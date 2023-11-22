@@ -30,28 +30,17 @@ export const IngredientInput: React.FC<IngredientInputProps> = ({
   const deleteSelf = () => deleteIngredient(index);
 
   return (
-    <View style={{ ...Styles.row, marginVertical: 10 }}>
-      <View
-        style={{
-          ...Styles.column,
-          width: "10%",
-          alignItems: "flex-end",
-        }}
-      >
+    <View style={IngredientStyles.ingredientContainer}>
+      <View style={IngredientStyles.deleteColumn}>
         <IconButton
           icon="close"
           onPress={deleteSelf}
-          style={{ paddingTop: 5 }}
+          style={IngredientStyles.deleteIcon}
           accessibilityHint={`Delete ingredient ${index} from ingredients`}
         />
       </View>
-      <View
-        style={{
-          ...Styles.column,
-          width: "90%",
-        }}
-      >
-        <View style={{ ...Styles.row, marginBottom: 5 }}>
+      <View style={IngredientStyles.inputColumn}>
+        <View style={IngredientStyles.nameRow}>
           <Controller
             name={`ingredients.${index}.name`}
             control={control}
@@ -65,13 +54,13 @@ export const IngredientInput: React.FC<IngredientInputProps> = ({
                 label="Ingredient Name"
                 mode="outlined"
                 placeholder="Ingredient name"
-                style={{ width: "100%" }}
+                style={IngredientStyles.nameInput}
               />
             )}
           ></Controller>
         </View>
         <View style={Styles.row}>
-          <View style={{ width: "40%", marginRight: 5 }}>
+          <View style={IngredientStyles.amount}>
             <Controller
               name={`ingredients.${index}.amount`}
               control={control}
@@ -89,7 +78,7 @@ export const IngredientInput: React.FC<IngredientInputProps> = ({
               )}
             ></Controller>
           </View>
-          <View style={{ flexGrow: 1 }}>
+          <View style={IngredientStyles.units}>
             <Controller
               name={`ingredients.${index}.units`}
               control={control}
@@ -116,3 +105,36 @@ export const IngredientInput: React.FC<IngredientInputProps> = ({
 };
 
 export const MemoizedIngredientInput = React.memo(IngredientInput);
+
+const IngredientStyles = {
+  ingredientContainer: {
+    ...Styles.row,
+    marginVertical: 10,
+  },
+  deleteColumn: {
+    ...Styles.column,
+    width: "10%",
+    alignItems: "flex-end",
+  },
+  deleteIcon: {
+    paddingTop: 5,
+  },
+  inputColumn: {
+    ...Styles.column,
+    width: "90%",
+  },
+  nameRow: {
+    ...Styles.row,
+    marginBottom: 5,
+  },
+  nameInput: {
+    width: "100%",
+  },
+  amount: {
+    width: "40%",
+    marginRight: 5,
+  },
+  units: {
+    flexGrow: 1,
+  },
+};

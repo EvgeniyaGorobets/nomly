@@ -27,7 +27,7 @@ export const IngredientFormSection = ({ control }: IngredientSectionProps) => {
   };
 
   return (
-    <View style={{ marginVertical: 10 }}>
+    <View style={Styles.container}>
       <Text variant="headlineSmall">Ingredients</Text>
       {fields.map((field, index: number) => (
         <IngredientInput
@@ -42,7 +42,7 @@ export const IngredientFormSection = ({ control }: IngredientSectionProps) => {
         mode="outlined"
         onPress={addNewIngredient}
         accessibilityHint="Add ingredient"
-        style={{ marginTop: 10 }}
+        style={Styles.addIngredientButton}
       >
         Add Ingredient
       </Button>
@@ -51,3 +51,8 @@ export const IngredientFormSection = ({ control }: IngredientSectionProps) => {
 };
 
 export const MemoizedIngredientForm = React.memo(IngredientFormSection);
+
+const Styles = {
+  container: { marginVertical: 10 },
+  addIngredientButton: { marginTop: 10 },
+};

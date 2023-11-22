@@ -38,24 +38,10 @@ export const RecipeYieldInput = ({
   const showErrorText = () => amountHasError() || unitsHaveError();
 
   return (
-    <View style={{ marginBottom: 5 }}>
-      <View
-        style={{
-          ...Styles.row,
-          alignItems: "center",
-          marginBottom: 10,
-        }}
-      >
-        <View
-          style={{
-            ...Styles.row,
-            alignItems: "center",
-            height: "100%",
-            marginRight: 10,
-            marginVertical: 10,
-          }}
-        >
-          <Text variant="titleMedium" style={{ paddingTop: 10 }}>
+    <View style={YieldStyles.container}>
+      <View style={YieldStyles.inputRow}>
+        <View style={YieldStyles.titleContainer}>
+          <Text variant="titleMedium" style={YieldStyles.title}>
             Recipe Yield:
           </Text>
         </View>
@@ -72,7 +58,7 @@ export const RecipeYieldInput = ({
               keyboardType="numeric"
               mode="outlined"
               textAlign="center"
-              style={{ width: "29%", marginHorizontal: 5 }}
+              style={YieldStyles.amountInput}
               accessibilityHint="Recipe yield amount input"
             />
           )}
@@ -89,7 +75,7 @@ export const RecipeYieldInput = ({
               label="Units"
               mode="outlined"
               textAlign="center"
-              style={{ width: "33%" }}
+              style={YieldStyles.unitsInput}
               accessibilityHint="Recipe yield units input"
             />
           )}
@@ -109,3 +95,18 @@ export const RecipeYieldInput = ({
 };
 
 export const MemoizedRecipeYield = React.memo(RecipeYieldInput);
+
+const YieldStyles = {
+  container: { marginBottom: 5 },
+  inputRow: { ...Styles.row, alignItems: "center", marginBottom: 10 }, // as opposed to the error text row
+  titleContainer: {
+    ...Styles.row,
+    alignItems: "center",
+    height: "100%",
+    marginRight: 10,
+    marginVertical: 10,
+  },
+  title: { paddingTop: 10 },
+  amountInput: { width: "29%", marginHorizontal: 5 },
+  unitsInput: { width: "33%" },
+};

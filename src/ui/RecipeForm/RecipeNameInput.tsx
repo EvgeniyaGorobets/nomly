@@ -17,7 +17,7 @@ export const RecipeNameInput = ({
   const { recipes } = useContext(AppContext);
 
   return (
-    <View style={{ marginBottom: 10 }}>
+    <View style={Styles.container}>
       <Controller
         name="recipeName"
         control={control}
@@ -55,3 +55,7 @@ export const RecipeNameInput = ({
 };
 
 export const MemoizedRecipeName = React.memo(RecipeNameInput);
+
+const Styles = {
+  container: { marginBottom: 10 },
+};

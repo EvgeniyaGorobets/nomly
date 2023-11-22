@@ -11,7 +11,7 @@ export const RecipeNotesInput = (
   const { field } = useController(props);
 
   return (
-    <View style={{ marginVertical: 10 }}>
+    <View style={Styles.container}>
       <Text variant="headlineSmall">Notes</Text>
       <TextInput
         value={field.value}
@@ -24,4 +24,8 @@ export const RecipeNotesInput = (
       />
     </View>
   );
+};
+
+const Styles = {
+  container: { marginVertical: 10 },
 };
