@@ -84,6 +84,6 @@ export const formatIngredientAmount = (
       : roundDecimal(ingredient.amount);
 
   const unitString: string =
-    ingredient.units !== "N/A" ? ` ${ingredient.units}` : "";
+    ingredient.units !== "ea" ? ` ${ingredient.units}` : "";
   return `${amount}${unitString}`;
 };

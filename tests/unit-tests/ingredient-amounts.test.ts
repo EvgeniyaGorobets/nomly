@@ -37,7 +37,7 @@ describe("adjustIngredientAmounts", () => {
     {
       name: "eggs",
       amount: 3,
-      units: "N/A",
+      units: "ea",
     },
     {
       name: "butter",
@@ -56,7 +56,7 @@ describe("adjustIngredientAmounts", () => {
       {
         name: "eggs",
         amount: 6,
-        units: "N/A",
+        units: "ea",
       },
       {
         name: "butter",
@@ -76,7 +76,7 @@ describe("adjustIngredientAmounts", () => {
       {
         name: "eggs",
         amount: 1.5,
-        units: "N/A",
+        units: "ea",
       },
       {
         name: "butter",
@@ -96,7 +96,7 @@ describe("adjustIngredientAmounts", () => {
       {
         name: "eggs",
         amount: 9,
-        units: "N/A",
+        units: "ea",
       },
       {
         name: "butter",
@@ -202,15 +202,15 @@ describe("convertToFraction", () => {
 });
 
 describe("formatIngredientAmount", () => {
-  it("does not include N/A in the returned string when N/A is the unit", () => {});
+  it("does not include ea in the returned string when ea is the unit", () => {}); // TODO?
 
-  it("does not do any fraction formatting for mL, g, oz, or N/A units", () => {
+  it("does not do any fraction formatting for mL, g, oz, or ea units", () => {
     expect(
       formatIngredientAmount(
         {
           name: "bananas",
           amount: 2,
-          units: "N/A",
+          units: "ea",
         },
         true
       )
@@ -243,7 +243,7 @@ describe("formatIngredientAmount", () => {
         {
           name: "onion",
           amount: 1.5,
-          units: "N/A",
+          units: "ea",
         },
         true
       )
