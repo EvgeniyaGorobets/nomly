@@ -15,18 +15,18 @@ describe("RecipeForm", () => {
     "Quinoa Broccoli Casserole": {
       yield: { amount: 4, units: "servings" },
       ingredients: [
-        { id: "1", name: "broccoli", amount: 16, units: "oz" },
-        { id: "2", name: "quinoa", amount: 1, units: "cups" },
+        { name: "broccoli", amount: 16, units: "oz" },
+        { name: "quinoa", amount: 1, units: "cups" },
       ],
       notes: "Mix broccoli and quinoa in a pan and bake.",
     },
     "Chocolate Chip Cookies": {
       yield: { amount: 12, units: "cookies" },
       ingredients: [
-        { id: "3", name: "flour", amount: 2, units: "cups" },
-        { id: "4", name: "sugar", amount: 16, units: "tbsp" },
-        { id: "5", name: "chocolate chips", amount: 8, units: "oz" },
-        { id: "6", name: "butter", amount: 100, units: "g" },
+        { name: "flour", amount: 2, units: "cups" },
+        { name: "sugar", amount: 16, units: "tbsp" },
+        { name: "chocolate chips", amount: 8, units: "oz" },
+        { name: "butter", amount: 100, units: "g" },
       ],
       notes: "Mix dry and wet ingredients. Roll into balls and bake.",
     },
@@ -286,12 +286,11 @@ describe("RecipeForm", () => {
             ingredients: [
               {
                 // this ingredient should have all three fields updated
-                id: "1",
                 name: newIngredientName,
                 amount: Number(newIngredientAmount),
                 units: newIngredientUnits,
               },
-              { id: "2", name: "quinoa", amount: 1, units: "cups" },
+              { name: "quinoa", amount: 1, units: "cups" },
             ],
           },
         });
@@ -308,9 +307,7 @@ describe("RecipeForm", () => {
           [recipeName]: {
             ...recipeBook[recipeName],
             // there should only be one ingredient left
-            ingredients: [
-              { id: "1", name: "broccoli", amount: 16, units: "oz" },
-            ],
+            ingredients: [{ name: "broccoli", amount: 16, units: "oz" }],
           },
         });
         expect(mockNavigationProp.goBack).toBeCalledTimes(1);
@@ -330,7 +327,7 @@ describe("RecipeForm", () => {
             // the new ingredient should be saved
             ingredients: [
               ...recipeBook[recipeName].ingredients,
-              { id: "7", name: "garlic cloves", amount: 3, units: "ea" },
+              { name: "garlic cloves", amount: 3, units: "ea" },
             ],
           },
         });

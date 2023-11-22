@@ -7,7 +7,6 @@ export type YieldForm = {
 };
 
 export type IngredientForm = {
-  id: string;
   name: string;
   amount: string;
   units: Unit;
@@ -32,7 +31,6 @@ export const recipeToForm = (
     },
     ingredients: recipe.ingredients.map((ingredient: Ingredient) => {
       return {
-        id: ingredient.id,
         name: ingredient.name,
         amount: ingredient.amount.toString(),
         units: ingredient.units,
@@ -50,7 +48,6 @@ export const formToRecipe = (form: RecipeForm): Recipe => {
     },
     ingredients: form.ingredients.map((ingredient: IngredientForm) => {
       return {
-        id: ingredient.id,
         name: ingredient.name,
         amount: Number(ingredient.amount),
         units: ingredient.units,

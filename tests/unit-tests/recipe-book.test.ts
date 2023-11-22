@@ -7,16 +7,24 @@ import {
   validateRecipeName,
 } from "../../src/core/recipe-book";
 
+/**
+ * A test fixture to generate recipes
+ * @returns A Recipe object
+ */
+const getMockRecipe = (): Recipe => {
+  return {
+    yield: { amount: 4, units: "servings" },
+    ingredients: [
+      { name: "broccoli", amount: 16, units: "oz" },
+      { name: "quinoa", amount: 1, units: "cups" },
+    ],
+    notes: "Mix broccoli and quinoa in a pan and bake.",
+  };
+};
+
 describe("cloneRecipe", () => {
   it("returns a copy of the recipe book with the cloned recipe", () => {
-    const originalRecipe: Recipe = {
-      yield: { amount: 4, units: "servings" },
-      ingredients: [
-        { id: "1", name: "broccoli", amount: 16, units: "oz" },
-        { id: "2", name: "quinoa", amount: 1, units: "cups" },
-      ],
-      notes: "Mix broccoli and quinoa in a pan and bake.",
-    };
+    const originalRecipe: Recipe = getMockRecipe();
     const recipeBook: RecipeBook = {
       "Quinoa Broccoli Casserole": originalRecipe,
     };
@@ -46,14 +54,7 @@ describe("cloneRecipe", () => {
   });
 
   it("can clone a recipe multiple times", () => {
-    const originalRecipe: Recipe = {
-      yield: { amount: 4, units: "servings" },
-      ingredients: [
-        { id: "1", name: "broccoli", amount: 16, units: "oz" },
-        { id: "2", name: "quinoa", amount: 1, units: "cups" },
-      ],
-      notes: "Mix broccoli and quinoa in a pan and bake.",
-    };
+    const originalRecipe: Recipe = getMockRecipe();
     const recipeBook: RecipeBook = {
       Casserole: originalRecipe,
     };
@@ -74,21 +75,14 @@ describe("cloneRecipe", () => {
 describe("deleteRecipe", () => {
   it("returns a copy of the recipe book without the deleted recipe", () => {
     const recipeBook: RecipeBook = {
-      "Quinoa Broccoli Casserole": {
-        yield: { amount: 4, units: "servings" },
-        ingredients: [
-          { id: "1", name: "broccoli", amount: 16, units: "oz" },
-          { id: "2", name: "quinoa", amount: 1, units: "cups" },
-        ],
-        notes: "Mix broccoli and quinoa in a pan and bake.",
-      },
+      "Quinoa Broccoli Casserole": getMockRecipe(),
       "Chocolate Chip Cookies": {
         yield: { amount: 12, units: "cookies" },
         ingredients: [
-          { id: "3", name: "flour", amount: 2, units: "cups" },
-          { id: "4", name: "sugar", amount: 16, units: "tbsp" },
-          { id: "5", name: "chocolate chips", amount: 8, units: "oz" },
-          { id: "6", name: "butter", amount: 100, units: "g" },
+          { name: "flour", amount: 2, units: "cups" },
+          { name: "sugar", amount: 16, units: "tbsp" },
+          { name: "chocolate chips", amount: 8, units: "oz" },
+          { name: "butter", amount: 100, units: "g" },
         ],
         notes: "Mix dry and wet ingredients. Roll into balls and bake.",
       },
@@ -118,21 +112,14 @@ describe("deleteRecipe", () => {
 describe("updateRecipe", () => {
   it("returns a copy of the recipe book with the updated recipe when a recipe changes", () => {
     const recipeName: string = "Quinoa Broccoli Casserole";
-    const originalRecipe: Recipe = {
-      yield: { amount: 4, units: "servings" },
-      ingredients: [
-        { id: "1", name: "broccoli", amount: 16, units: "oz" },
-        { id: "2", name: "quinoa", amount: 1, units: "cups" },
-      ],
-      notes: "Mix broccoli and quinoa in a pan and bake.",
-    };
+    const originalRecipe: Recipe = getMockRecipe();
     const recipeBook: RecipeBook = { [recipeName]: originalRecipe };
 
     const updatedRecipe: Recipe = {
       yield: { amount: 3, units: "servings" },
       ingredients: [
-        { id: "1", name: "broccoli", amount: 400, units: "g" },
-        { id: "2", name: "quinoa", amount: 0.5, units: "cups" },
+        { name: "broccoli", amount: 400, units: "g" },
+        { name: "quinoa", amount: 0.5, units: "cups" },
       ],
       notes: "blah blah blah",
     };
@@ -152,14 +139,7 @@ describe("updateRecipe", () => {
 
   it("returns a copy of the recipe book with the new recipe when a recipe is added", () => {
     const recipeName = "Quinoa Broccoli Casserole";
-    const newRecipe: Recipe = {
-      yield: { amount: 4, units: "servings" },
-      ingredients: [
-        { id: "1", name: "broccoli", amount: 16, units: "oz" },
-        { id: "2", name: "quinoa", amount: 1, units: "cups" },
-      ],
-      notes: "Mix broccoli and quinoa in a pan and bake.",
-    };
+    const newRecipe: Recipe = getMockRecipe();
     const recipeBook: RecipeBook = {};
 
     const newRecipeBook = updateRecipe(recipeBook, newRecipe, "", recipeName);
@@ -173,14 +153,7 @@ describe("updateRecipe", () => {
 
   it("returns a copy of the recipe book with the new recipe name when the recipe name changes", () => {
     const oldRecipeName = "Quinoa Broccoli Casserole";
-    const recipe: Recipe = {
-      yield: { amount: 4, units: "servings" },
-      ingredients: [
-        { id: "1", name: "broccoli", amount: 16, units: "oz" },
-        { id: "2", name: "quinoa", amount: 1, units: "cups" },
-      ],
-      notes: "Mix broccoli and quinoa in a pan and bake.",
-    };
+    const recipe: Recipe = getMockRecipe();
     const recipeBook: RecipeBook = { [oldRecipeName]: recipe };
 
     const newRecipeName = "Cheesy Quinoa Broccoli Casserole";

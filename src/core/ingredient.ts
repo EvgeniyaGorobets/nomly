@@ -1,5 +1,4 @@
 import "react-native-get-random-values";
-import { v4 as uuidv4 } from "uuid";
 import { deepCopy, isNumeric } from "./utils";
 
 /* -- TYPES --*/
@@ -17,7 +16,6 @@ export const UNITS = [
 export type Unit = (typeof UNITS)[number];
 
 export type Ingredient = {
-  id: string;
   name: string;
   amount: number;
   units: Unit;
@@ -32,7 +30,6 @@ export type Ingredient = {
  */
 export const addIngredient = (ingredients: Ingredient[]): Ingredient[] => {
   const blankIngredient: Ingredient = {
-    id: uuidv4(),
     name: "",
     amount: 0,
     units: "ea",
