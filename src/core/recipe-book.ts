@@ -1,8 +1,12 @@
 import type { Ingredient } from "./ingredient";
-import type { Yield } from "./recipe-yield";
 import { deepCopy } from "./utils";
 
 /* ---- TYPES ---- */
+
+export type Yield = {
+  amount: number;
+  units: string;
+};
 
 export type Recipe = {
   yield: Yield;
