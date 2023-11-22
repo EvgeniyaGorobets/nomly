@@ -123,3 +123,5 @@ export const RecipeYieldInput = ({
     </View>
   );
 };
+
+export const MemoizedRecipeYield = React.memo(RecipeYieldInput);

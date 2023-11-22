@@ -49,3 +49,5 @@ export const IngredientFormSection = ({ control }: IngredientSectionProps) => {
     </View>
   );
 };
+
+export const MemoizedIngredientForm = React.memo(IngredientFormSection);

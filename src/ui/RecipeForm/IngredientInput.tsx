@@ -130,3 +130,5 @@ export const IngredientInput: React.FC<IngredientInputProps> = ({
     </View>
   );
 };
+
+export const MemoizedIngredientInput = React.memo(IngredientInput);

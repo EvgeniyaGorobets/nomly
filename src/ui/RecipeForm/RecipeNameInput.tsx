@@ -57,3 +57,5 @@ export const RecipeNameInput = ({
     </View>
   );
 };
+
+export const MemoizedRecipeName = React.memo(RecipeNameInput);
