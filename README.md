@@ -23,3 +23,5 @@ npm install --registry=https://registry.npmjs.org/
 
 - HelperText doesn't work in tests unless its rendering is conditional. The visible prop gets changed but the opacity remains zero
 - onFocus doesn't fire with RNTL onPress()
+
+This is added to make a commit that is going to be deleted.
